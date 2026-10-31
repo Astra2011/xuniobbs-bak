@@ -1,0 +1,21 @@
+# 运行时生成的配置文件（安装后产生，勿提交）
+conf/conf.php
+
+# 运行时日志
+log/*.log
+log/*.php
+
+# 临时文件
+tmp/*
+
+# 上传数据（附件/头像等用户数据）
+upload/attach/*
+upload/avatar/*
+upload/forum/*
+upload/tmp/*
+!upload/**/.gitkeep
+
+# 系统/临时
+.DS_Store
+Thumbs.db
+*.zip
