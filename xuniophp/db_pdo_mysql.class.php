@@ -68,7 +68,8 @@ class db_pdo_mysql {
 			return FALSE;
 	        }
 	        //$link->setFetchMode(PDO::FETCH_ASSOC);
-		$charset AND $link->query("SET names $charset, sql_mode=''");
+		// 字符集固定 utf8mb4，不跟随配置，避免配置写回 utf8 后 Emoji 存不进去
+		$link->query("SET names utf8mb4, sql_mode=''");
 		 //$link->query('SET NAMES '.($charset ? $charset.',' : '').', sql_mode=""');  
 		return $link;
 	}

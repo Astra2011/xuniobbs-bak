@@ -107,7 +107,7 @@ $sql = "CREATE TABLE IF NOT EXISTS {$tablepre}user_open_plat (
 	openid char(40) NOT NULL DEFAULT '' COMMENT '第三方唯一标识',
 	PRIMARY KEY (uid),
 	KEY openid_platid (platid,openid)
-) ENGINE=MyISAM AUTO_INCREMENT=8805 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=8805 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 ";
 $r = db_exec($sql);
 $r === FALSE AND message(-1, '创建表结构失败'); // 中断，安装失败。
@@ -306,7 +306,7 @@ $sql = "CREATE TABLE IF NOT EXISTS {$tablepre}friendlink (
   url char(64) NOT NULL DEFAULT '',
   PRIMARY KEY (linkid),
   KEY type (type)
-) ENGINE=MyISAM AUTO_INCREMENT=65 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 ";
 $r = db_exec($sql);
 $r === FALSE AND message(-1, '创建友情链接表结构失败');
@@ -356,7 +356,7 @@ $sql = "CREATE TABLE IF NOT EXISTS {$tablepre}tag_cate (
 	enable int(11) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (cateid),
 	KEY (fid)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
 $r = db_exec($sql);
 $sql = "CREATE TABLE IF NOT EXISTS {$tablepre}tag (
 	tagid int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -366,14 +366,14 @@ $sql = "CREATE TABLE IF NOT EXISTS {$tablepre}tag (
 	enable int(11) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (tagid),
 	KEY (cateid)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
 $r = db_exec($sql);
 $sql = "CREATE TABLE IF NOT EXISTS {$tablepre}tag_thread (
 	tagid int(11) unsigned NOT NULL DEFAULT '0',
 	tid int(11) unsigned NOT NULL DEFAULT '0',
 	PRIMARY KEY (tagid, tid),
 	KEY (tid)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
 $r = db_exec($sql);
 
 $cateid_map = array();
@@ -451,7 +451,7 @@ $sql = "CREATE TABLE IF NOT EXISTS {$tablepre}thread_digest (
   PRIMARY KEY (tid),					# 
   KEY (uid),					# 
   UNIQUE KEY (fid, tid)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
 db_exec($sql);
 $sql = "ALTER TABLE {$tablepre}thread ADD COLUMN digest tinyint(3) unsigned NOT NULL default '0';";
 db_exec($sql);

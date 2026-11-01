@@ -54,7 +54,8 @@ class db_mysql {
 		if(!$link) { $this->error(mysql_errno(), '连接数据库服务器失败:'.mysql_error()); return FALSE; }
 		if(!mysql_select_db($name, $link)) { $this->error(mysql_errno(), '选择数据库失败:'.mysql_error()); return FALSE; }
 		//strtolower($engine) == 'innodb' AND $this->query("SET innodb_flush_log_at_trx_commit=no", $link);
-		$charset AND $this->query("SET names $charset, sql_mode=''", $link);
+		// 字符集固定 utf8mb4，不跟随配置，避免配置写回 utf8 后 Emoji 存不进去
+		$this->query("SET names utf8mb4, sql_mode=''", $link);
 		return $link;
 	}
 	public function sql_find_one($sql) {

@@ -6,7 +6,7 @@ CREATE TABLE bbs_thread_lastpid (
   lastpid int(11) unsigned NOT NULL default '0',	# lastpid
   PRIMARY KEY (tid),					#
   UNIQUE KEY (lastpid)					#
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE bbs_thread ADD COLUMN userip int(11) unsigned NOT NULL default '0' after sid;
 
@@ -30,4 +30,4 @@ CREATE TABLE bbs_thread_url (
   url char(128) NOT NULL default '',		# SEO URL
   PRIMARY KEY(tid),
   KEY (url)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
