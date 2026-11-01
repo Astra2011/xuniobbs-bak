@@ -67,8 +67,15 @@ if($action == 'create') {
 			'quotepid'=>$quotepid,
 			'message'=>$message,
 		);
+		
+		// hook post_create_before.php
+		// 发帖入库前钩子：插件可做内容审核/敏感词过滤/机器审核，可改写 $post 或直接 message() 拦截
+		
 		$pid = post_create($post, $fid, $gid);
 		empty($pid) AND message(-1, lang('create_post_failed'));
+		
+		// hook post_create_after.php
+		xo_log("post create success, pid: $pid, tid: $tid, fid: $fid, uid: $uid", 'post_create', 'INFO');
 		
 		// thread_top_create($fid, $tid);
 
@@ -206,10 +213,15 @@ if($action == 'create') {
 	
 	// hook post_delete_middle.php
 
+	// hook post_delete_before.php
+	// 删除入库前钩子：插件可级联清理第三方数据、做删除审计/拦截
+
 	if($isfirst) {
 		thread_delete($tid);
+		xo_log("thread delete, tid: $tid, pid: $pid, fid: $fid, uid: $uid", 'post_delete', 'WARN');
 	} else {
 		post_delete($pid);
+		xo_log("post delete, pid: $pid, tid: $tid, uid: $uid", 'post_delete', 'WARN');
 		//post_list_cache_delete($tid);
 	}
 	

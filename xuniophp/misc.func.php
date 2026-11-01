@@ -579,8 +579,10 @@ function ip() {
 */
 
 // 日志记录
-function xo_log($s, $file = 'error') {
-	if(DEBUG == 0 && strpos($file, 'error') === FALSE) return;
+// $level: INFO / WARN / ERROR / DEBUG，为空时按文件名自动推断（含 error 或 debug 的归为对应级别，其余 INFO）。
+// 按天切割（log/YYYYMM/<file>.YYYYMMDD.php），目录权限 0750。
+// 线上模式（DEBUG==0）丢弃 DEBUG 级别，其余（INFO/WARN/ERROR）照常落盘，保证安全审计日志不丢。
+function xo_log($s, $file = 'error', $level = '') {
 	$time = $_SERVER['time'];
 	$ip = $_SERVER['ip'];
 	$conf = _SERVER('conf');
@@ -588,13 +590,34 @@ function xo_log($s, $file = 'error') {
 	$day = date('Ym', $time); // 按照月存放，否则 Ymd 目录太多。
 	$mtime = date('Y-m-d H:i:s'); // 默认值为 time()
 	$url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+
+	// 级别：未显式指定时按文件名自动推断
+	if($level === '') {
+		if(stripos($file, 'debug') !== FALSE) {
+			$level = 'DEBUG';
+		} elseif(stripos($file, 'error') !== FALSE) {
+			$level = 'ERROR';
+		} else {
+			$level = 'INFO';
+		}
+	}
+	$level = strtoupper($level);
+
+	// 线上模式丢弃 DEBUG 级日志（避免刷盘），审计日志（INFO/WARN/ERROR）保留
+	if(DEBUG == 0 && $level === 'DEBUG') return;
+
 	$logpath = $conf['log_path'].$day;
-	!is_dir($logpath) AND mkdir($logpath, 0777, true);
+	if(!is_dir($logpath)) {
+		mkdir($logpath, 0750, true);
+		@chmod($logpath, 0750);
+	}
 
 	$s = str_replace(array("\r\n", "\n", "\t"), ' ', $s);
-	$s = "<?php exit;?>\t$mtime\t$ip\t$url\t$uid\t$s\r\n";
-	
-	@error_log($s, 3, $logpath."/$file.php");
+	// 按天切割，避免单文件无限增长
+	$logfile = $logpath.'/'.$file.'.'.date('Ymd', $time).'.php';
+	$s = "<?php exit;?>\t$mtime\t$level\t$ip\t$url\t$uid\t$s\r\n";
+
+	@error_log($s, 3, $logfile);
 }
 
 /*

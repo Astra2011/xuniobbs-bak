@@ -82,7 +82,12 @@ if(empty($action)) {
 
 		// 登录不做长度校验：存量用户的原始密码可能不满足新规则，拦住就再也登不进来了
 		$password === '' AND message('password', lang('please_input_password'));
-		!user_password_check($password, $_user) AND message('password', lang('password_incorrect'));
+		// 密码校验失败：记录日志 + 提供插件钩子（风控/账号锁定/失败次数统计）
+		if(!user_password_check($password, $_user)) {
+			// hook user_login_failed.php
+			xo_log("login failed, email: $email, uid: ".(empty($_user['uid']) ? 0 : $_user['uid']), 'user_login', 'WARN');
+			message('password', lang('password_incorrect'));
+		}
 
 		// 历史 md5 摘要登录成功后升级为 password_hash
 		user_password_upgrade($password, $_user);
@@ -95,11 +100,15 @@ if(empty($action)) {
 		// global variable $uid will save to session in register_shutdown_function() (file: model/session.func.php)
 		$uid = $_user['uid'];
 		
+		// hook user_login_success_before_session.php
+		// 写 session 前钩子：插件可改写登录态（如强制实名/邮箱验证后才放行）
+		
 		$_SESSION['uid'] = $uid;
 		
 		user_token_set($_user['uid']);
 		
 		// hook user_login_post_end.php
+		xo_log("login success, email: $email, uid: $uid", 'user_login', 'INFO');
 		
 		// 设置 token，下次自动登陆。
 		
@@ -182,6 +191,7 @@ if(empty($action)) {
 		$extra = array('token'=>user_token_gen($uid));
 		
 		// hook user_create_post_end.php
+		xo_log("user register success, username: $username, email: $email, uid: $uid", 'user_create', 'INFO');
 		
 		message(0, lang('user_create_sucessfully'), $extra);
 	}
