@@ -200,7 +200,8 @@ if(empty($action)) {
 		
 		$replace = array();
 		$replace['db'] = $conf['db'];
-		$replace['auth_key'] = xo_rand(64);
+		$replace['auth_key'] = xo_auth_key_gen();
+		$replace['site_id'] = md5($replace['auth_key']._SERVER('SERVER_ADDR'));
 		$replace['installed'] = 1;
 		file_replace_var(APP_PATH.'conf/conf.php', $replace);
 		

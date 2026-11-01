@@ -514,10 +514,10 @@ function plugin_read_by_dir($dir, $local_first = TRUE) {
 
 function plugin_siteid() {
 	global $conf;
-	$auth_key = $conf['auth_key'];
-	$siteip = _SERVER('SERVER_ADDR');
-	$siteid = md5($auth_key.$siteip);
-	return $siteid;
+	// 站点指纹已固化在配置里，与 auth_key 解耦，换密钥后官方仍认得是同一个站点
+	if(!empty($conf['site_id'])) return $conf['site_id'];
+	// 兜底：配置里没有就用旧算法现算
+	return md5($conf['auth_key']._SERVER('SERVER_ADDR'));
 }
 
 /*function plugin_outid($dir) {

@@ -84,7 +84,8 @@ return array (
 	
 	'cookie_domain' => '',
 	'cookie_path' => '',
-	'auth_key' => 'efdkjfjiiiwurjdmclsldow753jsdj438',
+	'auth_key' => '',		// 加密密钥，安装时自动生成，禁止写死
+	'site_id' => '',		// 站点指纹，向官方插件服务标识本站，生成一次后固定
 	
 	'pagesize' => 20,
 	'postlist_pagesize' => 100,

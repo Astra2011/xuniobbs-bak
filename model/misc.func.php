@@ -29,6 +29,57 @@ function xo_cookie_set($name, $value, $expires = 0, $path = '') {
 	}
 }
 
+// 生成全站加密密钥，优先用 CSPRNG，老 PHP 退回字符集随机
+function xo_auth_key_gen() {
+	if(function_exists('random_bytes')) {
+		return bin2hex(random_bytes(32)); // 32 字节 => 64 位十六进制
+	}
+	if(function_exists('openssl_random_pseudo_bytes')) {
+		$r = openssl_random_pseudo_bytes(32);
+		if($r !== FALSE) return bin2hex($r);
+	}
+	return xo_rand(64);
+}
+
+// 补齐配置里缺失的安全项：
+// 1. auth_key 为空或仍是历史公开默认值时重新生成
+// 2. site_id（站点指纹）缺失时按旧算法固化，之后不再随 auth_key 变化
+// 必须在会话建立前调用，改动合并成一次写回 conf/conf.php
+function xo_conf_init() {
+	global $conf;
+	$replace = array();
+
+	// 站点指纹，独立于 auth_key，换密钥不影响向官方插件服务标识本站
+	if(empty($conf['site_id'])) {
+		$site_id = md5((isset($conf['auth_key']) ? $conf['auth_key'] : '')._SERVER('SERVER_ADDR'));
+		$conf['site_id'] = $site_id;
+		$replace['site_id'] = $site_id;
+	}
+
+	$key = isset($conf['auth_key']) ? $conf['auth_key'] : '';
+	// 老版本 conf.default.php 里公开的默认值，等同没有密钥
+	$legacy = 'efdkjfjiiiwurjdmclsldow753jsdj438';
+	if($key === '' || $key === $legacy) {
+		$key = xo_auth_key_gen();
+		$conf['auth_key'] = $key;
+		$replace['auth_key'] = $key;
+	}
+
+	if(!$replace) return TRUE;
+
+	isset($_SERVER['conf']) && is_array($_SERVER['conf']) AND $_SERVER['conf'] = array_merge($_SERVER['conf'], $replace);
+
+	$conffile = APP_PATH.'conf/conf.php';
+	if(!is_file($conffile) || !xo_is_writable($conffile)) {
+		message(-1, 'conf/conf.php 不可写，无法保存加密密钥与站点指纹，请给该文件写权限后刷新。');
+	}
+	$r = file_replace_var($conffile, $replace, TRUE);
+	if(!$r) {
+		message(-1, '写入 conf/conf.php 失败，加密密钥与站点指纹未能保存。');
+	}
+	return TRUE;
+}
+
 // 可用语言列表：语言代码 => 本土语言名称
 // 名称不随界面语言变化，保证任何国家的用户都能认出自己的语言
 function lang_list() {

@@ -49,6 +49,10 @@ if(DEBUG > 1) {
 
 include APP_PATH.'model/plugin.func.php';
 include _include(APP_PATH.'model.inc.php');
+
+// 补齐缺失的 auth_key 与 site_id，必须在会话建立前完成
+xo_conf_init();
+
 include _include(APP_PATH.'index.inc.php');
 
 //file_put_contents((ini_get('xhprof.output_dir') ? : '/tmp') . '/' . uniqid() . '.xhprof.xhprof', serialize(xhprof_disable()));
