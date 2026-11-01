@@ -1443,7 +1443,7 @@ $.fn.checked = function(v) {
 };
 
 // 支持连续操作 jsubmit.button(message).delay(1000).button('reset');
-$.fn.button = function(status) {
+var xo_fn_button = function(status) {
 	return this.each(function() {
 		var jthis = $(this);
 		jthis.queue(function (next) {
@@ -1467,6 +1467,7 @@ $.fn.button = function(status) {
 		});
 	});
 };
+$.fn.button = xo_fn_button;
 
 // 支持连续操作 jsubmit.button(message).delay(1000).button('reset').delay(1000).location('http://xxxx');
 $.fn.location = function(href) {
@@ -1482,7 +1483,7 @@ $.fn.location = function(href) {
 };
 
 // 在控件上方提示错误信息
-$.fn.alert = function(message) {
+var xo_fn_alert = function(message) {
 	var jthis = $(this);
 	jthis.addClass('is-invalid');
 	// 优先用模板里已有的 .invalid-feedback，没有就补一个，否则只加红框看不见文字
@@ -1505,6 +1506,7 @@ $.fn.alert = function(message) {
 	});
 	return this;
 };
+$.fn.alert = xo_fn_alert;
 
 $.fn.serializeObject = function() {
 	var self = this,
@@ -1943,5 +1945,14 @@ xo.modal_close = function(jmodal) {
 	});
 	inst.hide();
 };
+
+// Bootstrap 5 的 $.fn.alert / $.fn.button 是在 DOMContentLoaded 时才注册的，
+// 会把上面两个同名方法覆盖成它的插件接口，结果是：字段错误提示不显示、按钮永远卡在
+// 加载态、中文提示被当成方法名抛出 "No method named" 异常。jQuery 的 ready 回调比它
+// 注册得更晚，在这里把方法装回来。Bootstrap 组件自身的 data-api 不经过 $.fn，不受影响。
+$(function() {
+	$.fn.alert = xo_fn_alert;
+	$.fn.button = xo_fn_button;
+});
 
 console.log('xunio.js loaded');
