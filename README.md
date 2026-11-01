@@ -1,65 +1,85 @@
-### 【Xunio BBS 4.0 是什么？】
-Xunio BBS 4.0 是一款轻论坛产品，前端基于 BootStrap 4.0、JQuery 3，后端基于 PHP/7 MySQL XCache/Yac/Redis/Memcached...
+# Xunio BBS
 
-自适应手机、平板、PC，有着非常方便的插件机制，不仅仅是一个轻论坛，还是一个良好的二次开发平台。
+轻论坛程序，PHP + MySQL 后端，Bootstrap 4 + jQuery 前端。插件和主题用 hook / overwrite 扩展，不动核心代码也能改功能。
 
-git： https://git.oschina.net/xunio/xuniobbs.git
+本仓库基于 **Xiuno BBS 4.0.4** 二次开发。原项目 MIT 协议，作者 axiuno@gmail.com。
 
-### 【Xunio BBS 4.0 带来了什么？】
-前端采用 BootStrap 4 + JQuery 3，响应式布局，自适应手机，平板，PC 设备，不再需要单独开发移动版本。
+## 与原版的区别
 
-对 Bootstrap 4 进行了增强和兼容，比如增加 $('#submit').button('xxx').delay(3000).location('xxx.php') 的连续操作支持。
+- **PHP 8 兼容**：原版在 PHP 7.4 / 8.x 下有语法和运行时错误，已逐处修正，PHP 8.2 下实测可跑。
+- **全项目改名**：`xiuno` → `xunio`，函数前缀 `xn_` → `xo_`，常量与 JS 命名空间同步；数据库表前缀 `bbs_` 保持不动。
+- **图标库替换**：FontAwesome 4.6.3 → Tabler Icons 3.50.0，158 个字体文件全部本地化，不走 CDN。
+- **8 种语言**：简体中文、繁體中文、English、日本語、한국어、Deutsch、Français、Español。后台设置页和安装向导都能切换，语言名用各自的写法显示。
+- **白色主题**：前台、后台、安装页的导航栏和页脚改为浅色。
+- **滚动条处理**：视口常驻一条透明滚动条槽，页面长短不同不再左右抖动，弹窗打开时也不会多出一条。
 
-xunio.js 采用了 xo. 命名空间，不再担心 js 命名冲突，完善了对常用的 php 函数的实现。
+依赖版本没动，仍是 Bootstrap 4.0.0、jQuery 3.1.0、Popper。
 
-增加了通用的 $.each_sync() 方法，从客户端避免 ajax 并发导致的服务端并发写数据问题，简化了服务端逻辑。
+## 环境要求
 
-不再支持 IE89 和以下版本，全面拥抱移动端，不用再用琢磨恶心的 css hack。
+- PHP 7.0 以上，推荐 7.4 / 8.x。需要 `pdo_mysql`、`mbstring`，上传头像和图片水印需要 `gd`。
+- MySQL 5.6+ / MariaDB 10.2+。
+- 缓存可选：MySQL（默认）、Redis、Memcached、Yac、XCache、APCu，在 `conf/conf.php` 的 `cache` 段切换。
+- Nginx 或 Apache 均可。
 
-不再强制要求 URL-Rewrite， 采用相对路径的 URL 格式，方便部署到子目录：user-login.htm
+## 安装
 
-图片缩略、裁切放到了客户端，不再依赖服务端 GD 库（不再担心各种 GD 漏洞和弱点）。
+1. 上传到网站目录，确认 `conf/`、`tmp/`、`log/`、`upload/` 可写。
+2. 浏览器访问 `install/`，按向导填数据库信息和管理员账号。
+3. 装完删掉 `install/` 目录，或者禁止访问。
+4. 前台是站点根目录，后台入口是 `admin/`。
 
-同时支持 Session 和 Token 方式登录，可以全站返回 json 数据，方便 APP 开发。
+不配伪静态也能用。URL 形式由 `conf/conf.php` 的 `url_rewrite_on` 决定：
 
-插件机制采用 hook + overwrite 方式，方便插入，和覆盖，非常方便二次开发，并且不影响性能，不影响编译。
+| 值 | 形式 | 说明 |
+| --- | --- | --- |
+| 0 | `?thread-1.htm` | 默认，不需要伪静态 |
+| 1 | `thread-1.htm` | 需要伪静态 |
+| 2 | `?thread/1` | 路径式 |
+| 3 | `thread/1` | 路径式 + 伪静态 |
 
-db 层采用了更加方便的接口，可以同时支持 SQL 和 NoSQL 的方式操作数据（提倡 NoSQL)。
+## 目录结构
 
-论坛功能上更加的精简，更多功能采用插件的方式进行扩充。
+| 路径 | 说明 |
+| --- | --- |
+| `index.php` | 前台入口 |
+| `route/` | 前台路由，按页面拆文件 |
+| `model/` | 业务函数库：用户、版块、帖子、附件、KV 缓存等 |
+| `xuniophp/` | 框架本体，合并版为 `xuniophp.min.php` |
+| `view/htm/` | 前台模板 |
+| `view/css/` `view/js/` | 前台样式与脚本 |
+| `view/font/tabler/` | Tabler 图标字体，按 unicode-range 分块 |
+| `admin/` | 后台，`route/` 放路由，`view/htm/` 放模板 |
+| `install/` | 安装向导，装完应删除 |
+| `lang/` | 语言包，一个目录一种语言，含 `bbs.php`、`bbs_admin.php`、`bbs_install.php`、`bbs.js` |
+| `plugin/` | 插件目录，装插件时生成 |
+| `conf/` | 配置，`conf.php` 由安装程序生成 |
+| `tmp/` | 编译缓存，可随时清空 |
+| `upload/` | 上传的附件与图片 |
+| `log/` | 运行日志 |
+| `tool/` | 辅助脚本：数据库迁移、重置密码、合并等 |
 
-引入了语言包，自带简体、繁体、英文三个版本。
+## 开发注意
 
-插件中心正式开启，开发者可以入驻，开发收费插件。
+**改完代码要清缓存。** 线上模式（`DEBUG = 0`）下，`model/*.php`、`route/*.php`、`view/htm/*.htm` 会被编译合并写入 `tmp/`，命中缓存就不再读源文件。改了源文件却没清 `tmp/`，会出现"代码改了不生效"，甚至直接 500——比如新增了函数而缓存里还没有，就会调用未定义函数。
 
-只需要一个博客插件，它就可以变成一个功能强大的博客。
+调试时把 `index.php` 里的 `define('DEBUG', 0)` 改成 `1`，改为逐文件加载，改完立刻生效。开发完记得改回去。
 
-帖子支持 txt html markdown 三种格式，自带适度整合的 UMEditor 插件，修正了 UM 在 Bootstrap 4 下的很多问题。
+**图标**用 Tabler Icons，两种写法都有效：
 
-xuniophp 4.0 这个框架合并成了一个文件 xuniophp.min.php，只需要一个 include 就可以开始使用里面提供的方便的函数和全局变量。
+```html
+<i class="ti ti-user"></i>
+<i class="ti-user"></i>
+```
 
-Xunio BBS 4 正式版经历了近 2 年，7 个 beta 版本，最终定型，这可能是最后一个大版本，放心动手二次开发吧。
+第二种靠 `tabler-icons.css` 里的 `[class^="ti-"]` 兼容规则，等价于原 FontAwesome 的 `icon-xxx` 用法。
 
+**语言**：模板里用 `lang('键名')` 取值，键定义在 `lang/zh-cn/bbs.php`。新增语言只需复制一个语言目录并翻译，后台下拉框会自动出现。语言清单由 `model/misc.func.php` 的 `lang_list()` 提供，固定顺序，缺 `bbs.php` 的目录不显示。
 
-### 【性能方面】
-采用静态语言编程风格，充分发挥 PHP7 OPCache 的威力。
+**插件**：放到 `plugin/` 下，通过 hook 注入、通过 overwrite 覆盖，不修改核心文件。主题改 `view/htm/` 和 `view/css/` 即可。
 
-专门针对 BBS 业务的索引优化和适度的缓存。
+## 授权
 
-大量的运算放到了客户端，并发问题尽量由客户端控制。
+MIT。可以自由修改、派生、商用，保留原作者版权信息即可。
 
-作者十多年从业经验带领您绕过雷区。
-
-### 【授权】
-Xunio BBS 4.0 采用 MIT 协议发布，您可以自由修改、派生版本、商用而不用担心任何法律风险（修改后应保留原来的版权信息）。
-
-我们承诺对主程序永远免费，在没有盈利前接受正派人士的捐赠。
-
-### 【站长交流群】
-474834730
-
-### 【开发者群】
-2759536
-
-axiuno@gmail.com
-2018/1/17
+原项目：Xiuno BBS 4.0 · axiuno@gmail.com
