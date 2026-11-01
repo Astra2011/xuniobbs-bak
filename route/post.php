@@ -46,7 +46,7 @@ if($action == 'create') {
 		// hook post_post_start.php
 		
 		$message = param('message', '', FALSE);
-		empty($message) AND message('message', lang('please_input_message'));
+		trim($message) === '' AND message('message', lang('please_input_message'));
 		
 		$doctype = param('doctype', 0);
 		xo_strlen($message) > 2028000 AND message('message', lang('message_too_long'));
@@ -156,7 +156,7 @@ if($action == 'create') {
 		
 		// hook post_update_post_start.php
 		
-		empty($message) AND message('message', lang('please_input_message'));
+		trim($message) === '' AND message('message', lang('please_input_message'));
 		mb_strlen($message, 'UTF-8') > 2048000 AND message('message', lang('message_too_long'));
 		
 		$arr = array();

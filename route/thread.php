@@ -46,11 +46,11 @@ if($action == 'create') {
 		!$r AND message(-1, lang('user_group_insufficient_privilege'));
 		
 		$subject = htmlspecialchars(param('subject', '', FALSE));
-		empty($subject) AND message('subject', lang('please_input_subject'));
+		trim($subject) === '' AND message('subject', lang('please_input_subject'));
 		xo_strlen($subject) > 128 AND message('subject', lang('subject_length_over_limit', array('maxlength'=>128)));
 		
 		$message = param('message', '', FALSE);
-		empty($message) AND message('message', lang('please_input_message'));
+		trim($message) === '' AND message('message', lang('please_input_message'));
 		$doctype = param('doctype', 0);
 		$doctype > 10 AND message(-1, lang('doc_type_not_supported'));
 		xo_strlen($message) > 2028000 AND message('message', lang('message_too_long'));
