@@ -93,6 +93,8 @@ return array(
 	'user_create_email_on'=>'開啟註冊郵箱驗證',
 	'user_resetpw_on'=>'開啟找回密碼',
 	'lang'=>'語言',
+	'timezone'=>'預設時區',
+	'timezone_tips'=>'GMT 偏移量，整數，範圍 -12 ~ +14；如北京時間填 8，紐約填 -5，UTC 填 0',
 	'database'=>'資料庫',
 	'host'=>'主機',
 	'port'=>'端口',

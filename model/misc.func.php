@@ -104,6 +104,44 @@ function lang_list() {
 
 
 /*
+	把 IANA 时区名（如 Asia/Shanghai）转成 GMT 偏移量（如 8），供后台设置页展示。
+	解析失败或非法时区时回落 8（北京时间）。
+*/
+function xo_timezone_name_to_offset($name = '') {
+	$offset = 8;
+	if($name) {
+		try {
+			$tz = new DateTimeZone($name);
+			$now = new DateTime('now', $tz);
+			$offset = $tz->getOffset($now) / 3600;
+		} catch(Exception $e) {
+			$offset = 8;
+		}
+	}
+	return $offset;
+}
+
+/*
+	把 GMT 偏移量（整数，-12 ~ +14）转成 PHP 可识别的 IANA 固定偏移时区名，供存储。
+	注意：PHP 的 Etc/GMT 正负号与常识相反——Etc/GMT-8 才是 UTC+8。
+	偏移量为 0 返回 UTC；非法时回落 Asia/Shanghai。
+*/
+function xo_timezone_offset_to_name($offset = 8) {
+	// 必须是纯整数（可带正负号），拒绝空串、非数字、小数、越界
+	if(!preg_match('#^[+-]?\d+$#', trim((string)$offset))) {
+		return 'Asia/Shanghai';
+	}
+	$n = (int)$offset;
+	if($n < -12 || $n > 14) {
+		return 'Asia/Shanghai';
+	}
+	if($n === 0) return 'UTC';
+	// Etc/GMT 区正负反转：+8 -> Etc/GMT-8，-5 -> Etc/GMT+5
+	return $n > 0 ? 'Etc/GMT-'.$n : 'Etc/GMT+'.(-$n);
+}
+
+
+/*
 	url("thread-create-1.htm");
 	根据 $conf['url_rewrite_on'] 设置，返回以下四种格式：
 	?thread-create-1.htm

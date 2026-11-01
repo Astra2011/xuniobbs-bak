@@ -93,6 +93,8 @@ return array(
 	'user_create_email_on'=>'Open email verification when  user register',
 	'user_resetpw_on'=>'Open password reset',
 	'lang'=>'Language',
+	'timezone'=>'Default timezone',
+	'timezone_tips'=>'GMT offset, integer, range -12 to +14. e.g. 8 for Beijing, -5 for New York, 0 for UTC',
 	'database'=>'Database',
 	'host'=>'Host',
 	'port'=>'Port',

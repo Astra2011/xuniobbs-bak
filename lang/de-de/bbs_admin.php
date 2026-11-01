@@ -93,6 +93,8 @@ return array(
 	'user_create_email_on'=>'E-Mail-Verifizierung bei Registrierung aktivieren',
 	'user_resetpw_on'=>'Passwort-Wiederherstellung aktivieren',
 	'lang'=>'Sprache',
+	'timezone'=>'Standard-Zeitzone',
+	'timezone_tips'=>'GMT-Offset, Ganzzahl, Bereich -12 bis +14. z.B. 8 für Peking, -5 für New York, 0 für UTC',
 	'database'=>'Datenbank',
 	'host'=>'Host',
 	'port'=>'Port',

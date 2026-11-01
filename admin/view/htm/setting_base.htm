@@ -72,6 +72,17 @@
 							<?php echo $input['lang'];?>
 						</div>
 					</div>
+					
+					<div class="mb-3 row">
+						<label class="col-sm-2 col-form-label"><?php echo lang('timezone');?>：</label>
+						<div class="col-sm-10">
+							<div class="input-group" style="max-width: 280px;">
+								<span class="input-group-text">GMT</span>
+								<?php echo $input['timezone'];?>
+							</div>
+							<p class="mt-2 text-grey small"><?php echo lang('timezone_tips');?></p>
+						</div>
+					</div>
 										
 					<!--{hook admin_setting_base_lang_after.htm}-->
 

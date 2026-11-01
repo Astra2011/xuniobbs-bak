@@ -93,6 +93,8 @@ return array(
 	'user_create_email_on'=>'등록 이메일 인증 활성화',
 	'user_resetpw_on'=>'비밀번호 찾기 활성화',
 	'lang'=>'언어',
+	'timezone'=>'기본 시간대',
+	'timezone_tips'=>'GMT 오프셋, 정수, 범위 -12 ~ +14. 예: 베이징 8, 뉴욕 -5, UTC 0',
 	'database'=>'데이터베이스',
 	'host'=>'호스트',
 	'port'=>'포트',

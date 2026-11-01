@@ -93,6 +93,8 @@ return array(
 	'user_create_email_on'=>'登録メール認証を有効化',
 	'user_resetpw_on'=>'パスワード再設定を有効化',
 	'lang'=>'言語',
+	'timezone'=>'デフォルトタイムゾーン',
+	'timezone_tips'=>'GMT オフセット、整数、範囲 -12 〜 +14。例：北京は 8、ニューヨークは -5、UTC は 0',
 	'database'=>'データベース',
 	'host'=>'ホスト',
 	'port'=>'ポート',

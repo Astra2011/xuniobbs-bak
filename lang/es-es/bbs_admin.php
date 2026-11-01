@@ -93,6 +93,8 @@ return array(
 	'user_create_email_on'=>'Activar verificación por correo',
 	'user_resetpw_on'=>'Activar recuperación de contraseña',
 	'lang'=>'Idioma',
+	'timezone'=>'Zona horaria por defecto',
+	'timezone_tips'=>'Desfase GMT, entero, de -12 a +14. Ej. 8 para Pekín, -5 para Nueva York, 0 para UTC',
 	'database'=>'Base de datos',
 	'host'=>'Host',
 	'port'=>'Puerto',

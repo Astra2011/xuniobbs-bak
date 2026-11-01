@@ -24,6 +24,7 @@ if($action == 'base') {
 		$input['user_create_email_on'] = form_radio_yes_no('user_create_email_on', $conf['user_create_email_on']);
 		$input['user_resetpw_on'] = form_radio_yes_no('user_resetpw_on', $conf['user_resetpw_on']);
 		$input['lang'] = form_select('lang', lang_list(), $conf['lang']);
+		$input['timezone'] = form_text('timezone', xo_timezone_name_to_offset($conf['timezone']), '120px');
 		
 		$header['title'] = lang('admin_site_setting');
 		$header['mobile_title'] =lang('admin_site_setting');
@@ -45,6 +46,10 @@ if($action == 'base') {
 		$_langs = lang_list();
 		!isset($_langs[$_lang]) AND $_lang = $conf['lang'];
 		
+		// 时区：GMT 偏移量，整数 -12 ~ +14；非法则回落到当前配置
+		$_timezone_offset = param('timezone', '');
+		$_timezone = xo_timezone_offset_to_name($_timezone_offset);
+		
 		// hook admin_setting_base_post_start.php
 		
 		$replace = array();
@@ -55,6 +60,7 @@ if($action == 'base') {
 		$replace['user_create_email_on'] = $user_create_email_on;
 		$replace['user_resetpw_on'] = $user_resetpw_on;
 		$replace['lang'] = $_lang;
+		$replace['timezone'] = $_timezone;
 		
 		file_replace_var(APP_PATH.'conf/conf.php', $replace);
 	
