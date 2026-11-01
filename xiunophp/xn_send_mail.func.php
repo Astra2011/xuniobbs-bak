@@ -1632,28 +1632,8 @@ class PHPMailer {
       if (!is_readable($path)) {
         throw new phpmailerException($this->Lang('file_open') . $path, self::STOP_CONTINUE);
       }
-      if (function_exists('get_magic_quotes')) {
-        function get_magic_quotes() {
-          return false;
-        }
-      }
-	  $magic_quotes = get_magic_quotes_runtime();
-	  if ($magic_quotes) {
-        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-          set_magic_quotes_runtime(0);
-        } else {
-		  ini_set('magic_quotes_runtime', 0); 
-		}
-	  }
       $file_buffer  = file_get_contents($path);
       $file_buffer  = $this->EncodeString($file_buffer, $encoding);
-	  if ($magic_quotes) {
-        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-          set_magic_quotes_runtime($magic_quotes);
-        } else {
-		  ini_set('magic_quotes_runtime', $magic_quotes); 
-	    }
-	  }
       return $file_buffer;
     } catch (Exception $e) {
       $this->SetError($e->getMessage());
@@ -1824,15 +1804,14 @@ class PHPMailer {
     $eol = "\r\n";
     $escape = '=';
     $output = '';
-    while( list(, $line) = each($lines) ) {
+    foreach($lines as $line) {
       $linlen = strlen($line);
       $newline = '';
       for($i = 0; $i < $linlen; $i++) {
         $c = substr( $line, $i, 1 );
         $dec = ord( $c );
         if ( ( $i == 0 ) && ( $dec == 46 ) ) { // convert first point in the line into =2E
-          $c = '=2E';
-        }
+          $c = '=2E';        }
         if ( $dec == 32 ) {
           if ( $i == ( $linlen - 1 ) ) { // convert space at eol only
             $c = '=20';
@@ -2930,7 +2909,7 @@ class SMTP {
 
     $max_line_length = 998; // used below; set here for ease in change
 
-    while(list(,$line) = @each($lines)) {
+    foreach($lines as $line) {
       $lines_out = null;
       if($line == "" && $in_headers) {
         $in_headers = false;
@@ -2959,7 +2938,7 @@ class SMTP {
       $lines_out[] = $line;
 
       // send the lines to the server
-      while(list(,$line_out) = @each($lines_out)) {
+      foreach($lines_out as $line_out) {
         if(strlen($line_out) > 0)
         {
           if(substr($line_out, 0, 1) == ".") {

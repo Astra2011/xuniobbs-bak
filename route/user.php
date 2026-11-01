@@ -339,8 +339,8 @@ if(empty($action)) {
 	$message = $subject;
 	
 	$smtplist = include _include(APP_PATH.'conf/smtp.conf.php');
-	$n = array_rand($smtplist);
-	$smtp = $smtplist[$n];
+	$arr = array_rand($smtplist, 1);
+	$smtp = $smtplist[$arr[0]];
 	
 	// hook user_send_code_before.php
 	$r = xn_send_mail($smtp, $conf['sitename'], $email, $subject, $message);
