@@ -264,7 +264,7 @@ li.quote {
 /* 导航 */
 .navbar h5 {
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(0, 0, 0, 0.3);
   margin-top: 1.75rem;
   font-weight: 800;
 }
@@ -274,7 +274,7 @@ li.quote {
 }
 
 .navbar nav:not(:last-child) {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 #mobile_nav .navbar-nav {
