@@ -8,24 +8,22 @@ $.alert = function(subject, timeout, options) {
 			<div class="modal-content">\
 				<div class="modal-header">\
 					<h4 class="modal-title">'+lang.tips_title+'</h4>\
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">\
-						<span aria-hidden="true">&times;</span>\
-					</button>\
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>\
 				</div>\
 				<div class="modal-body">\
 					<h5>'+subject+'</h5>\
 				</div>\
 				<div class="modal-footer">\
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">'+lang.close+'</button>\
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">'+lang.close+'</button>\
 				</div>\
 			</div>\
 		</div>\
 	</div>';
 	var jmodal = $(s).appendTo('body');
-	jmodal.modal('show');
+	xo.modal_show(jmodal);
 	if(typeof timeout != 'undefined' && timeout >= 0) {
 		setTimeout(function() {
-			jmodal.modal('dispose');
+			xo.modal_close(jmodal);
 		}, timeout * 1000);
 	}
 	
@@ -43,9 +41,7 @@ $.confirm = function(subject, ok_callback, options) {
 			<div class="modal-content">\
 				<div class="modal-header">\
 					<h5 class="modal-title">'+title+'</h5>\
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">\
-						<span aria-hidden="true">&times;</span>\
-					</button>\
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>\
 				</div>\
 				<div class="modal-body">\
 					'+subject+'\
@@ -53,17 +49,17 @@ $.confirm = function(subject, ok_callback, options) {
 				</div>\
 				<div class="modal-footer">\
 					<button type="button" class="btn btn-primary">'+lang.confirm+'</button>\
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">'+lang.close+'</button>\
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">'+lang.close+'</button>\
 				</div>\
 			</div>\
 		</div>\
 	</div>';
 	var jmodal = $(s).appendTo('body');
 	jmodal.find('.modal-footer').find('.btn-primary').on('click', function() {
-		jmodal.modal('hide');
+		xo.modal_close(jmodal);
 		if(ok_callback) ok_callback();
 	});
-	jmodal.modal('show');
+	xo.modal_show(jmodal);
 	return jmodal;
 }
 
@@ -141,7 +137,7 @@ xo.eval_stylesheet = function(arr) {
 }
 
 xo.get_title_body_script_css = function (s) {
-	var s = $.trim(s);
+	var s = (s || "").trim();
 	
 	/* 过滤掉 IE 兼容代码
 		<!--[if lt IE 9]>
@@ -227,22 +223,18 @@ xo.get_title_body_script_css = function (s) {
 		<div class="card-header">登陆</div>
 		<div class="card-body ajax_modal_body">
 			<form action="user-login.htm" method="post" id="login_form">
-				<div class="form-group input-group">
-					<div class="input-group-prepend">
-						<span class="input-group-text"><i class="icon-user"></i></span>
-					</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text"><i class="ti ti-user"></i></span>
 					<input type="text" class="form-control" placeholder="Email" name="email">
 					<div class="invalid-feedback"></div>
 				</div>
-				<div class="form-group input-group">
-					<div class="input-group-prepend">
-						<span class="input-group-text"><i class="icon-lock"></i></span>
-					</div>
+				<div class="input-group mb-3">
+					<span class="input-group-text"><i class="ti ti-lock"></i></span>
 					<input type="password" class="form-control" placeholder="密码" name="password">
 					<div class="invalid-feedback"></div>
 				</div>
-				<div class="form-group">
-					<button type="submit" class="btn btn-primary btn-block" data-loading-text="正在提交...">登陆</button>
+				<div class="mb-3">
+					<button type="submit" class="btn btn-primary w-100" data-loading-text="正在提交...">登陆</button>
 				</div>
 			</form>
 		</div>
@@ -271,7 +263,7 @@ xo.get_title_body_script_css = function (s) {
 				jsubmit.button(message);
 				
 				// 关闭当前对话框
-				if(jmodal) jmodal.modal('dispose');
+				if(jmodal) xo.modal_close(jmodal);
 				// 回调父窗口
 				if(callback) callback(message);
 				
@@ -335,7 +327,7 @@ $(function() {
 			var size = jthis.data('modal-size'); // 对话框的尺寸
 			
 			// 弹出对话框
-			if(this.ajax_modal) this.ajax_modal.modal('dispose');
+			if(this.ajax_modal) xo.modal_close(this.ajax_modal);
 			this.ajax_modal = $.ajax_modal(url, title, size, callback, arg);
 			
 			return false;

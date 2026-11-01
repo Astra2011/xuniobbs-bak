@@ -1,9 +1,7 @@
 @charset "UTF-8";
 /*!
- * Bootstrap v4.0.0-beta.3 (https://getbootstrap.com)
- * Copyright 2011-2017 The Bootstrap Authors
- * Copyright 2011-2017 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * Xunio BBS 业务样式（配合 Bootstrap 5）
+ * 依赖：bootstrap.min.css（框架）、bootstrap-extra.css（组件补充）
  */
 /****************************************   bbs 业务部分  ****************************************/
 html, table {
@@ -102,7 +100,7 @@ body.modal-open {
   background-image: linear-gradient(0deg, #e9ecef, #f8f9fa);
 }
 
-.card > .card-block > table > tbody > tr:last-child > td {
+.card > .card-body > table > tbody > tr:last-child > td {
   border-bottom: 0px;
 }
 
@@ -117,6 +115,8 @@ body.modal-open {
 }
 
 .breadcrumb {
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
   background-color: rgba(248, 249, 250, 0.8) !important;
   border: 1px solid #dee2e6;
   box-shadow: 1px 1px 2px rgba(233, 236, 239, 0.25);
@@ -130,6 +130,22 @@ body.modal-open {
   display: inline-flex;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* 分隔符：两侧各留 0.5rem（padding-left 来自 BS5，padding-right 来自 ::before），
+   颜色用浅灰，和蓝色链接区分开 */
+.breadcrumb .breadcrumb-item + .breadcrumb-item {
+  padding-left: 0.5rem;
+}
+
+.breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+  color: #adb5bd;
+}
+
+/* 当前所在层级：加深显示 */
+.breadcrumb .breadcrumb-item.active,
+.breadcrumb .breadcrumb-item.active a {
+  color: #212529;
 }
 
 .breadcrumb .breadcrumb-item a {

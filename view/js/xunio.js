@@ -250,7 +250,7 @@ xo.json_decode = function(s) {
 		// 去掉广告代码。这行代码挺无语的，为了照顾国内很多人浏览器中广告病毒的事实。
 		// s = s.replace(/\}\s*<script[^>]*>[\s\S]*?<\/script>\s*$/ig, '}');
 		if(s.match(/^<!DOCTYPE/i)) return null;
-		var json = $.parseJSON(s);
+		var json = JSON.parse(s);
 		return json;
 	} catch(e) {
 		//alert('JSON格式错误：' + s);
@@ -709,7 +709,7 @@ $.cookie = function(name, value, time, path) {
 		if(document.cookie && document.cookie != '') {
 			var cookies = document.cookie.split(';');
 			for(var i = 0; i < cookies.length; i++) {
-				var cookie = $.trim(cookies[i]);
+				var cookie = cookies[i].trim();
 				if(cookie.substring(0, name.length + 1) == (name + '=')) {
 					v = decodeURIComponent(cookie.substring(name.length + 1)) + '';
 					break;
@@ -761,8 +761,8 @@ $.xget = function(url, callback, retry) {
 				if((type != 'abort' && type != 'error') || xhr.status == 403 || xhr.status == 404) {
 					return callback(-1000, "xhr.responseText:"+xhr.responseText+', type:'+type);
 				} else {
-					return callback(-1001, "xhr.responseText:"+xhr.responseText+', type:'+type);
 					console.log("xhr.responseText:"+xhr.responseText+', type:'+type);
+					return callback(-1001, "xhr.responseText:"+xhr.responseText+', type:'+type);
 				}
 			}
 		}
@@ -796,7 +796,7 @@ $.xget = function(url, callback, retry) {
 })(jQuery, window);
 
 $.xpost = function(url, postdata, callback, progress_callback) {
-	if($.isFunction(postdata)) {
+	if(typeof postdata === 'function') {
 		callback = postdata;
 		postdata = null;
 	}
@@ -830,8 +830,8 @@ $.xpost = function(url, postdata, callback, progress_callback) {
 			if(type != 'abort' && type != 'error' || xhr.status == 403) {
 				return callback(-1000, "xhr.responseText:"+xhr.responseText+', type:'+type);
 			} else {
-				return callback(-1001, "xhr.responseText:"+xhr.responseText+', type:'+type);
 				console.log("xhr.responseText:"+xhr.responseText+', type:'+type);
+				return callback(-1001, "xhr.responseText:"+xhr.responseText+', type:'+type);
 			}
 		}
 	});
@@ -1384,7 +1384,7 @@ $.fn.checked = function(v) {
 		this.each(function() {
 			if(xo.strtolower(this.tagName) == 'select') {
 				$(this).find('option').filter(filter).prop('selected', true);
-			} else if(xo.strtolower(this.type) == 'checkbox' || strtolower(this.type) == 'radio') {
+			} else if(xo.strtolower(this.type) == 'checkbox' || xo.strtolower(this.type) == 'radio') {
 				// console.log(v);
 				$(this).filter(filter).prop('checked', true);
 			}
@@ -1449,14 +1449,20 @@ $.fn.location = function(href) {
 	});
 };
 
-// 在控件上方提示错误信息，如果为手机版，则调用 toast
+// 在控件上方提示错误信息
 $.fn.alert = function(message) {
 	var jthis = $(this);
-	jpthis = jthis.parent('.form-group');
-	jpthis.addClass('has-danger');
-	jthis.addClass('form-control-danger');
-	//if(in_mobile) alert(message);
-	jthis.data('title', message).tooltip('show');
+	jthis.addClass('is-invalid');
+	// 表单里紧跟在输入框后面的 .invalid-feedback 显示文字
+	var jfeedback = jthis.siblings('.invalid-feedback');
+	if(jfeedback.length == 0) {
+		jfeedback = jthis.closest('.input-group, .mb-3').find('.invalid-feedback');
+	}
+	jfeedback.first().text(message);
+	// 悬浮提示（Bootstrap 5 的 tooltip 不再是 jQuery 插件）
+	if(window.bootstrap && bootstrap.Tooltip) {
+		bootstrap.Tooltip.getOrCreateInstance(jthis[0], {title: message, trigger: 'manual'}).show();
+	}
 	return this;
 };
 
@@ -1578,7 +1584,14 @@ $.fn.attr_name_index = function(rowid) {
 $.fn.reset = function() {
 	var jform = $(this);
 	jform.find('input[type="submit"]').button('reset');
-	jform.find('input').tooltip('dispose');
+	jform.find('.is-invalid').removeClass('is-invalid');
+	jform.find('.invalid-feedback').text('');
+	if(window.bootstrap && bootstrap.Tooltip) {
+		jform.find('input').each(function() {
+			var inst = bootstrap.Tooltip.getInstance(this);
+			if(inst) inst.dispose();
+		});
+	}
 };
 
 // 用来代替 <base href="../" /> 的功能
@@ -1859,5 +1872,36 @@ $.fn.xo_toggle = function() {
 
 $('.xo-dropdown').xo_dropdown();
 $('.xo-toggle').xo_toggle();
+
+// ---------------- Bootstrap 5 弹窗 ----------------
+// 打开弹窗
+xo.modal_show = function(jmodal, options) {
+	if(!jmodal || jmodal.length == 0) return null;
+	var inst = bootstrap.Modal.getOrCreateInstance(jmodal[0], options || {});
+	inst.show();
+	return inst;
+};
+
+// 关闭弹窗。dispose 只销毁实例、不摘掉节点，遮罩会留一层，所以这里连同节点一起删。
+xo.modal_close = function(jmodal) {
+	if(!jmodal || jmodal.length == 0) return;
+	var el = jmodal[0];
+	var inst = bootstrap.Modal.getInstance(el);
+	if(!inst) {
+		jmodal.remove();
+		return;
+	}
+	// 打开动画还没结束就调用 hide() 会被 Bootstrap 直接忽略，等 shown 后再关
+	if(inst._isTransitioning) {
+		$(el).one('shown.bs.modal', function() {
+			xo.modal_close(jmodal);
+		});
+		return;
+	}
+	$(el).one('hidden.bs.modal', function() {
+		$(this).remove();
+	});
+	inst.hide();
+};
 
 console.log('xunio.js loaded');
