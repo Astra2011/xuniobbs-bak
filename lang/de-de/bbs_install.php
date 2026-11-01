@@ -1,14 +1,19 @@
 <?php
 
 return array(
-	'installed_tips' => 'Das Programm ist bereits installiert. Für eine Neuinstallation bitte conf/conf.php löschen!',
+	'installed_tips' => 'Das Programm ist bereits installiert. Für eine Neuinstallation bitte conf/conf.php und install/install.lock löschen!',
 	'please_set_conf_file_writable' => 'Bitte conf/conf.php beschreibbar machen!',
 	'evn_not_support_php_mysql' => 'Die aktuelle PHP-Umgebung unterstützt mysql und pdo_mysql nicht, Installation kann nicht fortgesetzt werden.',
 	'dbhost_is_empty' => 'Datenbank-Host darf nicht leer sein',
+	'dbhost_is_invalid' => 'Ungültiger Datenbank-Host. Nur Buchstaben, Ziffern, Punkte, Bindestriche, Unterstriche und Port erlaubt',
 	'dbname_is_empty' => 'Datenbankname darf nicht leer sein',
+	'dbname_is_invalid' => 'Ungültiger Datenbankname. Nur Buchstaben, Ziffern, Bindestriche und Unterstriche, max. 64 Zeichen',
 	'dbuser_is_empty' => 'Benutzername darf nicht leer sein',
+	'dbuser_is_invalid' => 'Ungültiger Datenbank-Benutzername',
+	'dbtype_is_invalid' => 'Ungültiger Datenbanktyp',
 	'adminuser_is_empty' => 'Administrator-Benutzername darf nicht leer sein',
 	'adminpass_is_empty' => 'Administrator-Passwort darf nicht leer sein',
+	'adminemail_is_empty' => 'Administrator-E-Mail darf nicht leer sein',
 	'conguralation_installed' => 'Glückwunsch, Installation erfolgreich! Bitte aus Sicherheitsgründen das install-Verzeichnis löschen.',
 	
 	'step_1_title' => '一、Installationsumgebungsprüfung',

@@ -26,7 +26,7 @@
 
 1. 上传到网站目录，确认 `conf/`、`tmp/`、`log/`、`upload/` 可写。
 2. 浏览器访问 `install/`，按向导填数据库信息和管理员账号。
-3. 装完删掉 `install/` 目录，或者禁止访问。
+3. 装完会写入 `install/install.lock`，此后安装脚本一律返回 403，不会再次执行。仍建议整个删掉 `install/` 目录，里面的 `.sql` 能被直接下载。
 4. 前台是站点根目录，后台入口是 `admin/`。
 
 不配伪静态也能用。URL 形式由 `conf/conf.php` 的 `url_rewrite_on` 决定：
@@ -50,7 +50,7 @@
 | `view/css/` `view/js/` | 前台样式与脚本 |
 | `view/font/tabler/` | Tabler 图标字体，按 unicode-range 分块 |
 | `admin/` | 后台，`route/` 放路由，`view/htm/` 放模板 |
-| `install/` | 安装向导，装完应删除 |
+| `install/` | 安装向导，装完应删除；装过之后由 `install.lock` 锁住 |
 | `lang/` | 语言包，一个目录一种语言，含 `bbs.php`、`bbs_admin.php`、`bbs_install.php`、`bbs.js` |
 | `plugin/` | 插件目录，装插件时生成 |
 | `conf/` | 配置，`conf.php` 由安装程序生成 |

@@ -1,14 +1,19 @@
 <?php
 
 return array(
-	'installed_tips' => '程序已經安裝過了，如需重新安裝，請刪除 conf/conf.php ！',
+	'installed_tips' => '程式已經安裝過了，如需重新安裝，請刪除 conf/conf.php 和 install/install.lock ！',
 	'please_set_conf_file_writable' => '請設置 conf/conf.php 文件為可寫！',
 	'evn_not_support_php_mysql' => '當前 PHP 環境不支持 mysql 和 pdo_mysql，無法繼續安裝。',
 	'dbhost_is_empty' => '數據庫主機不能為空',
+	'dbhost_is_invalid' => '資料庫主機格式不正確，只能包含字母、數字、點、橫線、底線和連接埠',
 	'dbname_is_empty' => '數據庫名不能為空',
+	'dbname_is_invalid' => '資料庫名稱格式不正確，只能包含字母、數字、橫線、底線，且不超過 64 個字元',
 	'dbuser_is_empty' => '用戶名不能為空',
+	'dbuser_is_invalid' => '資料庫使用者名稱格式不正確',
+	'dbtype_is_invalid' => '資料庫類型不正確',
 	'adminuser_is_empty' => '管理員用戶名不能為空',
 	'adminpass_is_empty' => '管理員密碼不能為空',
+	'adminemail_is_empty' => '管理員信箱不能為空',
 	'conguralation_installed' => '恭喜，安裝成功！為了安全請刪除 install 目錄。',
 	
 	'step_1_title' => '壹、安裝環境檢測',

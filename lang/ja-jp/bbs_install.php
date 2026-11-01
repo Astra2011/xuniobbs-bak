@@ -1,14 +1,19 @@
 <?php
 
 return array(
-	'installed_tips' => 'プログラムはインストール済みです。再インストールするには conf/conf.php を削除してください！',
+	'installed_tips' => 'プログラムはインストール済みです。再インストールするには conf/conf.php と install/install.lock を削除してください！',
 	'please_set_conf_file_writable' => 'conf/conf.php ファイルを書き込み可能に設定してください！',
 	'evn_not_support_php_mysql' => '現在のPHP環境は mysql と pdo_mysql をサポートしていません。インストールを続行できません。',
 	'dbhost_is_empty' => 'データベースホストを空にすることはできません',
+	'dbhost_is_invalid' => 'データベースホストの形式が正しくありません。英数字、ドット、ハイフン、アンダースコア、ポートのみ使用できます',
 	'dbname_is_empty' => 'データベース名を空にすることはできません',
+	'dbname_is_invalid' => 'データベース名の形式が正しくありません。英数字、ハイフン、アンダースコアのみ、64 文字以内です',
 	'dbuser_is_empty' => 'ユーザー名を空にすることはできません',
+	'dbuser_is_invalid' => 'データベースユーザー名の形式が正しくありません',
+	'dbtype_is_invalid' => 'データベースタイプが正しくありません',
 	'adminuser_is_empty' => '管理者ユーザー名を空にすることはできません',
 	'adminpass_is_empty' => '管理者パスワードを空にすることはできません',
+	'adminemail_is_empty' => '管理者メールアドレスを空にすることはできません',
 	'conguralation_installed' => 'おめでとうございます、インストールに成功しました！安全のため install ディレクトリを削除してください。',
 	
 	'step_1_title' => '一、インストール環境チェック',

@@ -1,14 +1,19 @@
 <?php
 
 return array(
-	'installed_tips' => 'El programa ya está instalado. Para reinstalar, elimine conf/conf.php !',
+	'installed_tips' => 'El programa ya está instalado. Para reinstalar, elimine conf/conf.php e install/install.lock.',
 	'please_set_conf_file_writable' => 'Haga que conf/conf.php sea escribible !',
 	'evn_not_support_php_mysql' => 'El entorno PHP actual no admite mysql y pdo_mysql, no se puede continuar la instalación.',
 	'dbhost_is_empty' => 'El host de la base de datos no puede estar vacío',
+	'dbhost_is_invalid' => 'Host de base de datos no válido. Solo se permiten letras, dígitos, puntos, guiones, guiones bajos y puerto',
 	'dbname_is_empty' => 'El nombre de la base de datos no puede estar vacío',
+	'dbname_is_invalid' => 'Nombre de base de datos no válido. Solo letras, dígitos, guiones y guiones bajos, máximo 64 caracteres',
 	'dbuser_is_empty' => 'El nombre de usuario no puede estar vacío',
+	'dbuser_is_invalid' => 'Nombre de usuario de base de datos no válido',
+	'dbtype_is_invalid' => 'Tipo de base de datos no válido',
 	'adminuser_is_empty' => 'El nombre de usuario del administrador no puede estar vacío',
 	'adminpass_is_empty' => 'La contraseña del administrador no puede estar vacía',
+	'adminemail_is_empty' => 'El correo del administrador no puede estar vacío',
 	'conguralation_installed' => '¡Felicitaciones, instalación correcta! Por seguridad, elimine el directorio install.',
 	
 	'step_1_title' => '一、Verificación del entorno de instalación',

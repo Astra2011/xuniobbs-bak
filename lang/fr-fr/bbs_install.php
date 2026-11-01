@@ -1,14 +1,19 @@
 <?php
 
 return array(
-	'installed_tips' => 'Le programme est déjà installé. Pour réinstaller, veuillez supprimer conf/conf.php !',
+	'installed_tips' => 'Le programme est déjà installé. Pour réinstaller, veuillez supprimer conf/conf.php et install/install.lock !',
 	'please_set_conf_file_writable' => 'Veuillez rendre conf/conf.php inscriptible !',
 	'evn_not_support_php_mysql' => 'L\'environnement PHP actuel ne prend pas en charge mysql et pdo_mysql, installation impossible.',
 	'dbhost_is_empty' => 'L\'hôte de la base de données ne peut pas être vide',
+	'dbhost_is_invalid' => 'Hôte de base de données invalide. Seuls les lettres, chiffres, points, tirets, underscores et le port sont autorisés',
 	'dbname_is_empty' => 'Le nom de la base de données ne peut pas être vide',
+	'dbname_is_invalid' => 'Nom de base de données invalide. Seuls lettres, chiffres, tirets et underscores, 64 caractères max',
 	'dbuser_is_empty' => 'Le nom d\'utilisateur ne peut pas être vide',
+	'dbuser_is_invalid' => 'Nom d\'utilisateur de base de données invalide',
+	'dbtype_is_invalid' => 'Type de base de données invalide',
 	'adminuser_is_empty' => 'Le nom d\'utilisateur administrateur ne peut pas être vide',
 	'adminpass_is_empty' => 'Le mot de passe administrateur ne peut pas être vide',
+	'adminemail_is_empty' => 'L\'e-mail de l\'administrateur ne peut pas être vide',
 	'conguralation_installed' => 'Félicitations, installation réussie ! Par sécurité, supprimez le répertoire install.',
 	
 	'step_1_title' => '一、Vérification de l\'environnement',

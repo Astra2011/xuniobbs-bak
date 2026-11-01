@@ -1,14 +1,19 @@
 <?php
 
 return array(
-	'installed_tips' => 'You have been installed, and if you need to re install, please delete the conf/conf.php!',
+	'installed_tips' => 'Already installed. To reinstall, please delete conf/conf.php and install/install.lock!',
 	'please_set_conf_file_writable' => 'Please set the conf/conf.php file to write!',
 	'evn_not_support_php_mysql' => 'The current PHP environment does not support mysql and pdo_mysql driver, can not continue to install.',
 	'dbhost_is_empty' => 'Database host cannot be empty',
+	'dbhost_is_invalid' => 'Invalid database host. Only letters, digits, dots, hyphens, underscores and port are allowed',
 	'dbname_is_empty' => 'Database name cannot be empty',
+	'dbname_is_invalid' => 'Invalid database name. Only letters, digits, hyphens and underscores, max 64 characters',
 	'dbuser_is_empty' => 'User name cannot be empty',
+	'dbuser_is_invalid' => 'Invalid database user name',
+	'dbtype_is_invalid' => 'Invalid database type',
 	'adminuser_is_empty' => 'Administrator user name can not be empty',
 	'adminpass_is_empty' => 'Administrator password can not be empty',
+	'adminemail_is_empty' => 'Administrator email can not be empty',
 	'conguralation_installed' => 'Congratulations, installation success, please remove install directory for security.',
 	
 	'step_1_title' => '1. Environmental Check',

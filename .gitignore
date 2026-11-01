@@ -1,5 +1,6 @@
 # 运行时生成的配置文件（安装后产生，勿提交）
 conf/conf.php
+install/install.lock
 
 # 运行时日志
 log/*.log

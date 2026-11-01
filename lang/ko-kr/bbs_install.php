@@ -1,14 +1,19 @@
 <?php
 
 return array(
-	'installed_tips' => '프로그램이 이미 설치되었습니다. 재설치하려면 conf/conf.php를 삭제해 주세요!',
+	'installed_tips' => '프로그램이 이미 설치되었습니다. 재설치하려면 conf/conf.php와 install/install.lock을 삭제해 주세요!',
 	'please_set_conf_file_writable' => 'conf/conf.php 파일을 쓰기 가능하게 설정해 주세요!',
 	'evn_not_support_php_mysql' => '현재 PHP 환경이 mysql과 pdo_mysql을 지원하지 않아 설치를 계속할 수 없습니다.',
 	'dbhost_is_empty' => '데이터베이스 호스트는 비워둘 수 없습니다',
+	'dbhost_is_invalid' => '데이터베이스 호스트 형식이 올바르지 않습니다. 영문, 숫자, 점, 하이픈, 밑줄, 포트만 사용할 수 있습니다',
 	'dbname_is_empty' => '데이터베이스 이름은 비워둘 수 없습니다',
+	'dbname_is_invalid' => '데이터베이스 이름 형식이 올바르지 않습니다. 영문, 숫자, 하이픈, 밑줄만 사용할 수 있으며 64자 이내입니다',
 	'dbuser_is_empty' => '사용자 이름은 비워둘 수 없습니다',
+	'dbuser_is_invalid' => '데이터베이스 사용자 이름 형식이 올바르지 않습니다',
+	'dbtype_is_invalid' => '데이터베이스 유형이 올바르지 않습니다',
 	'adminuser_is_empty' => '관리자 사용자 이름은 비워둘 수 없습니다',
 	'adminpass_is_empty' => '관리자 비밀번호는 비워둘 수 없습니다',
+	'adminemail_is_empty' => '관리자 이메일은 비워둘 수 없습니다',
 	'conguralation_installed' => '축하합니다, 설치 성공! 안전을 위해 install 디렉터리를 삭제해 주세요.',
 	
 	'step_1_title' => '一、설치 환경 검사',
