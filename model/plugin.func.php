@@ -154,8 +154,8 @@ function plugin_enable($dir) {
 	//plugin_overwrite($dir, 'install');
 	//plugin_hook($dir, 'install');
 	
-	// 启用时若尚未分配排序序号，则自动分配（先来后到）
-	plugin_hook_rank_assign($dir);
+	// 启用时对全部 hook 点若尚未分配排序序号，则自动分配（先来后到）
+	plugin_hook_rank_assign_all($dir);
 	
 	file_replace_var(APP_PATH."plugin/$dir/conf.json", array('enable'=>1), TRUE);
 	
@@ -171,28 +171,43 @@ function plugin_clear_tmp_dir() {
 	xo_unlink($conf['tmp_path'].'model.min.php');
 }
 
-// 分配插件级全局排序序号：返回当前所有插件中的最大 hook_rank，供新插件取 max+1
-// 卸载/禁用时 hook_rank 保留，不回收，避免重装后序号漂移导致行为不稳定
-function plugin_hook_rank_max() {
+// 返回某 hook 点下所有插件（含未启用）已声明的最大序号，供新插件取 max+1
+// 卸载/禁用时序号保留，不回收，避免重装后顺序漂移导致行为不稳定
+function plugin_hook_rank_max($hookname = '') {
 	global $plugins;
 	$max = 0;
 	foreach($plugins as $dir=>$pconf) {
-		$r = isset($pconf['hook_rank']) ? intval($pconf['hook_rank']) : 0;
+		$hr = isset($pconf['hooks_rank']) ? $pconf['hooks_rank'] : array();
+		if(!is_array($hr)) $hr = array();
+		$r = isset($hr[$hookname]) ? intval($hr[$hookname]) : 0;
 		$r > $max AND $max = $r;
 	}
 	return $max;
 }
 
-// 为尚未分配 hook_rank 的插件自动分配一个全局唯一递增序号（先来后到，顺序稳定）
-function plugin_hook_rank_assign($dir) {
+// 为某插件在某 hook 点分配排序序号（先来后到）：若已声明过则保持不变，否则取该 hook 点当前最大序号 +1
+function plugin_hook_rank_assign($dir, $hookname) {
 	global $plugins;
 	if(!isset($plugins[$dir])) return 0;
-	$cur = isset($plugins[$dir]['hook_rank']) ? intval($plugins[$dir]['hook_rank']) : 0;
+	$hr = isset($plugins[$dir]['hooks_rank']) ? $plugins[$dir]['hooks_rank'] : array();
+	if(!is_array($hr)) $hr = array();
+	$cur = isset($hr[$hookname]) ? intval($hr[$hookname]) : 0;
 	if($cur > 0) return $cur; // 已分配过，保持不变
-	$rank = plugin_hook_rank_max() + 1;
-	$plugins[$dir]['hook_rank'] = $rank;
-	file_replace_var(APP_PATH."plugin/$dir/conf.json", array('hook_rank'=>$rank), TRUE);
+	$rank = plugin_hook_rank_max($hookname) + 1;
+	$hr[$hookname] = $rank;
+	$plugins[$dir]['hooks_rank'] = $hr;
+	file_replace_var(APP_PATH."plugin/$dir/conf.json", array('hooks_rank'=>$hr), TRUE);
 	return $rank;
+}
+
+// 为某插件的全部 hook 点分别分配排序序号（安装/启用时调用）
+function plugin_hook_rank_assign_all($dir) {
+	global $plugins;
+	if(!isset($plugins[$dir])) return;
+	$hooks = isset($plugins[$dir]['hooks']) ? $plugins[$dir]['hooks'] : array();
+	foreach($hooks as $hookname=>$hookpath) {
+		plugin_hook_rank_assign($dir, $hookname);
+	}
 }
 
 function plugin_disable($dir) {
@@ -207,7 +222,7 @@ function plugin_disable($dir) {
 	//plugin_overwrite($dir, 'unstall');
 	//plugin_hook($dir, 'unstall');
 	
-	// 注意：禁用时不回收 hook_rank，保留原序号，重新启用后顺序不变
+	// 注意：禁用时不回收 hooks_rank，保留原序号，重新启用后顺序不变
 	file_replace_var(APP_PATH."plugin/$dir/conf.json", array('enable'=>0), TRUE);
 	
 	plugin_clear_tmp_dir();
@@ -255,8 +270,8 @@ function plugin_install($dir) {
 	// 2. 钩子的方式
 	//plugin_hook($dir, 'install');
 	
-	// 安装时若尚未分配排序序号，则自动分配（先来后到）
-	plugin_hook_rank_assign($dir);
+	// 安装时对全部 hook 点若尚未分配排序序号，则自动分配（先来后到）
+	plugin_hook_rank_assign_all($dir);
 	
 	// 写入配置文件
 	file_replace_var(APP_PATH."plugin/$dir/conf.json", array('installed'=>1, 'enable'=>1), TRUE);
@@ -379,18 +394,20 @@ function plugin_compile_srcfile_callback($m) {
 		//$plugin_paths = glob(APP_PATH.'plugin/*', GLOB_ONLYDIR);
 		foreach($plugin_paths as $path=>$pconf) {
 			$dir = file_name($path);
-			// 插件级全局排序序号：序号小=先安装=先执行；未分配的给 0（同 rank 时按目录名升序兜底）
-			$rank = isset($pconf['hook_rank']) ? intval($pconf['hook_rank']) : 0;
+			// hook 点级排序序号：每个插件在每个 hook 点独立排序（序号小=先执行）；未声明的给 0（同序号时按目录名升序兜底）
+			$hooks_rank = isset($pconf['hooks_rank']) ? $pconf['hooks_rank'] : array();
+			if(!is_array($hooks_rank)) $hooks_rank = array();
 			$hookpaths = glob(APP_PATH."plugin/$dir/hook/*.*"); // path
 			if(is_array($hookpaths)) {
 				foreach($hookpaths as $hookpath) {
 					$hookname = file_name($hookpath);
+					$rank = isset($hooks_rank[$hookname]) ? intval($hooks_rank[$hookname]) : 0;
 					$hooks[$hookname][] = array('hookpath'=>$hookpath, 'rank'=>$rank, 'dir'=>$dir);
 				}
 			}
 		}
 		foreach ($hooks as $hookname=>$arrlist) {
-			// 排序规则：hook_rank 升序（序号小=先安装=先执行），同 rank 时按插件目录名升序，保证顺序确定、可复现
+			// 排序规则：该 hook 点内序号升序（序号小=先执行），同序号时按插件目录名升序，保证顺序确定、可复现
 			usort($arrlist, function($a, $b) {
 				if($a['rank'] == $b['rank']) {
 					return strcmp($a['dir'], $b['dir']);

@@ -209,26 +209,39 @@ if($action == 'base') {
 
 		plugin_init();
 
-		// 收集已启用（installed && enable）插件，按 hook_rank 升序
-		$pluginlist = array();
+		// 收集所有已启用（installed && enable）插件，以及每个插件挂载的 hook 点
+		$enabled = array();
 		foreach($plugins as $dir=>$pconf) {
 			if(empty($pconf['installed']) || empty($pconf['enable'])) continue;
-			$pluginlist[$dir] = array(
-				'dir'=>$dir,
-				'name'=>isset($pconf['name']) ? $pconf['name'] : $dir,
-				'hook_rank'=>isset($pconf['hook_rank']) ? intval($pconf['hook_rank']) : 0,
-				'hooks'=>isset($pconf['hooks']) ? array_keys($pconf['hooks']) : array(),
-			);
+			$enabled[$dir] = $pconf;
 		}
-		// 按 hook_rank 升序（序号小先执行），同 rank 按 dir 升序
-		uasort($pluginlist, function($a, $b) {
-			if($a['hook_rank'] == $b['hook_rank']) {
-				return strcmp($a['dir'], $b['dir']);
+
+		// 汇总所有 hook 点（去重、按名排序），并统计每个 hook 点下注册的插件数
+		$hooklist = array(); // hookname => array(dir, name, rank)
+		foreach($enabled as $dir=>$pconf) {
+			$hooks = isset($pconf['hooks']) ? $pconf['hooks'] : array();
+			foreach($hooks as $hookname=>$hookpath) {
+				if(!isset($hooklist[$hookname])) $hooklist[$hookname] = array();
+				$hr = isset($pconf['hooks_rank']) ? $pconf['hooks_rank'] : array();
+				if(!is_array($hr)) $hr = array();
+				$rank = isset($hr[$hookname]) ? intval($hr[$hookname]) : 0;
+				$hooklist[$hookname][$dir] = array(
+					'dir'=>$dir,
+					'name'=>isset($pconf['name']) ? $pconf['name'] : $dir,
+					'rank'=>$rank,
+				);
 			}
-			return $a['hook_rank'] > $b['hook_rank'] ? 1 : -1;
-		});
-		$pluginlist = array_values($pluginlist);
-		$plugincount = count($pluginlist);
+		}
+		// 每个 hook 点内按序号升序（小先执行），同序号按目录名升序
+		foreach($hooklist as $hookname=>&$arr) {
+			uasort($arr, function($a, $b) {
+				if($a['rank'] == $b['rank']) return strcmp($a['dir'], $b['dir']);
+				return $a['rank'] > $b['rank'] ? 1 : -1;
+			});
+		}
+		unset($arr);
+		// hook 点名排序（字母序，稳定展示）
+		ksort($hooklist);
 
 		// hook admin_setting_hook_rank_get_end.php
 
@@ -238,9 +251,10 @@ if($action == 'base') {
 
 		// hook admin_setting_hook_rank_post_start.php
 
+		$hookname = param('hookname', '', FALSE);
 		$dir = param('dir', '', FALSE);
 		$dir2 = param('dir2', '', FALSE);
-		if(empty($dir) || empty($dir2)) {
+		if(empty($hookname) || empty($dir) || empty($dir2)) {
 			message(-1, lang('hook_rank_invalid'));
 		}
 		if(!is_word($dir) || !is_word($dir2)) {
@@ -253,12 +267,24 @@ if($action == 'base') {
 			message(-1, lang('plugin_not_exists'));
 		}
 
-		// 交换两个插件的 hook_rank（缺失的按 0 处理，再统一补齐）
-		$rank1 = isset($plugins[$dir]['hook_rank']) ? intval($plugins[$dir]['hook_rank']) : 0;
-		$rank2 = isset($plugins[$dir2]['hook_rank']) ? intval($plugins[$dir2]['hook_rank']) : 0;
+		// 校验两个插件确实都挂载了该 hook 点
+		if(!isset($plugins[$dir]['hooks'][$hookname]) || !isset($plugins[$dir2]['hooks'][$hookname])) {
+			message(-1, lang('hook_rank_invalid'));
+		}
 
-		file_replace_var(APP_PATH."plugin/$dir/conf.json", array('hook_rank'=>$rank2), TRUE);
-		file_replace_var(APP_PATH."plugin/$dir2/conf.json", array('hook_rank'=>$rank1), TRUE);
+		// 读取两个插件在该 hook 点的序号（缺失按 0 处理）
+		$hr1 = isset($plugins[$dir]['hooks_rank']) ? $plugins[$dir]['hooks_rank'] : array();
+		$hr2 = isset($plugins[$dir2]['hooks_rank']) ? $plugins[$dir2]['hooks_rank'] : array();
+		if(!is_array($hr1)) $hr1 = array();
+		if(!is_array($hr2)) $hr2 = array();
+		$rank1 = isset($hr1[$hookname]) ? intval($hr1[$hookname]) : 0;
+		$rank2 = isset($hr2[$hookname]) ? intval($hr2[$hookname]) : 0;
+
+		// 交换两个插件在该 hook 点的序号
+		$hr1[$hookname] = $rank2;
+		$hr2[$hookname] = $rank1;
+		file_replace_var(APP_PATH."plugin/$dir/conf.json", array('hooks_rank'=>$hr1), TRUE);
+		file_replace_var(APP_PATH."plugin/$dir2/conf.json", array('hooks_rank'=>$hr2), TRUE);
 
 		plugin_clear_tmp_dir();
 
