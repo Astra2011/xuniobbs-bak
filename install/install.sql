@@ -9,7 +9,7 @@ CREATE TABLE `bbs_user` (
   username char(32) NOT NULL DEFAULT '' COMMENT '用户名',	# 不可以重复
   realname char(16) NOT NULL DEFAULT '' COMMENT '用户名',	# 真实姓名，天朝预留
   idnumber char(19) NOT NULL DEFAULT '' COMMENT '用户名',	# 真实身份证号码，天朝预留
-  `password` char(32) NOT NULL DEFAULT '' COMMENT '密码',
+  `password` varchar(255) NOT NULL DEFAULT '' COMMENT '密码',
   `password_sms` char(16) NOT NULL DEFAULT '' COMMENT '密码',	# 预留，手机发送的 sms 验证码
   salt char(16) NOT NULL DEFAULT '' COMMENT '密码混杂',
   mobile char(11) NOT NULL DEFAULT '' COMMENT '手机号',		# 预留，供二次开发扩展
@@ -30,7 +30,7 @@ CREATE TABLE `bbs_user` (
   UNIQUE KEY email (email),						# 升级的时候可能为空
   KEY gid (gid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-INSERT INTO `bbs_user` SET uid=1, gid=1, email='admin@admin.com', username='admin',`password`='d98bb50e808918dd45a8d92feafc4fa3',salt='123456';
+INSERT INTO `bbs_user` SET uid=1, gid=1, email='admin@admin.com', username='admin';
 
 # 用户组
 DROP TABLE IF EXISTS `bbs_group`;

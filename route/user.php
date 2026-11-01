@@ -70,7 +70,7 @@ if(empty($action)) {
 		// hook user_login_post_start.php
 		
 		$email = param('email');			// 邮箱或者手机号 / email or mobile
-		$password = param('password');
+		$password = param('password', '', FALSE);
 		empty($email) AND message('email', lang('email_is_empty'));
 		if(is_email($email, $err)) {
 			$_user = user_read_by_email($email);
@@ -80,8 +80,12 @@ if(empty($action)) {
 			empty($_user) AND message('email', lang('username_not_exists'));
 		}
 
-		!is_password($password, $err) AND message('password', $err);
-		md5($password.$_user['salt']) != $_user['password'] AND message('password', lang('password_incorrect'));
+		// 登录不做长度校验：存量用户的原始密码可能不满足新规则，拦住就再也登不进来了
+		$password === '' AND message('password', lang('please_input_password'));
+		!user_password_check($password, $_user) AND message('password', lang('password_incorrect'));
+
+		// 历史 md5 摘要登录成功后升级为 password_hash
+		user_password_upgrade($password, $_user);
 
 		// 更新登录时间和次数
 		// update login times
@@ -126,7 +130,7 @@ if(empty($action)) {
 		
 		$email = param('email');
 		$username = param('username');
-		$password = param('password');
+		$password = param('password', '', FALSE);
 		$code = param('code');
 		empty($email) AND message('email', lang('please_input_email'));
 		empty($username) AND message('username', lang('please_input_username'));
@@ -151,14 +155,12 @@ if(empty($action)) {
 		
 		!is_password($password, $err) AND message('password', $err);
 		
-		$salt = xo_rand(16);
-		$pwd = md5($password.$salt);
+		$pwd = user_password_hash($password);
 		$gid = 101;
 		$_user = array (
 			'username' => $username,
 			'email' => $email,
 			'password' => $pwd,
-			'salt' => $salt,
 			'gid' => $gid,
 			'create_ip' => $longip,
 			'create_date' => $time,
@@ -270,14 +272,11 @@ if(empty($action)) {
 		
 		// hook user_resetpw_post_start.php
 		
-		$password = param('password');
+		$password = param('password', '', FALSE);
 		empty($password) AND message('password', lang('please_input_password'));
-		
-		$salt = $_user['salt'];
-		$password = md5($password.$salt);
-		user_update($_uid, array('password'=>$password));
-		
 		!is_password($password, $err) AND message('password', $err);
+		
+		user_update($_uid, array('password'=>user_password_hash($password), 'salt'=>''));
 		
 		unset($_SESSION['user_resetpw_email']);
 		unset($_SESSION['user_resetpw_code']);

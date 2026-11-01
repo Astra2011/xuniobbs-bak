@@ -277,7 +277,7 @@ return array(
 	'username_cant_include_cn_space'=>'用户名中不能包含空格',
 	'username_format_mismatch'=>'用户名格式不正确',
 	'password_is_empty'=>'密码为空',
-	'password_length_incorrect'=>'加密后长度有问题',
+	'password_length_incorrect'=>'密码长度需为 {min}-{max} 个字符',
 	
 	
 	'runlevel_0'=>'站点关闭',

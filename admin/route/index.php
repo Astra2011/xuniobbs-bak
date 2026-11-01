@@ -22,12 +22,15 @@ if($action == 'login') {
 
 		// hook admin_index_login_post_start.php
 		
-		$password = param('password');
+		$password = param('password', '', FALSE);
 
-		if(md5($password.$user['salt']) != $user['password']) {
+		if(!user_password_check($password, $user)) {
 			xo_log('password error. uid:'.$user['uid'].' - ******'.substr($password, -6), 'admin_login_error');
 			message('password', lang('password_incorrect'));
 		}
+
+		// 历史 md5 摘要登录成功后升级为 password_hash
+		user_password_upgrade($password, $user);
 
 		admin_token_set();
 

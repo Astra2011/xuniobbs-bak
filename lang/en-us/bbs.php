@@ -277,7 +277,7 @@ return array(
 	'username_cant_include_cn_space'=>'User name can not include space',
 	'username_format_mismatch'=>'User name format mismatch',
 	'password_is_empty'=>'Password is empty',
-	'password_length_incorrect'=>'Length not right after encrypt',
+	'password_length_incorrect'=>'Password must be {min}-{max} characters long',
 	
 	
 	'runlevel_0'=>'site closure',

@@ -112,7 +112,7 @@ if(empty($action)) {
 		
 		$adminemail = param('adminemail');
 		$adminuser = param('adminuser');
-		$adminpass = param('adminpass');
+		$adminpass = param('adminpass', '', FALSE);
 		
 		empty($host) AND message('host', lang('dbhost_is_empty'));
 		empty($name) AND message('name', lang('dbname_is_empty'));
@@ -209,10 +209,9 @@ if(empty($action)) {
 		// 初始化
 		copy(APP_PATH.'conf/conf.default.php', APP_PATH.'conf/conf.php') === FALSE AND message(-1, lang('please_set_conf_file_writable'));
 		
-		// 管理员密码
-		$salt = xo_rand(16);
-		$password = md5(md5($adminpass).$salt);
-		$update = array('username'=>$adminuser, 'email'=>$adminemail, 'password'=>$password, 'salt'=>$salt, 'create_date'=>$time, 'create_ip'=>$longip);
+		// 管理员密码：表单提交明文，直接摘要
+		$password = user_password_hash($adminpass);
+		$update = array('username'=>$adminuser, 'email'=>$adminemail, 'password'=>$password, 'create_date'=>$time, 'create_ip'=>$longip);
 		db_update('user', array('uid'=>1), $update);
 		
 		$replace = array();

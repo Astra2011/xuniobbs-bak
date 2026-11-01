@@ -277,7 +277,7 @@ return array(
 	'username_cant_include_cn_space'=>'Benutzername darf keine Leerzeichen enthalten',
 	'username_format_mismatch'=>'Ungültiges Benutzernamenformat',
 	'password_is_empty'=>'Passwort ist leer',
-	'password_length_incorrect'=>'Problem mit der Länge nach der Verschlüsselung',
+	'password_length_incorrect'=>'Das Passwort muss {min} bis {max} Zeichen lang sein',
 	
 	
 	'runlevel_0'=>'Website geschlossen',

@@ -277,7 +277,7 @@ return array(
 	'username_cant_include_cn_space'=>'Le nom d\'utilisateur ne peut pas contenir d\'espaces',
 	'username_format_mismatch'=>'Format de nom d\'utilisateur incorrect',
 	'password_is_empty'=>'Mot de passe vide',
-	'password_length_incorrect'=>'Problème de longueur après chiffrement',
+	'password_length_incorrect'=>'Le mot de passe doit contenir entre {min} et {max} caractères',
 	
 	
 	'runlevel_0'=>'Site fermé',

@@ -277,7 +277,7 @@ return array(
 	'username_cant_include_cn_space'=>'사용자 이름에 공백을 포함할 수 없습니다',
 	'username_format_mismatch'=>'사용자 이름 형식이 올바르지 않습니다',
 	'password_is_empty'=>'비밀번호가 비어 있습니다',
-	'password_length_incorrect'=>'암호화 후 길이에 문제가 있습니다',
+	'password_length_incorrect'=>'비밀번호는 {min}~{max}자로 입력해 주세요',
 	
 	
 	'runlevel_0'=>'사이트 닫힘',

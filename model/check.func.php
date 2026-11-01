@@ -21,7 +21,7 @@ function is_mobile($mobile, &$err) {
 function is_email($email, &$err) {
 	// hook model_is_email_start.php
 	$len = mb_strlen($email, 'UTF-8');
-	if(strlen($len) > 32) {
+	if($len > 32) {
 		$err = lang('email_too_long', array('length'=>$len));
 		return FALSE;
 	} elseif(!preg_match('/^[\w\-\.]+@[\w\-\.]+(\.\w+)+$/i', $email)) {
@@ -52,19 +52,17 @@ function is_username($username, &$err = '') {
 }
 
 function is_password($password, &$err = '') {
-	$len = strlen($password);
 	// hook model_is_password_start.php
+	// 密码以明文提交，长度按字符计算
+	$len = mb_strlen($password, 'UTF-8');
 	if($len == 0) {
 		$err = lang('password_is_empty');
 		return FALSE;
-	} elseif($len != 32) {
-		$err = lang('password_length_incorrect');
-		return FALSE;
-	} elseif($password == 'd41d8cd98f00b204e9800998ecf8427e') {
-		$err = lang('password_is_empty');
+	} elseif($len < 6 || $len > 64) {
+		$err = lang('password_length_incorrect', array('min'=>6, 'max'=>64));
 		return FALSE;
 	}
-	// hook model_is_password_start.php
+	// hook model_is_password_end.php
 	return TRUE;
 }
 

@@ -67,7 +67,7 @@ if(empty($action) || $action == 'list') {
 
 		$email = param('email');
 		$username = param('username');
-		$password = param('password');
+		$password = param('password', '', FALSE);
 		$_gid = param('_gid');
 		
 		// hook admin_user_create_post_start.php
@@ -75,6 +75,8 @@ if(empty($action) || $action == 'list') {
 		empty($email) AND message('email', lang('please_input_email'));
 		$email AND !is_email($email, $err) AND message('email', $err);
 		$username AND !is_username($username, $err) AND message('username', $err);
+		empty($password) AND message('password', lang('password_is_empty'));
+		!is_password($password, $err) AND message('password', $err);
 
 		$_user = user_read_by_email($email);
 		$_user AND message('email', lang('email_is_in_use'));
@@ -82,11 +84,10 @@ if(empty($action) || $action == 'list') {
 		$_user = user_read_by_username($username);
 		$_user AND message('username', lang('user_already_exists'));
 
-		$salt = xo_rand(16);
+		// 表单提交明文，直接摘要
 		$r = user_create(array(
 			'username'=>$username,
-			'password'=>md5(md5($password).$salt),
-			'salt'=>$salt,
+			'password'=>user_password_hash($password),
 			'gid'=>$_gid,
 			'email'=>$email,
 			'create_ip'=>ip2long(ip()),
@@ -129,7 +130,7 @@ if(empty($action) || $action == 'list') {
 
 		$email = param('email');
 		$username = param('username');
-		$password = param('password');
+		$password = param('password', '', FALSE);
 		$_gid = param('_gid');
 		
 		// hook admin_user_update_post_start.php
@@ -153,9 +154,9 @@ if(empty($action) || $action == 'list') {
 		$arr['gid'] = $_gid;
 		
 		if($password) {
-			$salt = xo_rand(16);
-			$arr['password'] = md5(md5($password).$salt);
-			$arr['salt'] = $salt;
+			!is_password($password, $err) AND message('password', $err);
+			$arr['password'] = user_password_hash($password);
+			$arr['salt'] = '';
 		}
 		
 		// hook admin_user_update_post_exec_before.php

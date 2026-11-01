@@ -36,6 +36,16 @@ return array (
 			'slaves' => array (),
 		),
 	),
+	// 密码摘要参数。算法优先 Argon2id（环境不支持时回落 bcrypt），此处只调开销：
+	// memory_cost 单位为 KiB，65536 即 64 MiB；time_cost 为迭代轮数；threads 为并行度。
+	// 并发登录较多或内存吃紧的机器可下调 memory_cost（不低于 8192），安全性随之下降。
+	'password' => array (
+		'memory_cost' => 65536,
+		'time_cost' => 4,
+		'threads' => 1,
+		'cost' => 10,		// 回落 bcrypt 时的 cost
+	),
+	
 	'cache' => array (
 		'enable' => true,
 		'type' => 'mysql',

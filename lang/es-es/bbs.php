@@ -277,7 +277,7 @@ return array(
 	'username_cant_include_cn_space'=>'El nombre de usuario no puede contener espacios',
 	'username_format_mismatch'=>'Formato de nombre de usuario incorrecto',
 	'password_is_empty'=>'La contraseña está vacía',
-	'password_length_incorrect'=>'Problema de longitud tras el cifrado',
+	'password_length_incorrect'=>'La contraseña debe tener entre {min} y {max} caracteres',
 	
 	
 	'runlevel_0'=>'Sitio cerrado',

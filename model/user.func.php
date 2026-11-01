@@ -36,6 +36,92 @@ function user__delete($uid) {
 	return $r;
 }
 
+// ------------> 密码摘要
+
+// 当前使用的摘要算法：优先 Argon2id（内存硬哈希，能有效抵御 GPU / ASIC 暴力破解）
+// 环境未编译 Argon2 支持时回落到 bcrypt。两者都由 password_hash 内建盐值，salt 字段对新密码不再使用
+function user_password_algo() {
+	return defined('PASSWORD_ARGON2ID') ? PASSWORD_ARGON2ID : PASSWORD_BCRYPT;
+}
+
+// 算法参数，可在 conf.php 的 password 段覆盖，缺省值见下
+// Argon2id：memory_cost 单位为 KiB，65536 即 64 MiB；time_cost 为迭代轮数；threads 为并行度
+// bcrypt：cost 每加 1 计算量翻倍
+function user_password_options() {
+	global $conf;
+	$options = array();
+	if(user_password_algo() === PASSWORD_BCRYPT) {
+		$cost = isset($conf['password']['cost']) ? intval($conf['password']['cost']) : 10;
+		$cost < 4 AND $cost = 4;
+		$cost > 12 AND $cost = 12;
+		$options['cost'] = $cost;
+	} else {
+		$memory_cost = isset($conf['password']['memory_cost']) ? intval($conf['password']['memory_cost']) : 65536;
+		$time_cost = isset($conf['password']['time_cost']) ? intval($conf['password']['time_cost']) : 4;
+		$threads = isset($conf['password']['threads']) ? intval($conf['password']['threads']) : 1;
+		$memory_cost < 8192 AND $memory_cost = 8192;
+		$time_cost < 1 AND $time_cost = 1;
+		$threads < 1 AND $threads = 1;
+		$options['memory_cost'] = $memory_cost;
+		$options['time_cost'] = $time_cost;
+		$options['threads'] = $threads;
+	}
+	return $options;
+}
+
+// 生成密码摘要。$password 为明文，前端不再做任何预处理
+function user_password_hash($password) {
+	$hash = password_hash($password, user_password_algo(), user_password_options());
+	// Argon2 依赖 libargon2，个别环境可能失败，兜底用 bcrypt 保证能登录
+	if(!is_string($hash) || $hash === '') {
+		$hash = password_hash($password, PASSWORD_BCRYPT, array('cost'=>10));
+	}
+	return $hash;
+}
+
+// 是否是历史的 md5 摘要：定长 32 位十六进制。仅用于识别老数据，新密码不会再产生这种格式
+function user_password_is_legacy($hash) {
+	return strlen($hash) == 32 && preg_match('/^[0-9a-f]{32}$/i', $hash) === 1;
+}
+
+// 校验密码，兼容历史 md5 数据
+// 存量摘要为 md5(前端 md5 后的密码 . salt)。移除前端预处理后，输入可能是明文，
+// 也可能来自浏览器缓存的旧页面（仍是 32 位摘要），两种都要能验证：
+//   md5($password.$salt)      —— 输入本身已是 md5 摘要
+//   md5(md5($password).$salt) —— 输入是明文
+function user_password_check($password, $user) {
+	if(empty($user) || !isset($user['password']) || $user['password'] === '') return FALSE;
+	$hash = $user['password'];
+	if(user_password_is_legacy($hash)) {
+		$salt = isset($user['salt']) ? $user['salt'] : '';
+		if($salt === '') return FALSE;
+		if(hash_equals(md5(md5($password).$salt), $hash)) return TRUE;
+		if(hash_equals(md5($password.$salt), $hash)) return TRUE;
+		return FALSE;
+	}
+	return password_verify($password, $hash);
+}
+
+// 校验通过后调用：把历史 md5 摘要或旧参数的摘要换成当前算法的，已经是最新则不动
+// 返回 TRUE 表示发生了升级
+function user_password_upgrade($password, $user) {
+	if(empty($user) || empty($user['password']) || empty($user['uid'])) return FALSE;
+	$hash = $user['password'];
+	if(user_password_is_legacy($hash)) {
+		// 只有确认输入是明文才能迁移。若输入本身是旧页面提交的 32 位摘要，无法还原明文，
+		// 直接把摘要当密码存下来会让用户下次登录失败，这种情况跳过，等下次明文登录再迁
+		$salt = isset($user['salt']) ? $user['salt'] : '';
+		if($salt === '' || !hash_equals(md5(md5($password).$salt), $hash)) return FALSE;
+		user_update($user['uid'], array('password'=>user_password_hash($password), 'salt'=>''));
+		return TRUE;
+	}
+	if(password_needs_rehash($hash, user_password_algo(), user_password_options())) {
+		user_update($user['uid'], array('password'=>user_password_hash($password)));
+		return TRUE;
+	}
+	return FALSE;
+}
+
 // ------------> 关联 CURD，主要是强相关的数据，比如缓存。弱相关的大量数据需要另外处理。
 
 function user_create($arr) {

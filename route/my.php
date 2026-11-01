@@ -49,13 +49,13 @@ if(empty($action)) {
 		
 		// hook my_password_post_start.php
 		
-		$password_old = param('password_old');
-		$password_new = param('password_new');
-		$password_new_repeat = param('password_new_repeat');
+		$password_old = param('password_old', '', FALSE);
+		$password_new = param('password_new', '', FALSE);
+		$password_new_repeat = param('password_new_repeat', '', FALSE);
 		$password_new_repeat != $password_new AND message(-1, lang('repeat_password_incorrect'));
-		md5($password_old.$user['salt']) != $user['password'] AND message('password_old', lang('old_password_incorrect'));
-		$password_new = md5($password_new.$user['salt']);
-		$r = user_update($uid, array('password'=>$password_new));
+		!user_password_check($password_old, $user) AND message('password_old', lang('old_password_incorrect'));
+		!is_password($password_new, $err) AND message('password_new', $err);
+		$r = user_update($uid, array('password'=>user_password_hash($password_new), 'salt'=>''));
 		$r === FALSE AND message(-1, lang('password_modify_failed'));
 		
 		// hook my_password_post_end.php

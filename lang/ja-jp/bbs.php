@@ -277,7 +277,7 @@ return array(
 	'username_cant_include_cn_space'=>'ユーザー名にスペースを含めることはできません',
 	'username_format_mismatch'=>'ユーザー名の形式が正しくありません',
 	'password_is_empty'=>'パスワードが空です',
-	'password_length_incorrect'=>'暗号化後の長さに問題があります',
+	'password_length_incorrect'=>'パスワードは {min}～{max} 文字で入力してください',
 	
 	
 	'runlevel_0'=>'サイト停止',
