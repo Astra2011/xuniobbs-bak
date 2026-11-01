@@ -36,6 +36,7 @@ return array(
 	
 	'admin_token_error'=>'Verwaltungstoken-Fehler, möglicherweise wegen instabiler Netzwerkumgebung. Versuchen Sie, die IP-Bindung im Backend aufzuheben und conf.php mit admin_bind_ip => 0 zu konfigurieren',
 	'admin_token_expiry'=>'Verwaltungs-Anmeldetoken abgelaufen, bitte erneut anmelden',
+	'csrf_token_invalid'=>'Seite abgelaufen, bitte neu laden und erneut versuchen',
 	'forum_edit'=>'Forum bearbeiten',
 	'user_edit'=>'Benutzer bearbeiten',
 	'edit_sucessfully'=>'Bearbeitung erfolgreich',

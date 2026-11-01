@@ -12,7 +12,7 @@
 if(DEBUG < 3) {
 	// 管理组检查 / check admin group
 	if($gid != 1) {
-		setcookie('bbs_sid', '', $time - 86400);
+		xo_cookie_set('bbs_sid', '', $time - 86400);
 		//http_403();
 		http_location(url('../user-login'));
 	}
@@ -22,6 +22,19 @@ if(DEBUG < 3) {
 }
 
 $route = param(0, 'index');
+
+// 跨站请求伪造检查 / CSRF check
+if(DEBUG < 3) {
+	// GET 方式的写操作要单独校验
+	$csrf_get_actions = array(
+		'plugin' => array('download', 'install', 'unstall', 'enable', 'disable', 'upgrade'),
+		'forum' => array('delete'),
+		'thread' => array('operation'),
+	);
+	$csrf_action = param(1);
+	$force = isset($csrf_get_actions[$route]) && in_array($csrf_action, $csrf_get_actions[$route]);
+	admin_csrf_check($force);
+}
 
 switch ($route) {
 	// hook admin_index_route_case_start.php

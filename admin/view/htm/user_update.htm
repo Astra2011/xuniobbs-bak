@@ -57,7 +57,13 @@
 <script>
 var jform = $('#form');
 var jsubmit = $('#submit');
+var jemail = jform.find('input[name="email"]');
 jform.on('submit', function() {
+	var email = jemail.val().trim();
+	if(email && !xo.is_email(email)) {
+		jemail.alert('<?php echo lang('email_format_mismatch');?>').focus();
+		return false;
+	}
 	jform.reset();
 	jsubmit.button('loading');
 	var postdata = jform.serialize();

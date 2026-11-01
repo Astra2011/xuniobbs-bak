@@ -36,6 +36,7 @@ return array(
 	
 	'admin_token_error'=>'관리 토큰 오류. 네트워크 환경이 불안정할 수 있습니다. 백엔드 IP 바인딩을 해제하고 conf.php에서 admin_bind_ip => 0으로 설정해 보세요',
 	'admin_token_expiry'=>'관리 로그인 토큰이 만료되었습니다. 다시 로그인해 주세요',
+	'csrf_token_invalid'=>'페이지가 만료되었습니다. 새로 고친 후 다시 시도해 주세요',
 	'forum_edit'=>'게시판 편집',
 	'user_edit'=>'사용자 편집',
 	'edit_sucessfully'=>'편집 성공',

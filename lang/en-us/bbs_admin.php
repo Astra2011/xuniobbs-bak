@@ -36,6 +36,7 @@ return array(
 	
 	'admin_token_error'=>'Admin token error, That may be your network environment is not stable, can try to unbind IP, modify file: conf.php, set admin_bind_ip = 0',
 	'admin_token_expiry'=>'Admin token expiry, please re login',
+	'csrf_token_invalid'=>'Page expired, please refresh and try again',
 	'forum_edit'=>'Edit Forum',
 	'user_edit'=>'Edit User',
 	'edit_sucessfully'=>'Edit Sucessfully',

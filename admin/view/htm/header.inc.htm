@@ -12,6 +12,7 @@
 	<!--{hook admin_header_meta_before.htm}-->
 	
 	<meta charset="utf-8">
+	<meta name="xo-csrf" content="<?php echo admin_csrf_token();?>" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="author" content="XunioBBS 4.0" />
 	<meta name="keywords" content="<?php echo strip_tags($header['keywords']);?>" />

@@ -20,6 +20,9 @@ if(DEBUG == 3) {
 define('ADMIN_PATH', dirname(__FILE__).'/'); // __DIR__
 define('MESSAGE_HTM_PATH', ADMIN_PATH.'view/htm/message.htm');
 
+// 令牌会出现在 URL 中，避免通过 Referer 外泄
+header('Referrer-Policy: same-origin');
+
 define('SKIP_ROUTE', TRUE);
 include '../index.php';
 

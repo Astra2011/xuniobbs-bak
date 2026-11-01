@@ -36,6 +36,7 @@ return array(
 	
 	'admin_token_error'=>'Erreur de jeton d\'administration, possiblement à cause d\'un réseau instable. Essayez de désactiver la liaison IP et de configurer conf.php avec admin_bind_ip => 0',
 	'admin_token_expiry'=>'Jeton de connexion administrateur expiré, veuillez vous reconnecter',
+	'csrf_token_invalid'=>'Page expirée, veuillez actualiser et réessayer',
 	'forum_edit'=>'Modifier le forum',
 	'user_edit'=>'Modifier l\'utilisateur',
 	'edit_sucessfully'=>'Modification réussie',

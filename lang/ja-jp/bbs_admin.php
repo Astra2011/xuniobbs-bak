@@ -36,6 +36,7 @@ return array(
 	
 	'admin_token_error'=>'管理トークンエラー。ネットワーク環境が不安定な可能性があります。バックエンドのIPバインドを解除し、conf.php で admin_bind_ip => 0 に設定してみてください',
 	'admin_token_expiry'=>'管理ログイントークンの有効期限が切れました。再度ログインしてください',
+	'csrf_token_invalid'=>'ページの有効期限が切れました。再読み込みしてください',
 	'forum_edit'=>'掲示板編集',
 	'user_edit'=>'ユーザー編集',
 	'edit_sucessfully'=>'編集しました',

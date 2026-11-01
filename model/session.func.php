@@ -63,10 +63,10 @@ function sess_new($sid) {
 	if($cookie_test) {
 		$cookie_test_decode = xo_decrypt($cookie_test, $conf['auth_key']);
 		$g_session_invalid = ($cookie_test_decode != md5($agent.$longip));
-		setcookie('cookie_test', '', $time - 86400, '');
+		xo_cookie_set('cookie_test', '', $time - 86400);
 	} else {
 		$cookie_test = xo_encrypt(md5($agent.$longip), $conf['auth_key']);
-		setcookie('cookie_test', $cookie_test, $time + 86400, '');
+		xo_cookie_set('cookie_test', $cookie_test, $time + 86400);
 		$g_session_invalid = FALSE;
 		return;
 	}
@@ -192,9 +192,10 @@ function sess_start() {
 	ini_set('session.use_only_cookies', 'On');
 	ini_set('session.cookie_domain', '');
 	ini_set('session.cookie_path', '');	// 为空则表示当前目录和子目录
-	ini_set('session.cookie_secure', 'Off'); // 打开后，只有通过 https 才有效。
+	ini_set('session.cookie_secure', xo_https() ? 'On' : 'Off'); // 只有 https 才发，http 站点仍然可用
 	ini_set('session.cookie_lifetime', 86400);
 	ini_set('session.cookie_httponly', 'On'); // 打开后 js 获取不到 HTTP 设置的 cookie, 有效防止 XSS，这个对于安全很重要，除非有 BUG，否则不要关闭。
+	PHP_VERSION_ID >= 70300 AND ini_set('session.cookie_samesite', 'Lax'); // 跨站请求不携带 sid
 	
 	ini_set('session.gc_maxlifetime', $conf['online_hold_time']);	// 活动时间 $conf['online_hold_time']
 	ini_set('session.gc_probability', 1); 	// 垃圾回收概率 = gc_probability/gc_divisor

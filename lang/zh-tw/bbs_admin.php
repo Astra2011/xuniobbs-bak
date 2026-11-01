@@ -36,6 +36,7 @@ return array(
 	
 	'admin_token_error'=>'管理令牌錯誤，可能因為您的網絡環境不穩定，可以嘗試取消後臺綁定 IP，配置 conf.php，admin_bind_ip => 0 ',
 	'admin_token_expiry'=>'管理登錄令牌失效，請重新登錄',
+	'csrf_token_invalid'=>'頁面已過期，請重新整理後重試',
 	'forum_edit'=>'版塊編輯',
 	'user_edit'=>'用戶編輯',
 	'edit_sucessfully'=>'編輯成功',

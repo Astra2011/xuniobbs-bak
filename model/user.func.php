@@ -298,7 +298,7 @@ function user_token_get() {
 	// hook model_user_token_get_start.php
 	
 	if(!$_uid) {
-		setcookie('bbs_token', '', $time - 86400, '');
+		xo_cookie_set('bbs_token', '', $time - 86400);
 	}
 	
 	// hook model_user_token_get_end.php
@@ -333,14 +333,14 @@ function user_token_set($uid) {
 	global $time, $conf;
 	if(empty($uid)) return;
 	$token = user_token_gen($uid);
-	setcookie('bbs_token', $token, $time + 8640000, $conf['cookie_path']);
+	xo_cookie_set('bbs_token', $token, $time + 8640000, $conf['cookie_path']);
 	
 	// hook model_user_token_set_end.php
 }
 
 function user_token_clear() {
 	global $time, $conf;
-	setcookie('bbs_token', '', $time - 8640000, $conf['cookie_path']);
+	xo_cookie_set('bbs_token', '', $time - 8640000, $conf['cookie_path']);
 	
 	// hook model_user_token_clear_end.php
 }

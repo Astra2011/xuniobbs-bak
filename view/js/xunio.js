@@ -391,7 +391,12 @@ xo.is_email = function(s) {
 xo.is_string = function(obj) {return Object.prototype.toString.apply(obj) == '[object String]';};
 xo.is_function = function(obj) {return Object.prototype.toString.apply(obj) == '[object Function]';};
 xo.is_array = function(obj) {return Object.prototype.toString.apply(obj) == '[object Array]';};
-xo.is_number = function(obj) {return Object.prototype.toString.apply(obj) == '[object Number]' || /^\d+$/.test(obj);};
+xo.is_number = function(obj) {return Object.prototype.toString.apply(obj) == '[object Number]' || /^-?\d+$/.test(obj);};
+
+// 与服务端 is_email() 的正则保持一致
+xo.is_email = function(s) {
+	return typeof s == 'string' && /^[\w\-\.]+@[\w\-\.]+(\.\w+)+$/i.test(s);
+};
 xo.is_regexp = function(obj) {return Object.prototype.toString.apply(obj) == '[object RegExp]';};
 xo.is_object = function(obj) {return Object.prototype.toString.apply(obj) == '[object Object]';};
 xo.is_element = function(obj) {return !!(obj && obj.nodeType === 1);};
@@ -794,6 +799,33 @@ $.xget = function(url, callback, retry) {
 		return xhr;
 	};
 })(jQuery, window);
+
+// 跨站请求伪造令牌，后台页面用 meta 输出
+xo.csrf = function() {
+	var meta = document.querySelector('meta[name="xo-csrf"]');
+	return meta ? meta.getAttribute('content') : '';
+};
+
+// 带令牌的 url()，用于 GET 方式的写操作
+xo.url_csrf = function(u, url_rewrite) {
+	var url = xo.url(u, url_rewrite);
+	var sep = xo.strpos(url, '?') === false ? '?' : '&';
+	return url + sep + 'xo_csrf=' + xo.csrf();
+};
+
+// 所有 ajax 请求带上令牌
+$.ajaxSetup({beforeSend: function(xhr) {
+	var token = xo.csrf();
+	token && xhr.setRequestHeader('X-XO-CSRF', token);
+}});
+
+// 不走 ajax 的表单，提交前补一个隐藏域
+$(document).on('submit', 'form', function() {
+	var jform = $(this);
+	if(!jform.find('input[name="xo_csrf"]').length) {
+		$('<input type="hidden" name="xo_csrf" />').val(xo.csrf()).appendTo(jform);
+	}
+});
 
 $.xpost = function(url, postdata, callback, progress_callback) {
 	if(typeof postdata === 'function') {
@@ -1453,16 +1485,24 @@ $.fn.location = function(href) {
 $.fn.alert = function(message) {
 	var jthis = $(this);
 	jthis.addClass('is-invalid');
-	// 表单里紧跟在输入框后面的 .invalid-feedback 显示文字
-	var jfeedback = jthis.siblings('.invalid-feedback');
-	if(jfeedback.length == 0) {
-		jfeedback = jthis.closest('.input-group, .mb-3').find('.invalid-feedback');
+	// 优先用模板里已有的 .invalid-feedback，没有就补一个，否则只加红框看不见文字
+	var jgroup = jthis.closest('.input-group');
+	var jbox = jgroup.length ? jgroup : jthis;
+	var jfeedback = jbox.siblings('.invalid-feedback');
+	if(!jfeedback.length) {
+		jfeedback = jbox.closest('.mb-3, .form-group').find('.invalid-feedback');
 	}
-	jfeedback.first().text(message);
-	// 悬浮提示（Bootstrap 5 的 tooltip 不再是 jQuery 插件）
-	if(window.bootstrap && bootstrap.Tooltip) {
-		bootstrap.Tooltip.getOrCreateInstance(jthis[0], {title: message, trigger: 'manual'}).show();
+	var created = false;
+	if(!jfeedback.length) {
+		jfeedback = $('<div class="invalid-feedback"></div>').insertAfter(jbox);
+		created = true;
 	}
+	jfeedback.first().text(message).show();
+	// 重新输入后清掉提示
+	jthis.off('input.xoalert change.xoalert').on('input.xoalert change.xoalert', function() {
+		jthis.removeClass('is-invalid').off('input.xoalert change.xoalert');
+		created ? jfeedback.remove() : jfeedback.hide();
+	});
 	return this;
 };
 

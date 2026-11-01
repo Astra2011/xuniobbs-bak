@@ -36,6 +36,7 @@ return array(
 	
 	'admin_token_error'=>'Error de token de administración, posiblemente por red inestable. Intente desactivar la vinculación de IP y configurar conf.php con admin_bind_ip => 0',
 	'admin_token_expiry'=>'El token de acceso de administración ha caducado, vuelva a iniciar sesión',
+	'csrf_token_invalid'=>'La página ha caducado, actualice e inténtelo de nuevo',
 	'forum_edit'=>'Editar foro',
 	'user_edit'=>'Editar usuario',
 	'edit_sucessfully'=>'Edición correcta',

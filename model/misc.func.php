@@ -2,6 +2,33 @@
 
 // hook model_misc_start.php
 
+// 当前请求是否走 HTTPS，兼容反向代理
+function xo_https() {
+	$https = strtolower(_SERVER('HTTPS', 'off'));
+	$proto = strtolower(_SERVER('HTTP_X_FORWARDED_PROTO'));
+	return ($https && $https != 'off') || $proto == 'https' || _SERVER('SERVER_PORT') == 443;
+}
+
+// 统一的 Cookie 设置：HttpOnly + SameSite=Lax，HTTPS 下自动带 Secure
+// $path 留空时取当前入口所在目录，与 setcookie() 的默认行为一致
+function xo_cookie_set($name, $value, $expires = 0, $path = '') {
+	if($path === '') {
+		$path = str_replace('\\', '/', dirname(_SERVER('SCRIPT_NAME', '/index.php')));
+		$path == '.' AND $path = '/';
+	}
+	if(PHP_VERSION_ID >= 70300) {
+		setcookie($name, $value, array(
+			'expires'=>$expires,
+			'path'=>$path,
+			'httponly'=>TRUE,
+			'secure'=>xo_https(),
+			'samesite'=>'Lax',
+		));
+	} else {
+		setcookie($name, $value, $expires, $path, '', xo_https(), TRUE);
+	}
+}
+
 // 可用语言列表：语言代码 => 本土语言名称
 // 名称不随界面语言变化，保证任何国家的用户都能认出自己的语言
 function lang_list() {
