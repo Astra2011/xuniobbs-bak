@@ -98,6 +98,17 @@ return array(
 	'port'=>'Port',
 	'account'=>'Account',
 	'smtp_host'=>'SMTP Host',
+	'smtp_test_title'=>'SMTP Test',
+	'smtp_test_tips'=>'Send a test email using the SMTP configuration above to verify it works.',
+	'smtp_test_to'=>'Recipient email',
+	'smtp_test_send'=>'Send Test Email',
+	'smtp_test_fill_config'=>'Please fill in the SMTP host and port first',
+	'smtp_test_fill_to'=>'Please fill in the recipient email',
+	'smtp_test_invalid_to'=>'Invalid recipient email address',
+	'smtp_test_subject'=>'SMTP Test Email',
+	'smtp_test_body'=>'This is a test email. Receiving it means the SMTP configuration is correct.',
+	'smtp_test_success'=>'Test email sent to {to}',
+	'smtp_test_fail'=>'Failed to send: {errmsg}',
 	
 	// forum
 	'forum_list'=>'Forum List',

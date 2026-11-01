@@ -98,6 +98,17 @@ return array(
 	'port'=>'ポート',
 	'account'=>'アカウント',
 	'smtp_host'=>'SMTPホスト',
+	'smtp_test_title'=>'SMTP送信テスト',
+	'smtp_test_tips'=>'上記のSMTP設定を使用してテストメールを送信し、設定が正しいか確認します。',
+	'smtp_test_to'=>'受信メールアドレス',
+	'smtp_test_send'=>'テストメールを送信',
+	'smtp_test_fill_config'=>'先にSMTPホストとポートを入力してください',
+	'smtp_test_fill_to'=>'受信メールアドレスを入力してください',
+	'smtp_test_invalid_to'=>'受信メールアドレスの形式が正しくありません',
+	'smtp_test_subject'=>'SMTPテストメール',
+	'smtp_test_body'=>'これはテストメールです。受信できればSMTP設定は正しいです。',
+	'smtp_test_success'=>'テストメールを {to} に送信しました',
+	'smtp_test_fail'=>'送信に失敗しました：{errmsg}',
 	
 	// 掲示板
 	'forum_list'=>'掲示板一覧',

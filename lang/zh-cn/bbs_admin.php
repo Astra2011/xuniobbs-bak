@@ -98,6 +98,17 @@ return array(
 	'port'=>'端口',
 	'account'=>'账号',
 	'smtp_host'=>'SMTP 主机',
+	'smtp_test_title'=>'SMTP 发件测试',
+	'smtp_test_tips'=>'使用上方的 SMTP 配置发送一封测试邮件，用于验证配置是否正确。',
+	'smtp_test_to'=>'收件邮箱',
+	'smtp_test_send'=>'发送测试邮件',
+	'smtp_test_fill_config'=>'请先填写 SMTP 主机和端口',
+	'smtp_test_fill_to'=>'请填写收件邮箱',
+	'smtp_test_invalid_to'=>'收件邮箱格式不正确',
+	'smtp_test_subject'=>'SMTP 测试邮件',
+	'smtp_test_body'=>'这是一封测试邮件，收到说明 SMTP 配置正确。',
+	'smtp_test_success'=>'测试邮件已发送到 {to}',
+	'smtp_test_fail'=>'发送失败：{errmsg}',
 	
 	// 版块
 	'forum_list'=>'版块列表',

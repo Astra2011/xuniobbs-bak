@@ -98,6 +98,17 @@ return array(
 	'port'=>'Port',
 	'account'=>'Konto',
 	'smtp_host'=>'SMTP-Host',
+	'smtp_test_title'=>'SMTP-Test',
+	'smtp_test_tips'=>'Senden Sie eine Test-E-Mail mit der obigen SMTP-Konfiguration, um sie zu überprüfen.',
+	'smtp_test_to'=>'Empfänger-E-Mail',
+	'smtp_test_send'=>'Test-E-Mail senden',
+	'smtp_test_fill_config'=>'Bitte zuerst SMTP-Host und Port ausfüllen',
+	'smtp_test_fill_to'=>'Bitte Empfänger-E-Mail ausfüllen',
+	'smtp_test_invalid_to'=>'Ungültige Empfänger-E-Mail-Adresse',
+	'smtp_test_subject'=>'SMTP-Test-E-Mail',
+	'smtp_test_body'=>'Dies ist eine Test-E-Mail. Der Empfang bestätigt, dass die SMTP-Konfiguration korrekt ist.',
+	'smtp_test_success'=>'Test-E-Mail an {to} gesendet',
+	'smtp_test_fail'=>'Senden fehlgeschlagen: {errmsg}',
 	
 	// Forum
 	'forum_list'=>'Forumsliste',

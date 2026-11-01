@@ -98,6 +98,17 @@ return array(
 	'port'=>'포트',
 	'account'=>'계정',
 	'smtp_host'=>'SMTP 호스트',
+	'smtp_test_title'=>'SMTP 발송 테스트',
+	'smtp_test_tips'=>'위의 SMTP 설정을 사용해 테스트 메일을 보내 설정이 올바른지 확인합니다.',
+	'smtp_test_to'=>'수신 이메일',
+	'smtp_test_send'=>'테스트 메일 보내기',
+	'smtp_test_fill_config'=>'먼저 SMTP 호스트와 포트를 입력하세요',
+	'smtp_test_fill_to'=>'수신 이메일을 입력하세요',
+	'smtp_test_invalid_to'=>'수신 이메일 형식이 올바르지 않습니다',
+	'smtp_test_subject'=>'SMTP 테스트 메일',
+	'smtp_test_body'=>'이것은 테스트 메일입니다. 수신되면 SMTP 설정이 올바른 것입니다.',
+	'smtp_test_success'=>'테스트 메일이 {to}(으)로 전송되었습니다',
+	'smtp_test_fail'=>'전송 실패: {errmsg}',
 	
 	// 게시판
 	'forum_list'=>'게시판 목록',

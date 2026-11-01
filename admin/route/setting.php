@@ -108,6 +108,58 @@ if($action == 'base') {
 		
 		message(0, lang('save_successfully'));
 	}
+} elseif($action == 'smtp_test') {
+
+	// hook admin_setting_smtp_test_get_post.php
+
+	if($method == 'POST') {
+
+		// hook admin_setting_smtp_test_start.php
+
+		$email = param('email', '', FALSE);
+		$host = param('host', '', FALSE);
+		$port = param('port', 0);
+		$user = param('user', '', FALSE);
+		$pass = param('pass', '', FALSE);
+		$to = param('to', '', FALSE);
+
+		if(empty($host) || empty($port)) {
+			message(-1, lang('smtp_test_fill_config'));
+		}
+		if(empty($to)) {
+			message(-1, lang('smtp_test_fill_to'));
+		}
+		if(!preg_match('#^[\w\.\-\+]+@[\w\.\-]+\.\w+$#', $to)) {
+			message(-1, lang('smtp_test_invalid_to'));
+		}
+
+		include _include(XUNIOPHP_PATH.'xo_send_mail.func.php');
+
+		$smtp = array(
+			'email'=>$email,
+			'host'=>$host,
+			'port'=>$port,
+			'user'=>$user,
+			'pass'=>$pass,
+		);
+
+		$subject = lang('smtp_test_subject');
+		$body = lang('smtp_test_body');
+
+		// hook admin_setting_smtp_test_before.php
+		$r = xo_send_mail($smtp, $email, $to, $subject, $body);
+		// hook admin_setting_smtp_test_after.php
+
+		if($r === TRUE) {
+			message(0, lang('smtp_test_success', array('to'=>$to)));
+		} else {
+			global $errstr;
+			message(-1, lang('smtp_test_fail', array('errmsg'=>$errstr)));
+		}
+
+		// hook admin_setting_smtp_test_end.php
+	}
+
 } elseif($action == 'plugin_protect') {
 
 	// hook admin_setting_plugin_protect_get_post.php

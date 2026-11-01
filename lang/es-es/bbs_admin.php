@@ -98,6 +98,17 @@ return array(
 	'port'=>'Puerto',
 	'account'=>'Cuenta',
 	'smtp_host'=>'Host SMTP',
+	'smtp_test_title'=>'Prueba SMTP',
+	'smtp_test_tips'=>'Envía un correo de prueba con la configuración SMTP anterior para verificarla.',
+	'smtp_test_to'=>'Correo del destinatario',
+	'smtp_test_send'=>'Enviar correo de prueba',
+	'smtp_test_fill_config'=>'Primero completa el host y el puerto SMTP',
+	'smtp_test_fill_to'=>'Completa el correo del destinatario',
+	'smtp_test_invalid_to'=>'Dirección de correo del destinatario no válida',
+	'smtp_test_subject'=>'Correo de prueba SMTP',
+	'smtp_test_body'=>'Este es un correo de prueba. Recibirlo significa que la configuración SMTP es correcta.',
+	'smtp_test_success'=>'Correo de prueba enviado a {to}',
+	'smtp_test_fail'=>'Error al enviar: {errmsg}',
 	
 	// Foro
 	'forum_list'=>'Lista de foros',

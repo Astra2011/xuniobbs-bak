@@ -46,6 +46,25 @@
 				</p>
 			</div>
 		</div>
+		<div class="card">
+			<div class="card-header">
+				<?php echo lang('smtp_test_title');?>
+			</div>
+			<div class="card-body">
+				<p class="text-muted"><?php echo lang('smtp_test_tips');?></p>
+				<form id="smtp_test_form">
+					<div class="form-group row">
+						<label class="col-sm-3 col-form-label"><?php echo lang('smtp_test_to');?></label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" name="to" id="smtp_test_to" placeholder="user@example.com" />
+						</div>
+					</div>
+					<p class="text-center" style="margin-top: 1.5rem;">
+						<button type="submit" class="btn btn-success" id="smtp_test_submit" style="width: 10rem;"><?php echo lang('smtp_test_send');?></button>
+					</p>
+				</form>
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -108,6 +127,46 @@ jadd.on('click', function() {
 	return false;
 });
 
+
+// SMTP 发件测试
+var jsmtp_test_form = $('#smtp_test_form');
+var jsmtp_test_submit = $('#smtp_test_submit');
+jsmtp_test_form.on('submit', function() {
+	var to = $('#smtp_test_to').val();
+	if(!to) {
+		alert('<?php echo lang('smtp_test_fill_to');?>');
+		return false;
+	}
+	// 读取当前第一行的 SMTP 配置
+	var first_row = jsmtp_body.find('tr').first();
+	var email = first_row.find('input[name="email[]"]').val();
+	var host = first_row.find('input[name="host[]"]').val();
+	var port = first_row.find('input[name="port[]"]').val();
+	var user = first_row.find('input[name="user[]"]').val();
+	var pass = first_row.find('input[name="pass[]"]').val();
+	if(!host || !port) {
+		alert('<?php echo lang('smtp_test_fill_config');?>');
+		return false;
+	}
+	jsmtp_test_submit.button('loading');
+	var postdata = {
+		to: to,
+		email: email,
+		host: host,
+		port: port,
+		user: user,
+		pass: pass
+	};
+	$.xpost('<?php echo url('setting-smtp_test');?>', postdata, function(code, message) {
+		jsmtp_test_submit.button('reset');
+		if(code == 0) {
+			alert(message);
+		} else {
+			alert(message);
+		}
+	});
+	return false;
+});
 
 $('#nav li.nav-item-setting').addClass('active');
 

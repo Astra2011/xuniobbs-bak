@@ -98,6 +98,17 @@ return array(
 	'port'=>'端口',
 	'account'=>'賬號',
 	'smtp_host'=>'SMTP 主機',
+	'smtp_test_title'=>'SMTP 發件測試',
+	'smtp_test_tips'=>'使用上方的 SMTP 配置發送一封測試郵件，用於驗證配置是否正確。',
+	'smtp_test_to'=>'收件信箱',
+	'smtp_test_send'=>'發送測試郵件',
+	'smtp_test_fill_config'=>'請先填寫 SMTP 主機和連接埠',
+	'smtp_test_fill_to'=>'請填寫收件信箱',
+	'smtp_test_invalid_to'=>'收件信箱格式不正確',
+	'smtp_test_subject'=>'SMTP 測試郵件',
+	'smtp_test_body'=>'這是一封測試郵件，收到說明 SMTP 配置正確。',
+	'smtp_test_success'=>'測試郵件已發送到 {to}',
+	'smtp_test_fail'=>'發送失敗：{errmsg}',
 	
 	// 版塊
 	'forum_list'=>'版塊列表',
