@@ -108,6 +108,36 @@ if($action == 'base') {
 		
 		message(0, lang('save_successfully'));
 	}
+} elseif($action == 'plugin_protect') {
+
+	// hook admin_setting_plugin_protect_get_post.php
+
+	if($method == 'GET') {
+
+		// hook admin_setting_plugin_protect_get_start.php
+
+		$header['title'] = lang('admin_setting_plugin_protect');
+		$header['mobile_title'] = lang('admin_setting_plugin_protect');
+
+		$input = array();
+		$input['plugin_protect_on'] = form_radio_yes_no('plugin_protect_on', $conf['plugin_protect_on']);
+
+		// hook admin_setting_plugin_protect_get_end.php
+
+		include _include(ADMIN_PATH."view/htm/setting_plugin_protect.htm");
+
+	} else {
+
+		$plugin_protect_on = param('plugin_protect_on', 0);
+
+		// hook admin_setting_plugin_protect_post_start.php
+
+		file_replace_var(APP_PATH.'conf/conf.php', array('plugin_protect_on'=>$plugin_protect_on));
+
+		// hook admin_setting_plugin_protect_post_end.php
+
+		message(0, lang('save_successfully'));
+	}
 }
 
 // hook admin_setting_end.php

@@ -1302,7 +1302,52 @@ function xo_is_writable($file) {
 	}
 }
 
+// 进程结束时兜底：识别「来自插件代码的致命错误」，写一个待禁用标记，交由下一次请求在加载插件前处理。
+// 只对致命错误（fatal / parse / compile）动手，warning/notice/deprecated 一律不碰；只标记出错的那个插件。
+// 插件代码在编译期被内联进 tmp 文件并带 "// @plugin:<dir>" 标记，这里据此反查错误来自哪个插件。
+// 这里不直接禁用/清缓存/跳转：崩溃的进程状态不可靠，做重活反而危险，标记后立即交给下一次干净请求。
 function xo_shutdown_handle() {
+	$error = error_get_last();
+	if(empty($error)) return;
+	$fatal_types = array(E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR);
+	if(!in_array($error['type'], $fatal_types)) return;
+
+	$file = isset($error['file']) ? $error['file'] : '';
+	$line = isset($error['line']) ? intval($error['line']) : 0;
+	$dir = '';
+
+	// 情况一：错误直接发生在插件目录里的文件（如 install.php / setting.php 被 include）
+	if(($pos = strpos($file, '/plugin/')) !== FALSE || ($pos = strpos($file, DIRECTORY_SEPARATOR.'plugin'.DIRECTORY_SEPARATOR)) !== FALSE) {
+		$tail = substr($file, $pos + strlen('/plugin/'));
+		$seg = strpos($tail, '/');
+		$dir = $seg === FALSE ? $tail : substr($tail, 0, $seg);
+	}
+	// 情况二：错误发生在 tmp 编译文件里（hook 被内联），从出错行往上找最近的 @plugin 标记
+	if($dir === '' && $line > 0 && is_file($file)) {
+		$content = @file_get_contents($file);
+		if($content !== FALSE) {
+			$arr = explode("\n", $content);
+			for($i = min($line - 1, count($arr) - 1); $i >= 0; $i--) {
+				if(preg_match('#//\s*@plugin:([a-zA-Z0-9_-]+)#', $arr[$i], $mm)) {
+					$dir = $mm[1];
+					break;
+				}
+			}
+		}
+	}
+
+	$dir = preg_replace('#[^a-zA-Z0-9_-]#', '', $dir);
+	if($dir === '') return;
+
+	$conf = _SERVER('conf');
+	$tmp_path = empty($conf['tmp_path']) ? (defined('APP_PATH') ? APP_PATH.'tmp/' : './tmp/') : $conf['tmp_path'];
+	$markfile = $tmp_path.'plugin_error_'.$dir.'.php';
+
+	// 标记文件复用现有日志头，防止被直接访问泄露内容；内容只保存错误摘要，供弹窗报告用。
+	$msg = isset($error['message']) ? $error['message'] : '';
+	$time = time();
+	$s = "<?php exit;?>\t$time\t$dir\t$file\t$line\t$msg\r\n";
+	@file_put_contents($markfile, $s);
 }
 
 function xo_debug_info() {

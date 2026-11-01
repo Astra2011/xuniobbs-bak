@@ -76,7 +76,8 @@ $errno = 0;
 $errstr = '';
 
 // error_handle
-// register_shutdown_function('xo_shutdown_handle');
+// 始终注册 shutdown 兜底：识别来自插件的致命错误并写待禁用标记（见 xo_shutdown_handle）。
+register_shutdown_function('xo_shutdown_handle');
 DEBUG AND set_error_handler('error_handle', -1);
 empty($conf['timezone']) AND $conf['timezone'] = 'Asia/Shanghai';
 date_default_timezone_set($conf['timezone']);

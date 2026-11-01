@@ -48,6 +48,11 @@ if(DEBUG > 1) {
 //db_connect() OR exit($errstr);
 
 include APP_PATH.'model/plugin.func.php';
+
+// 处理「插件致命错误待禁用标记」：必须在加载任何带 hook 的文件之前执行，保证禁用生效、进程干净。
+!isset($conf['plugin_protect_on']) AND $conf['plugin_protect_on'] = 1; // 默认开启
+plugin_protect_handle();
+
 include _include(APP_PATH.'model.inc.php');
 
 // 补齐缺失的 auth_key 与 site_id，必须在会话建立前完成

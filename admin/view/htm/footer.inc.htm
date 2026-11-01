@@ -57,6 +57,14 @@
 	<script src="../view/js/bbs.js<?php echo $static_version;?>"></script>
 	
 	<!--{hook admin_footer_js_after.htm}-->
+
+	<script>
+	$(function() {
+		if(window.xoPluginProtectMsg) {
+			alert(window.xoPluginProtectMsg);
+		}
+	});
+	</script>
 	
 </body>
 </html>

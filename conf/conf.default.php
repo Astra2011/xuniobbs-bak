@@ -133,6 +133,8 @@ return array (
 	
 	// 禁止插件
 	'disabled_plugin' => 0, 
+	// 插件保护：插件触发致命错误（白屏）时自动禁用该插件并恢复站点。1 开启，0 关闭。
+	'plugin_protect_on' => 1, 
 	  
 	'version' => '4.0.4',
 	'static_version' => '?1.0',

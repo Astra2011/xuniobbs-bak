@@ -369,18 +369,18 @@ function plugin_compile_srcfile_callback($m) {
 	if(!empty($hooks[$hookname])) {
 		$fileext = file_ext($hookname);
 		foreach($hooks[$hookname] as $path) {
+			// 从 hook 路径提取插件目录名，注入标记，供致命错误时反查「是哪个插件」
+			$dir = '';
+			if(preg_match('#/plugin/([^/]+)/hook/#', $path, $mm)) {
+				$dir = $mm[1];
+			}
 			$t = file_get_contents($path);
 			if($fileext == 'php' && preg_match('#^\s*<\?php\s+exit;#is', $t)) {
 				// 正则表达式去除兼容性比较好。
 				$t = preg_replace('#^\s*<\?php\s*exit;(.*?)(?:\?>)?\s*$#is', '\\1', $t);
-				
-				/* 去掉首尾标签
-				if(substr($t, 0, 5) == '<?php' && substr($t, -2, 2) == '?>') {
-					$t = substr($t, 5, -2);		
-				}
-				// 去掉 exit;
-				$t = preg_replace('#\s*exit;\s*#', "\r\n", $t);
-				*/
+			}
+			if($fileext == 'php' && $dir !== '') {
+				$t = "\n// @plugin:$dir\n".$t;
 			}
 			$s .= $t;
 		}
@@ -527,4 +527,84 @@ function plugin_siteid() {
 	$outid = md5($auth_key.$siteip.$dir);
 	return $outid;
 }*/
+
+// 启动早期处理「插件致命错误待禁用标记」。
+// 由 xo_shutdown_handle() 在崩溃时写标记文件，这里在加载任何带 hook 的文件之前处理，保证进程干净。
+// 返回被禁用的插件 dir（成功）或 ''（无待处理标记）。
+function plugin_protect_handle() {
+	global $conf;
+	if(empty($conf['plugin_protect_on'])) return '';
+
+	$tmp_path = empty($conf['tmp_path']) ? APP_PATH.'tmp/' : $conf['tmp_path'];
+	$marks = glob($tmp_path.'plugin_error_*.php');
+	if(empty($marks)) return '';
+
+	$dir = '';
+	$errmsg = '';
+	foreach($marks as $mark) {
+		$base = file_name($mark); // plugin_error_<dir>.php
+		if(strpos($base, 'plugin_error_') !== 0) continue;
+		$dir = substr($base, strlen('plugin_error_'), -4);
+		$dir = preg_replace('#[^a-zA-Z0-9_-]#', '', $dir);
+		if($dir === '') continue;
+
+		// 读标记内容（首行是 php 退出标记 + tab 分隔的时间/目录/文件/行号/错误消息）
+		$s = file_get_contents($mark);
+		$s = preg_replace('#^<\?php\s*exit;\?#i', '', $s);
+		$arr = explode("\t", trim($s, ">\t\r\n "));
+		// arr: [time, dir, file, line, errmsg]
+		$errmsg = isset($arr[4]) ? $arr[4] : '';
+		$errmsg = trim($errmsg);
+		break; // 一次只处理一个，避免连环禁用误伤
+	}
+
+	if($dir === '') return '';
+
+	// 删除标记文件（处理完即清，不留垃圾）
+	foreach($marks as $mark) xo_unlink($mark);
+
+	// 禁用该插件：把 conf.json 的 enable 置 0
+	$conffile = APP_PATH."plugin/$dir/conf.json";
+	if(is_file($conffile)) {
+		$pconf = xo_json_decode(file_get_contents($conffile));
+		if(is_array($pconf)) {
+			$pconf['enable'] = 0;
+			file_replace_var($conffile, array('enable'=>0), TRUE);
+		}
+	}
+
+	// 清空编译缓存，让禁用立即生效
+	plugin_clear_tmp_dir();
+
+	// 记录日志
+	xo_log("plugin auto-disabled: $dir, reason: $errmsg", 'plugin_error');
+
+	// 写一次性 flash，供后台弹窗报告
+	plugin_protect_flash_set($dir, $errmsg);
+
+	return $dir;
+}
+
+// 写一次性弹窗标记：内容仅存目录名 + 错误摘要，读一次即清，不残留。
+function plugin_protect_flash_set($dir, $errmsg) {
+	global $conf;
+	$tmp_path = empty($conf['tmp_path']) ? APP_PATH.'tmp/' : $conf['tmp_path'];
+	$flash = $tmp_path.'plugin_protect_flash.php';
+	$s = "<?php exit;?>\t".time()."\t".$dir."\t".str_replace(array("\r", "\n", "\t"), ' ', $errmsg)."\r\n";
+	@file_put_contents($flash, $s);
+}
+
+// 读并清除一次性弹窗标记。返回 array(dir, errmsg) 或 array()。
+function plugin_protect_flash_get() {
+	global $conf;
+	$tmp_path = empty($conf['tmp_path']) ? APP_PATH.'tmp/' : $conf['tmp_path'];
+	$flash = $tmp_path.'plugin_protect_flash.php';
+	if(!is_file($flash)) return array();
+	$s = file_get_contents($flash);
+	xo_unlink($flash);
+	$s = preg_replace('#^<\?php\s*exit;\?#i', '', $s);
+	$arr = explode("\t", trim($s, ">\t\r\n "));
+	if(count($arr) < 3) return array();
+	return array('dir'=>$arr[1], 'errmsg'=>isset($arr[2]) ? $arr[2] : '');
+}
 ?>
