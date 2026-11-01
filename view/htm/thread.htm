@@ -7,7 +7,7 @@
 		<!--{hook thread_breadcrumb_before.htm}-->
 		<?php if(empty($hide_breadcrumb)) { ?>
 		<ol class="breadcrumb d-none d-md-flex">
-			<li class="breadcrumb-item"><a href="./" aria-label="<?php echo lang('index_page');?>"><i class="icon-home"></i></a></li>
+			<li class="breadcrumb-item"><a href="./" aria-label="<?php echo lang('index_page');?>"><i class="ti-home"></i></a></li>
 			<li class="breadcrumb-item"><a href="<?php echo url("forum-$fid");?>"><?php echo $forum['name'];?></a></li>
 			<li class="breadcrumb-item active"><a href="<?php echo url("thread-$tid");?>" title="<?php echo lang('index_page');?>返回主题第一页"><?php echo $thread['subject'];?></a></li>
 			<!--{hook thread_breadcrumb.htm}-->
@@ -36,17 +36,17 @@
 									<a href="<?php echo url("user-$thread[uid]");?>" class="text-muted font-weight-bold"><?php echo $thread['username'];?></a>
 								</span>
 								<span class="date text-grey ml-2"><?php echo $thread['create_date_fmt'];?></span>
-								<span class="text-grey ml-2"><i class="icon-eye"></i> <?php echo $thread['views'];?></span>
+								<span class="text-grey ml-2"><i class="ti-eye"></i> <?php echo $thread['views'];?></span>
 								<!--{hook thread_views_after.htm}-->
 							</div>
 							<div>
 								<!--{hook thread_update_before.htm}-->
 								<?php if($allowupdate || $first['allowupdate']) { ?>
-								<a href="<?php echo url("post-update-$thread[firstpid]");?>" class="text-grey mr-2 post_update"><i class="icon-edit"></i> <?php echo lang('edit');?></a>
+								<a href="<?php echo url("post-update-$thread[firstpid]");?>" class="text-grey mr-2 post_update"><i class="ti-edit"></i> <?php echo lang('edit');?></a>
 								<?php } ?>
 								
 								<?php if($allowdelete || $first['allowdelete']) { ?>
-								<a data-href="<?php echo url("post-delete-$thread[firstpid]");?>" href="javascript:void(0);" class="text-grey post_delete" isfirst="1"><i class="icon-remove"></i> <?php echo lang('delete');?></a>
+								<a data-href="<?php echo url("post-delete-$thread[firstpid]");?>" href="javascript:void(0);" class="text-grey post_delete" isfirst="1"><i class="ti-x"></i> <?php echo lang('delete');?></a>
 								<?php } ?>
 								<!--{hook thread_delete_after.htm}-->
 							</div>
@@ -132,7 +132,7 @@
 											</div>
 											<div>
 												<!--{hook thread_quick_reply_right_start.htm}-->
-												<a class="icon-mail-forward text-muted" href="<?php echo url("post-create-$tid");?>" id="advanced_reply"> <?php echo lang('advanced_reply');?></a>
+												<a class="ti-mail-forward text-muted" href="<?php echo url("post-create-$tid");?>" id="advanced_reply"> <?php echo lang('advanced_reply');?></a>
 												<!--{hook thread_quick_reply_right_end.htm}-->
 											</div>
 										</div>

@@ -294,11 +294,11 @@ function post_file_list_html($filelist, $include_delete = FALSE) {
 	foreach ($filelist as &$attach) {
 		$s .= '<li aid="'.$attach['aid'].'">'."\r\n";
 		$s .= '		<a href="'.url("attach-download-$attach[aid]").'" target="_blank">'."\r\n";
-		$s .= '			<i class="icon filetype '.$attach['filetype'].'"></i>'."\r\n";
+		$s .= '			<i class="ti filetype '.$attach['filetype'].'"></i>'."\r\n";
 		$s .= '			'.$attach['orgfilename']."\r\n";
 		$s .= '		</a>'."\r\n";
 		// hook model_post_file_list_html_delete_before.php
-		$include_delete AND $s .= '		<a href="javascript:void(0)" class="delete ml-3"><i class="icon-remove"></i> '.lang('delete').'</a>'."\r\n";
+		$include_delete AND $s .= '		<a href="javascript:void(0)" class="delete ml-3"><i class="ti-x"></i> '.lang('delete').'</a>'."\r\n";
 		// hook model_post_file_list_html_delete_after.php
 		$s .= '</li>'."\r\n";
 	};

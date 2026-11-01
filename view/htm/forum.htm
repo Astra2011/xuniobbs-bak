@@ -7,7 +7,7 @@
 		<!--{hook forum_breadcrumb_before.htm}-->
 		<?php if(empty($hide_breadcrumb)) { ?>
 		<ol class="breadcrumb d-none d-md-flex">
-			<li class="breadcrumb-item"><a href="./"><i class="icon-home" aria-hidden="true"></i></a></li>
+			<li class="breadcrumb-item"><a href="./"><i class="ti-home" aria-hidden="true"></i></a></li>
 			<li class="breadcrumb-item active"><a href="<?php echo url("forum-$fid");?>"><?php echo $forum['name'];?></a></li>
 			<!--{hook forum_breadcrumb.htm}-->
 		</ol>
@@ -32,8 +32,8 @@
 								<!--{hook forum_thread_list_dropdown_toggle.htm}-->
 							</a>
 							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="ordery_dropdown_menu">
-							    <a class="dropdown-item" href="<?php echo url("forum-$fid-1", array('orderby'=>'tid') + $extra);?>"><i class="icon text-primary <?php echo $orderby == 'tid' ? 'icon-check' : '';?>"></i>&nbsp; <?php echo lang('thread_create_date');?></a>
-							    <a class="dropdown-item" href="<?php echo url("forum-$fid-1", array('orderby'=>'lastpid') + $extra);?>"><i class="icon text-primary <?php echo $orderby == 'lastpid' ? 'icon-check' : '';?>"></i>&nbsp; <?php echo lang('post_create_date');?></a>
+							    <a class="dropdown-item" href="<?php echo url("forum-$fid-1", array('orderby'=>'tid') + $extra);?>"><i class="ti text-primary <?php echo $orderby == 'tid' ? 'ti-check' : '';?>"></i>&nbsp; <?php echo lang('thread_create_date');?></a>
+							    <a class="dropdown-item" href="<?php echo url("forum-$fid-1", array('orderby'=>'lastpid') + $extra);?>"><i class="ti text-primary <?php echo $orderby == 'lastpid' ? 'ti-check' : '';?>"></i>&nbsp; <?php echo lang('post_create_date');?></a>
 							    <!--{hook forum_thread_list_dropdown_menu.htm}-->
 							</div>
 						</div>

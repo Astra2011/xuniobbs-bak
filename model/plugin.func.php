@@ -500,8 +500,8 @@ function plugin_read_by_dir($dir, $local_first = TRUE) {
 	$plugin['icon_url'] = $plugin['pluginid'] ? PLUGIN_OFFICIAL_URL."upload/plugin/$plugin[pluginid]/icon.png" : "../plugin/$dir/icon.png";
 	$plugin['setting_url'] = $plugin['installed'] && is_file("../plugin/$dir/setting.php") ? "plugin-setting-$dir.htm" : "";
 	$plugin['downloaded'] = isset($plugins[$dir]);
-	$plugin['stars_fmt'] = $plugin['pluginid'] ? str_repeat('<span class="icon star"></span>', $plugin['stars']) : '';
-	$plugin['user_stars_fmt'] = $plugin['pluginid'] ? str_repeat('<span class="icon star"></span>', $plugin['user_stars']) : '';
+	$plugin['stars_fmt'] = $plugin['pluginid'] ? str_repeat('<span class="ti star"></span>', $plugin['stars']) : '';
+	$plugin['user_stars_fmt'] = $plugin['pluginid'] ? str_repeat('<span class="ti star"></span>', $plugin['user_stars']) : '';
 	$plugin['is_cert_fmt'] = empty($plugin['is_cert']) ? '<span class="text-danger">'.lang('no').'</span>' : '<span class="text-success">'.lang('yes').'</span>';
 	$plugin['have_upgrade'] = $plugin['installed'] && version_compare($official['version'], $local['version']) > 0 ? TRUE : FALSE;
 	$plugin['official_version'] = $official['version']; // 官方版本

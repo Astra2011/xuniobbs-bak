@@ -82,7 +82,7 @@
 						<div class="attachlist_parent">
 							<a class="small text-left" href="javascript:void(0)">
 								<label class="addattach" id="addattach">
-									<i class="icon-folder-open-o"></i> 
+									<i class="ti-folder-open"></i> 
 									<?php echo lang('add_attach');?>
 									<input type="file"  multiple="multiple" class="invisible" />
 								</label>
@@ -155,7 +155,7 @@ $('#addattach').on('change', function(e) {
 			var url = message.url;
 			var filetype = message.filetype;
 			var aid = message.aid;
-			$('.attachlist').append('<li aid="' + aid + '"><a href="' + message.url + '" target="_blank"><i class="icon filetype ' + filetype + '"></i> ' + message.orgfilename + '</a> <a href="javascript:void(0);" class="delete ml-2"><i class="icon-remove"></i> <?php echo lang('delete');?></a></li>');
+			$('.attachlist').append('<li aid="' + aid + '"><a href="' + message.url + '" target="_blank"><i class="ti filetype ' + filetype + '"></i> ' + message.orgfilename + '</a> <a href="javascript:void(0);" class="delete ml-2"><i class="ti-x"></i> <?php echo lang('delete');?></a></li>');
 			callback();
 			jprogress.hide();
 		}, function(percent) {

@@ -18,7 +18,7 @@
 			</a>
 			
 			<!--- 右：用户 --->
-			<a class="navbar-brand d-md-none" href="../" title="<?php echo lang('front_index_page');?>"><i class="icon-home"></i></a>
+			<a class="navbar-brand d-md-none" href="../" title="<?php echo lang('front_index_page');?>"><i class="ti-home"></i></a>
 			
 			<!--{hook admin_header_nav_logo_after.htm}-->
 			<div class="collapse navbar-collapse" id="nav">
@@ -27,7 +27,7 @@
 					<!--{hook admin_header_nav_start.htm}-->
 						
 					<li class="nav-item home">
-						<a class="nav-link" href="./"><i class="icon-home"></i> <?php echo lang('admin_index_page');?></a>
+						<a class="nav-link" href="./"><i class="ti-home"></i> <?php echo lang('admin_index_page');?></a>
 					</li>
 					<?php foreach ($menu as $k=>$v) { ?>
 					<li class="nav-item nav-item-<?php echo $k;?>">
@@ -48,10 +48,10 @@
 						</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="../"><i class="icon-home"></i> <?php echo lang('front_index_page');?></a>
+						<a class="nav-link" href="../"><i class="ti-home"></i> <?php echo lang('front_index_page');?></a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="<?php echo url('index-logout');?>"><i class="icon-sign-out"></i> <?php echo lang('logout');?></a>
+						<a class="nav-link" href="<?php echo url('index-logout');?>"><i class="ti-logout"></i> <?php echo lang('logout');?></a>
 					</li>
 					
 					<!--{hook admin_header_nav_user_end.htm}-->
