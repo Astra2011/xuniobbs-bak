@@ -21,7 +21,7 @@ if($action == 'create') {
 		$forum = $fid ? forum_read($fid) : array();
 		
 		$forumlist_allowthread = forum_list_access_filter($forumlist, $gid, 'allowthread');
-		$forumarr = xn_json_encode(arrlist_key_values($forumlist_allowthread, 'fid', 'name'));
+		$forumarr = xo_json_encode(arrlist_key_values($forumlist_allowthread, 'fid', 'name'));
 		if(empty($forumlist_allowthread)) {
 			message(-1, lang('user_group_insufficient_privilege'));
 		}
@@ -47,13 +47,13 @@ if($action == 'create') {
 		
 		$subject = htmlspecialchars(param('subject', '', FALSE));
 		empty($subject) AND message('subject', lang('please_input_subject'));
-		xn_strlen($subject) > 128 AND message('subject', lang('subject_length_over_limit', array('maxlength'=>128)));
+		xo_strlen($subject) > 128 AND message('subject', lang('subject_length_over_limit', array('maxlength'=>128)));
 		
 		$message = param('message', '', FALSE);
 		empty($message) AND message('message', lang('please_input_message'));
 		$doctype = param('doctype', 0);
 		$doctype > 10 AND message(-1, lang('doc_type_not_supported'));
-		xn_strlen($message) > 2028000 AND message('message', lang('message_too_long'));
+		xo_strlen($message) > 2028000 AND message('message', lang('message_too_long'));
 		
 		$thread = array (
 			'fid'=>$fid,

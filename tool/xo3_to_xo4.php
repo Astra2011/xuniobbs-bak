@@ -7,7 +7,7 @@
 		假定您的目录为：/data/wwwroot/bbs.domain.com/
 		
 		1. 备份好 3.0 的数据库
-		2. 新建 4.0 的数据库 xiuno4
+		2. 新建 4.0 的数据库 xunio4
 		3. 把 3.0 的移动到 /data/wwwroot/bbs.domain.com/old 目录，新上传 4.0 到 /data/wwwroot/bbs.domain.com/ 下
 		4. 安装 4.0，访问 http://bbs.domain.com/install/
 		5. 安装完毕以后，将  xn3_to_xn4.php 上传到 /data/wwwroot/bbs.domain.com/ 下
@@ -18,22 +18,22 @@
 
 // 需要在命令行下运行。
 
-define('XIUNO_BBS_3_PATH', './old/');
-//define('XIUNO_BBS_3_PATH', '/home/wwwroot/bbs.xiuno.com/');
+define('XUNIO_BBS_3_PATH', './old/');
+//define('XUNIO_BBS_3_PATH', '/home/wwwroot/bbs.xiuno.com/');
 
 define('DEBUG', 1);
 
 $tablepre = 'bbs_';
 
-if(!$oldconf = include XIUNO_BBS_3_PATH.'conf/conf.php') {
+if(!$oldconf = include XUNIO_BBS_3_PATH.'conf/conf.php') {
 	exit('请将原来的整站移动到 ./old 目录');
 }
 
 if(!$conf = include './conf/conf.php') {
-	exit('请先安装完 Xiuno BBS 4.0。');
+	exit('请先安装完 Xunio BBS 4.0。');
 }
 
-include './xiunophp/xiunophp.php';
+include './xuniophp/xuniophp.php';
 
 $oldconf['db']['pdo_mysql']['master']['tablepre'] = 'bbs_';
 $oldconf['db']['mysql']['master']['tablepre'] = 'bbs_';
@@ -343,9 +343,9 @@ $sitebrief = $arr['v'];
 file_replace_var('./conf/conf.php', array('sitebrief'=>$sitebrief));*/
 
 // 递归拷贝目录
-copy_recusive(XIUNO_BBS_3_PATH.'upload/avatar', "./upload/avatar");
-copy_recusive(XIUNO_BBS_3_PATH.'upload/forum', "./upload/forum");
-copy_recusive(XIUNO_BBS_3_PATH.'upload/attach', "./upload/attach");
+copy_recusive(XUNIO_BBS_3_PATH.'upload/avatar', "./upload/avatar");
+copy_recusive(XUNIO_BBS_3_PATH.'upload/forum', "./upload/forum");
+copy_recusive(XUNIO_BBS_3_PATH.'upload/attach', "./upload/attach");
 
 echo '<a href="../">升级完成，点击进入论坛。</a>';
 

@@ -1,7 +1,7 @@
 <?php
-// 合并 XiunoPHP
+// 合并 XunioPHP
 
-$dir = '../xiunophp/';
+$dir = '../xuniophp/';
 
 
 $s = php_strip_whitespace($dir.'db_mysql.class.php');
@@ -18,30 +18,30 @@ $s .= php_strip_whitespace($dir.'db.func.php');
 $s .= php_strip_whitespace($dir.'cache.func.php');
 $s .= php_strip_whitespace($dir.'image.func.php');
 $s .= php_strip_whitespace($dir.'array.func.php');
-$s .= php_strip_whitespace($dir.'xn_encrypt.func.php');
+$s .= php_strip_whitespace($dir.'xo_encrypt.func.php');
 $s .= php_strip_whitespace($dir.'misc.func.php');
 
 $s = substr($s, 8, -2);
 
-$xiunophp = file_get_contents($dir.'xiunophp.php');
-$before = '// hook xiunophp_include_before.php';
-$after = '// hook xiunophp_include_after.php';
-$pre = substr($xiunophp, 0, strpos($xiunophp, $before) + 1 + strlen($before));
-$suffix = substr($xiunophp, strpos($xiunophp, $after));
-$xiunophp_min = trim($pre)."\r\n\r\n".trim($s)."\r\n\r\n".trim($suffix);
+$xuniophp = file_get_contents($dir.'xuniophp.php');
+$before = '// hook xuniophp_include_before.php';
+$after = '// hook xuniophp_include_after.php';
+$pre = substr($xuniophp, 0, strpos($xuniophp, $before) + 1 + strlen($before));
+$suffix = substr($xuniophp, strpos($xuniophp, $after));
+$xuniophp_min = trim($pre)."\r\n\r\n".trim($s)."\r\n\r\n".trim($suffix);
 
-//echo $xiunophp_min;exit;
+//echo $xuniophp_min;exit;
 /*
-$p = '#//\shook\sxiunophp_include_before\.php(.*?)//\shook\sxiunophp_include_after\.php#ism';
-$xiunophp_min = preg_replace($p, $s, $xiunophp);
+$p = '#//\shook\sxuniophp_include_before\.php(.*?)//\shook\sxuniophp_include_after\.php#ism';
+$xuniophp_min = preg_replace($p, $s, $xuniophp);
 */
 
 /*
-$xiunophp_min = preg_replace(
-'#//\shook\sxiunophp_include_before\.php(.*)//\shook\sxiunophp_include_after\.php#ism', 
-'//\shook\sxiunophp_include_before.php'.$s.'//\shook\sxiunophp_include_after.php', 
-$xiunophp);*/
+$xuniophp_min = preg_replace(
+'#//\shook\sxuniophp_include_before\.php(.*)//\shook\sxuniophp_include_after\.php#ism', 
+'//\shook\sxuniophp_include_before.php'.$s.'//\shook\sxuniophp_include_after.php', 
+$xuniophp);*/
 
-file_put_contents($dir.'xiunophp.min.php', $xiunophp_min);
+file_put_contents($dir.'xuniophp.min.php', $xuniophp_min);
 
 echo 'ok';

@@ -25,13 +25,13 @@ if($action == 'login') {
 		$password = param('password');
 
 		if(md5($password.$user['salt']) != $user['password']) {
-			xn_log('password error. uid:'.$user['uid'].' - ******'.substr($password, -6), 'admin_login_error');
+			xo_log('password error. uid:'.$user['uid'].' - ******'.substr($password, -6), 'admin_login_error');
 			message('password', lang('password_incorrect'));
 		}
 
 		admin_token_set();
 
-		xn_log('login successed. uid:'.$user['uid'], 'admin_login');
+		xo_log('login successed. uid:'.$user['uid'], 'admin_login');
 
 		// hook admin_index_login_post_end.php
 		

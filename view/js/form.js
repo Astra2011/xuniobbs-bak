@@ -1,7 +1,7 @@
 
-xn.form_radio = function(name, arr, checked) {
+xo.form_radio = function(name, arr, checked) {
 	var checked = checked || 0;
-	if(xn.empty(arr)) arr = [lang.no, lang.yes];
+	if(xo.empty(arr)) arr = [lang.no, lang.yes];
 	var s = '';
 	$.each(arr, function(k, v) {
 		var add = k == checked ? ' checked="checked"' : '';
@@ -10,7 +10,7 @@ xn.form_radio = function(name, arr, checked) {
 	return s;
 }
 
-xn.form_options = function(arr, checked) {
+xo.form_options = function(arr, checked) {
 	var checked = checked || 0;
 	var s = '';
 	$.each(arr, function(k, v) {
@@ -21,14 +21,14 @@ xn.form_options = function(arr, checked) {
 }
 
 
-xn.form_select = function(name, arr, checked, id) {
+xo.form_select = function(name, arr, checked, id) {
 	var checked = checked || 0;
 	var id = id || true;
-	if(xn.empty(arr)) return '';
+	if(xo.empty(arr)) return '';
 	var idadd = id === true ? "id=\""+name+"\"" : (id ? "id=\""+id+"\"" : '');
 	var s = '';
 	s += "<select name=\""+name+"\" class=\"custom-select\" "+idadd+"> \r\n";
-	s += xn.form_options(arr, checked);
+	s += xo.form_options(arr, checked);
 	s += "</select> \r\n";
 	return s;
 }

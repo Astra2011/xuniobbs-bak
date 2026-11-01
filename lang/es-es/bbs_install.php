@@ -39,17 +39,17 @@ return array(
 	'admin_username' => 'Nombre de usuario del administrador',
 	'admin_pw' => 'Contraseña del administrador',
 	'installing_about_moment' => 'Instalando, tarda aproximadamente un minuto',
-	'license_title' => 'Acuerdo de licencia en chino de Xiuno BBS 4.0',
-	'license_content' => 'Gracias por elegir Xiuno BBS 4.0, un foro ligero, compacto, estable y capaz de mantener una alta capacidad de carga incluso con grandes volúmenes de datos. Solo tiene poco más de 20 tablas, el código fuente comprimido ocupa aproximadamente 1 MB, funciona muy rápido, procesa cada solicitud en 0,01 segundos y puede alcanzar 0,00x segundos en entornos con APC, Yac o XCache. La dependencia de bibliotecas de terceros es mínima, solo jquery.js en el front. El autor lo considera como un Ferrari artesanal: potente y sin grasa, fácil de desplegar y mantener, una excelente base para el desarrollo secundario.
+	'license_title' => 'Acuerdo de licencia en chino de Xunio BBS 4.0',
+	'license_content' => 'Gracias por elegir Xunio BBS 4.0, un foro ligero, compacto, estable y capaz de mantener una alta capacidad de carga incluso con grandes volúmenes de datos. Solo tiene poco más de 20 tablas, el código fuente comprimido ocupa aproximadamente 1 MB, funciona muy rápido, procesa cada solicitud en 0,01 segundos y puede alcanzar 0,00x segundos en entornos con APC, Yac o XCache. La dependencia de bibliotecas de terceros es mínima, solo jquery.js en el front. El autor lo considera como un Ferrari artesanal: potente y sin grasa, fácil de desplegar y mantener, una excelente base para el desarrollo secundario.
 	
-Xiuno BBS 4.0 utiliza Bootstrap 4 + JQuery 3 como bibliotecas front y admite navegadores móviles. El backend XiunoPHP 4.0 permite manipular varias bases de datos al estilo NoSQL; esta versión es un gran salto adelante.
+Xunio BBS 4.0 utiliza Bootstrap 4 + JQuery 3 como bibliotecas front y admite navegadores móviles. El backend XunioPHP 4.0 permite manipular varias bases de datos al estilo NoSQL; esta versión es un gran salto adelante.
 	
-Xiuno se pronuncia «xiuluo», Shura en inglés, uno de los seis reinos del budismo: el «reino de los asuras», situado entre el reino humano y el de los dioses.
+Xunio se pronuncia «xiuluo», Shura en inglés, uno de los seis reinos del budismo: el «reino de los asuras», situado entre el reino humano y el de los dioses.
 
-Xiuno BBS 4.0 se publica bajo la licencia MIT. Puede modificarlo libremente, crear versiones derivadas y usarlo comercialmente sin riesgo legal (conserve los avisos de derechos de autor originales tras modificarlo).',
+Xunio BBS 4.0 se publica bajo la licencia MIT. Puede modificarlo libremente, crear versiones derivadas y usarlo comercialmente sin riesgo legal (conserve los avisos de derechos de autor originales tras modificarlo).',
 	'license_date' => 'Publicado: 22 de enero de 2018',
 	'agree_license_to_continue' => 'Aceptar el acuerdo y continuar la instalación',
-	'install_title' => 'Asistente de instalación de Xiuno BBS 4.0',
+	'install_title' => 'Asistente de instalación de Xunio BBS 4.0',
 	'install_guide' => 'Asistente de instalación',
 	
 	'function_check' => 'Verificación de dependencias de funciones',

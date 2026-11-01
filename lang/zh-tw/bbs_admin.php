@@ -163,7 +163,7 @@ return array(
 	'plugin_detail'=>'插件詳情',
 	'plugin_brief_url'=>'插件介紹網址',
 	'plugin_not_exists'=>'插件不存在',
-	'plugin_versio_not_match'=>'此插件依賴的 Xiuno BBS 最低版本為 {bbs_version} ，您當前的版本：{version}',
+	'plugin_versio_not_match'=>'此插件依賴的 Xunio BBS 最低版本為 {bbs_version} ，您當前的版本：{version}',
 	'plugin_download_sucessfully'=>'下載插件 ({dir}) 成功，請點擊進行安裝',
 	'plugin_install_sucessfully'=>'安裝插件 ( {name} ) 成功',
 	'plugin_unstall_sucessfully'=>'卸載插件 ( {name} ) 成功，要徹底刪除插件，請手工刪除 {dir} 目錄',

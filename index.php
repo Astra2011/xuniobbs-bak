@@ -17,7 +17,7 @@
 !defined('DEBUG') AND define('DEBUG', 0);
 define('APP_PATH', dirname(__FILE__).'/'); // __DIR__
 !defined('ADMIN_PATH') AND define('ADMIN_PATH', APP_PATH.'admin/');
-!defined('XIUNOPHP_PATH') AND define('XIUNOPHP_PATH', APP_PATH.'xiunophp/');
+!defined('XUNIOPHP_PATH') AND define('XUNIOPHP_PATH', APP_PATH.'xuniophp/');
 
 // !ini_get('zlib.output_compression') AND ob_start('ob_gzhandler');
 
@@ -39,9 +39,9 @@ substr($conf['upload_path'], 0, 2) == './' AND $conf['upload_path'] = APP_PATH.$
 $_SERVER['conf'] = $conf;
 
 if(DEBUG > 1) {
-	include XIUNOPHP_PATH.'xiunophp.php';
+	include XUNIOPHP_PATH.'xuniophp.php';
 } else {
-	include XIUNOPHP_PATH.'xiunophp.min.php';
+	include XUNIOPHP_PATH.'xuniophp.min.php';
 }
 
 // 测试数据库连接 / try to connect database

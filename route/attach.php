@@ -36,7 +36,7 @@ if(empty($action) || $action == 'create') {
 	$filetypes = include APP_PATH.'conf/attach.conf.php';
 	!in_array($ext, $filetypes['all']) AND $ext = '_'.$ext;
 	
-	$tmpanme = $uid.'_'.xn_rand(15).'.'.$ext;
+	$tmpanme = $uid.'_'.xo_rand(15).'.'.$ext;
 	$tmpfile = $conf['upload_path'].'tmp/'.$tmpanme;
 	$tmpurl = $conf['upload_url'].'tmp/'.$tmpanme;
 	

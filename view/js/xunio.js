@@ -1,5 +1,5 @@
 /*
-* xiuno.js 封装了部分 PHP 常用的函数，便于代码移植和使用。
+* xunio.js 封装了部分 PHP 常用的函数，便于代码移植和使用。
 * 技术支持： http://bbs.xiuno.com/
 */
 
@@ -25,7 +25,7 @@ if(!Object.values) {
 	}
 }
 Array.values = function(arr) {
-	return xn.array_filter(arr);
+	return xo.array_filter(arr);
 };
 
 Object.first = function(obj) {
@@ -59,40 +59,40 @@ if(typeof console == 'undefined') {
 	console.log = function() {};
 }
 
-/********************* xn 模拟 php 函数 ************************/
+/********************* xo 模拟 php 函数 ************************/
 
-// var xn = window; // browser， 如果要兼容以前的版本，请开启这里。
-// var xn = global; // nodejs
-var xn = {}; // 避免冲突，自己的命名空间。
+// var xo = window; // browser， 如果要兼容以前的版本，请开启这里。
+// var xo = global; // nodejs
+var xo = {}; // 避免冲突，自己的命名空间。
 
 // 针对国内的山寨套壳浏览器检测不准确
-xn.is_ie = (!!document.all) ? true : false;// ie6789
-xn.is_ie_10 = navigator.userAgent.indexOf('Trident') != -1;
-xn.is_ff = navigator.userAgent.indexOf('Firefox') != -1;
-xn.in_mobile = ($(window).width() < 1140);
-xn.options = {}; // 全局配置
+xo.is_ie = (!!document.all) ? true : false;// ie6789
+xo.is_ie_10 = navigator.userAgent.indexOf('Trident') != -1;
+xo.is_ff = navigator.userAgent.indexOf('Firefox') != -1;
+xo.in_mobile = ($(window).width() < 1140);
+xo.options = {}; // 全局配置
 
 
-xn.htmlspecialchars = function(s) {
+xo.htmlspecialchars = function(s) {
 	s = s.replace(/</g, "&lt;");
 	s = s.replace(/>/g, "&gt;");
 	return s;
 };
 
 // 标准的 urlencode()
-xn._urlencode = function(s) {
+xo._urlencode = function(s) {
 	s = encodeURIComponent(s);
-	s = xn.strtolower(s);
+	s = xo.strtolower(s);
 	return s;
 };
 
 // 标准的 urldecode()
-xn._urldecode = function(s) {
+xo._urldecode = function(s) {
 	s = decodeURIComponent(s);
 	return s;
 };
 
-xn.urlencode = function(s) {
+xo.urlencode = function(s) {
 	s = encodeURIComponent(s);
 	s = s.replace(/_/g, "%5f");
 	s = s.replace(/\-/g, "%2d");
@@ -107,37 +107,37 @@ xn.urlencode = function(s) {
 	return s;
 };
 
-xn.urldecode = function(s) {
+xo.urldecode = function(s) {
 	s = s.replace(/_/g, "%");
 	s = decodeURIComponent(s);
 	return s;
 };
 
 // 兼容 3.0
-xn.xn_urlencode = xn.urlencode_safe;
-xn.xn_urldecode = xn.urldecode_safe;
+xo.xo_urlencode = xo.urlencode_safe;
+xo.xo_urldecode = xo.urldecode_safe;
 
-xn.nl2br = function(s) {
+xo.nl2br = function(s) {
 	s = s.replace(/\r\n/g, "\n");
 	s = s.replace(/\n/g, "<br>");
 	s = s.replace(/\t/g, "&nbsp; &nbsp; &nbsp; &nbsp; ");
 	return s;
 };
 
-xn.time = function() {
-	return xn.intval(Date.now() / 1000);
+xo.time = function() {
+	return xo.intval(Date.now() / 1000);
 };
 
-xn.intval = function(s) {
+xo.intval = function(s) {
 	var i = parseInt(s);
 	return isNaN(i) ? 0 : i;
 };
 
-xn.floatval = function(s) {
+xo.floatval = function(s) {
 	if(!s) return 0;
 	if(s.constructor === Array) {
 		for(var i=0; i<s.length; i++) {
-			s[i] = xn.floatval(s[i]);
+			s[i] = xo.floatval(s[i]);
 		}
 		return s;
 	}
@@ -145,12 +145,12 @@ xn.floatval = function(s) {
 	return isNaN(r) ? 0 : r;
 };
 
-xn.isset = function(k) {
+xo.isset = function(k) {
 	var t = typeof k;
 	return t != 'undefined' && t != 'unknown';
 };
 
-xn.empty = function(s) {
+xo.empty = function(s) {
 	if(s == '0') return true;
 	if(!s) {
 		return true;
@@ -165,28 +165,28 @@ xn.empty = function(s) {
 	}
 };
 
-xn.ceil = Math.ceil;
-xn.round = Math.round;
-xn.floor = Math.floor;
-xn.f2y = function(i, callback) {
+xo.ceil = Math.ceil;
+xo.round = Math.round;
+xo.floor = Math.floor;
+xo.f2y = function(i, callback) {
 	if(!callback) callback = round;
 	var r = i / 100;
 	return callback(r);
 };
-xn.y2f = function(s) {
-	var r = xn.round(xn.intval(s) * 100);
+xo.y2f = function(s) {
+	var r = xo.round(xo.intval(s) * 100);
 	return r;
 };
-xn.strtolower = function(s) {
+xo.strtolower = function(s) {
 	s += '';
 	return s.toLowerCase();
 };
-xn.strtoupper = function(s) {
+xo.strtoupper = function(s) {
 	s += '';
 	return s.toUpperCase();
 };
 
-xn.json_type = function(o) {
+xo.json_type = function(o) {
 	var _toS = Object.prototype.toString;
 	var _types = {
 		'undefined': 'undefined',
@@ -202,14 +202,14 @@ xn.json_type = function(o) {
 	return _types[typeof o] || _types[_toS.call(o)] || (o ? 'object' : 'null');
 };
 
-xn.json_encode = function(o) {
+xo.json_encode = function(o) {
 	var json_replace_chars = function(chr) {
 		var specialChars = { '\b': '\\b', '\t': '\\t', '\n': '\\n', '\f': '\\f', '\r': '\\r', '"': '\\"', '\\': '\\\\' };
 		return specialChars[chr] || '\\u00' + Math.floor(chr.charCodeAt() / 16).toString(16) + (chr.charCodeAt() % 16).toString(16);
 	};
 
 	var s = [];
-	switch (xn.json_type(o)) {
+	switch (xo.json_type(o)) {
 		case 'undefined':
 			return 'undefined';
 			break;
@@ -227,14 +227,14 @@ xn.json_encode = function(o) {
 			break;
 		case 'array':
 			for (var i = 0, l = o.length; i < l; i++) {
-				s.push(xn.json_encode(o[i]));
+				s.push(xo.json_encode(o[i]));
 			}
 			return '[' + s.join(',') + ']';
 			break;
 		case 'error':
 		case 'object':
 			for (var p in o) {
-				s.push('"' + p + '"' + ':' + xn.json_encode(o[p]));
+				s.push('"' + p + '"' + ':' + xo.json_encode(o[p]));
 			}
 			return '{' + s.join(',') + '}';
 			break;
@@ -244,7 +244,7 @@ xn.json_encode = function(o) {
 	}
 };
 
-xn.json_decode = function(s) {
+xo.json_decode = function(s) {
 	if(!s) return null;
 	try {
 		// 去掉广告代码。这行代码挺无语的，为了照顾国内很多人浏览器中广告病毒的事实。
@@ -259,17 +259,17 @@ xn.json_decode = function(s) {
 	}
 };
 
-xn.clone = function(obj) {
-        return xn.json_decode(xn.json_encode(obj));
+xo.clone = function(obj) {
+        return xo.json_decode(xo.json_encode(obj));
 }
 
 // 方便移植 PHP 代码
-xn.min = function() {return Math.min.apply(this, arguments);}
-xn.max = function() {return Math.max.apply(this, arguments);}
-xn.str_replace = function(s, d, str) {var p = new RegExp(s, 'g'); return str.replace(p, d);}
-xn.strrpos = function(str, s) {return str.lastIndexOf(s);}
-xn.strpos = function(str, s) {return str.indexOf(s);}
-xn.substr = function(str, start, len) {
+xo.min = function() {return Math.min.apply(this, arguments);}
+xo.max = function() {return Math.max.apply(this, arguments);}
+xo.str_replace = function(s, d, str) {var p = new RegExp(s, 'g'); return str.replace(p, d);}
+xo.strrpos = function(str, s) {return str.lastIndexOf(s);}
+xo.strpos = function(str, s) {return str.indexOf(s);}
+xo.substr = function(str, start, len) {
 	// 支持负数
 	if(!str) return '';
 	var end = length;
@@ -284,11 +284,11 @@ xn.substr = function(str, start, len) {
 	}
 	return str.substring(start, end);
 };
-xn.explode = function(sep, s) {return s.split(sep);}
-xn.implode = function(glur, arr) {return arr.join(glur);}
-xn.array_merge = function(arr1, arr2) {return arr1 && arr1.__proto__ === Array.prototype && arr2 && arr2.__proto__ === Array.prototype ? arr1.concat(arr2) : $.extend(arr1, arr2);}
+xo.explode = function(sep, s) {return s.split(sep);}
+xo.implode = function(glur, arr) {return arr.join(glur);}
+xo.array_merge = function(arr1, arr2) {return arr1 && arr1.__proto__ === Array.prototype && arr2 && arr2.__proto__ === Array.prototype ? arr1.concat(arr2) : $.extend(arr1, arr2);}
 // 比较两个数组的差异，在 arr1 之中，但是不在 arr2 中。返回差异结果集的新数组，
-xn.array_diff = function(arr1, arr2) {
+xo.array_diff = function(arr1, arr2) {
 	if(arr1.__proto__ === Array.prototype) {
 		var o = {};
 		for(var i = 0, len = arr2.length; i < len; i++) o[arr2[i]] = true;
@@ -319,7 +319,7 @@ xn.array_diff = function(arr1, arr2) {
 	var arr = [0,1,2,3];
 	array_filter(arr, function(k,v) { k == 1} );
 */
-xn.array_filter = function(arr, callback) {
+xo.array_filter = function(arr, callback) {
 	var newarr = [];
 	for(var k in arr) {
 		var v = arr[k];
@@ -329,19 +329,19 @@ xn.array_filter = function(arr, callback) {
 	}
 	return newarr;
 };
-xn.array_keys = function(obj) {
+xo.array_keys = function(obj) {
 	var arr = [];
 	$.each(obj, function(k) {arr.push(k);});
 	return arr;
 };
-xn.array_values = function(obj) {
+xo.array_values = function(obj) {
 	var arr = [];
 	$.each(obj, function(k, v) {arr.push(v);});
 	return arr;
 };
-xn.in_array = function(v, arr) { return $.inArray(v, arr) != -1;}
+xo.in_array = function(v, arr) { return $.inArray(v, arr) != -1;}
 
-xn.rand = function(n) {
+xo.rand = function(n) {
 	var str = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
 	var r = '';
 	for (i = 0; i < n; i++) {
@@ -350,14 +350,14 @@ xn.rand = function(n) {
 	return r;
 };
 
-xn.random = function(min, max) {
+xo.random = function(min, max) {
 	var num = Math.random()*(max-min + 1) + min;
 	var r = Math.ceil(num);
 	return r;
 };
 
 // 所谓的 js 编译模板，不过是一堆效率低下的正则替换，这种东西根据自己喜好用吧。
-xn.template = function(s, json) {
+xo.template = function(s, json) {
 	//console.log(json);
 	for(k in json) {
 		var r = new RegExp('\{('+k+')\}', 'g');
@@ -368,7 +368,7 @@ xn.template = function(s, json) {
 	return s;
 };
 
-xn.is_mobile = function(s) {
+xo.is_mobile = function(s) {
 	var r = /^\d{11}$/;
 	if(!s) {
 		return false;
@@ -378,7 +378,7 @@ xn.is_mobile = function(s) {
 	return true;
 };
 
-xn.is_email = function(s) {
+xo.is_email = function(s) {
 	var r = /^[\w\-\.]+@[\w\-\.]+(\.\w+)+$/i
 	if(!s) {
 		return false;
@@ -388,18 +388,18 @@ xn.is_email = function(s) {
 	return true;
 };
 
-xn.is_string = function(obj) {return Object.prototype.toString.apply(obj) == '[object String]';};
-xn.is_function = function(obj) {return Object.prototype.toString.apply(obj) == '[object Function]';};
-xn.is_array = function(obj) {return Object.prototype.toString.apply(obj) == '[object Array]';};
-xn.is_number = function(obj) {return Object.prototype.toString.apply(obj) == '[object Number]' || /^\d+$/.test(obj);};
-xn.is_regexp = function(obj) {return Object.prototype.toString.apply(obj) == '[object RegExp]';};
-xn.is_object = function(obj) {return Object.prototype.toString.apply(obj) == '[object Object]';};
-xn.is_element = function(obj) {return !!(obj && obj.nodeType === 1);};
+xo.is_string = function(obj) {return Object.prototype.toString.apply(obj) == '[object String]';};
+xo.is_function = function(obj) {return Object.prototype.toString.apply(obj) == '[object Function]';};
+xo.is_array = function(obj) {return Object.prototype.toString.apply(obj) == '[object Array]';};
+xo.is_number = function(obj) {return Object.prototype.toString.apply(obj) == '[object Number]' || /^\d+$/.test(obj);};
+xo.is_regexp = function(obj) {return Object.prototype.toString.apply(obj) == '[object RegExp]';};
+xo.is_object = function(obj) {return Object.prototype.toString.apply(obj) == '[object Object]';};
+xo.is_element = function(obj) {return !!(obj && obj.nodeType === 1);};
 
-xn.lang = function(key, arr) {
+xo.lang = function(key, arr) {
 	var r = lang[key] ? lang[key] : "lang["+key+"]";
 	if(arr) {
-		$.each(arr, function(k, v) { r = xn.str_replace("{"+k+"}", v, r);});	
+		$.each(arr, function(k, v) { r = xo.str_replace("{"+k+"}", v, r);});	
 	}
 	return r;
 };
@@ -408,39 +408,39 @@ xn.lang = function(key, arr) {
 	js 版本的翻页函数
 */
 // 用例：pages('user-list-{page}.htm', 100, 10, 5);
-xn.pages = function (url, totalnum, page, pagesize) {
+xo.pages = function (url, totalnum, page, pagesize) {
 	if(!page) page = 1;
 	if(!pagesize) pagesize = 20;
-	var totalpage = xn.ceil(totalnum / pagesize);
+	var totalpage = xo.ceil(totalnum / pagesize);
 	if(totalpage < 2) return '';
-	page = xn.min(totalpage, page);
+	page = xo.min(totalpage, page);
 	var shownum = 5;	// 显示多少个页 * 2
 
-	var start = xn.max(1, page - shownum);
-	var end = xn.min(totalpage, page + shownum);
+	var start = xo.max(1, page - shownum);
+	var end = xo.min(totalpage, page + shownum);
 
 	// 不足 $shownum，补全左右两侧
 	var right = page + shownum - totalpage;
-	if(right > 0) start = xn.max(1, start -= right);
+	if(right > 0) start = xo.max(1, start -= right);
 	left = page - shownum;
-	if(left < 0) end = xn.min(totalpage, end -= left);
+	if(left < 0) end = xo.min(totalpage, end -= left);
 
 	var s = '';
-	if(page != 1) s += '<a href="'+xn.str_replace('{page}', page-1, url)+'">◀</a>';
-	if(start > 1) s += '<a href="'+xn.str_replace('{page}', 1, url)+'">1 '+(start > 2 ? '... ' : '')+'</a>';
+	if(page != 1) s += '<a href="'+xo.str_replace('{page}', page-1, url)+'">◀</a>';
+	if(start > 1) s += '<a href="'+xo.str_replace('{page}', 1, url)+'">1 '+(start > 2 ? '... ' : '')+'</a>';
 	for(i=start; i<=end; i++) {
 		if(i == page) {
-			s += '<a href="'+xn.str_replace('{page}', i, url)+'" class="active">'+i+'</a>';// active
+			s += '<a href="'+xo.str_replace('{page}', i, url)+'" class="active">'+i+'</a>';// active
 		} else {
-			s += '<a href="'+xn.str_replace('{page}', i, url)+'">'+i+'</a>';
+			s += '<a href="'+xo.str_replace('{page}', i, url)+'">'+i+'</a>';
 		}
 	}
-	if(end != totalpage) s += '<a href="'+xn.str_replace('{page}', totalpage, url)+'">'+(totalpage - end > 1 ? '... ' : '')+totalpage+'</a>';
-	if(page != totalpage) s += '<a href="'+xn.str_replace('{page}', page+1, url)+'">▶</a>';
+	if(end != totalpage) s += '<a href="'+xo.str_replace('{page}', totalpage, url)+'">'+(totalpage - end > 1 ? '... ' : '')+totalpage+'</a>';
+	if(page != totalpage) s += '<a href="'+xo.str_replace('{page}', page+1, url)+'">▶</a>';
 	return s;
 };
 
-xn.parse_url = function(url) {
+xo.parse_url = function(url) {
 	if(url.match(/^(([a-z]+):)\/\//i)) {
 		var arr = url.match(/^(([a-z]+):\/\/)?([^\/\?#]+)\/*([^\?#]*)\??([^#]*)#?(\w*)$/i);
 		if(!arr) return null;
@@ -471,7 +471,7 @@ xn.parse_url = function(url) {
 	}
 };
 
-xn.parse_str = function (str){
+xo.parse_str = function (str){
 	var sep1 = '=';
 	var sep2 = '&';
 	var arr = str.split(sep2);
@@ -484,15 +484,15 @@ xn.parse_str = function (str){
 };
 
 // 解析 url 参数获取 $_GET 变量
-xn.parse_url_param = function(url) {
-	var arr = xn.parse_url(url);
+xo.parse_url_param = function(url) {
+	var arr = xo.parse_url(url);
 	var q = arr.path;
-	var pos = xn.strrpos(q, '/');
-	q = xn.substr(q, pos + 1);
+	var pos = xo.strrpos(q, '/');
+	q = xo.substr(q, pos + 1);
 	var r = [];
-	if(xn.substr(q, -4) == '.htm') {
-		q = xn.substr(q, 0, -4);
-		r = xn.explode('-', q);
+	if(xo.substr(q, -4) == '.htm') {
+		q = xo.substr(q, 0, -4);
+		r = xo.explode('-', q);
 	// 首页
 	} else if (url && url != window.location && url != '.' && url != '/' && url != './'){
 		r = ['thread', 'seo', url];
@@ -500,24 +500,24 @@ xn.parse_url_param = function(url) {
 
 	// 将 xxx.htm?a=b&c=d 后面的正常的 _GET 放到 $_SERVER['_GET']
 	if(!empty(arr['query'])) {
-		var arr2 = xn.parse_str(arr['query']);
-		r = xn.array_merge(r, arr2);
+		var arr2 = xo.parse_str(arr['query']);
+		r = xo.array_merge(r, arr2);
 	}
 	return r;
 };
 
 // 从参数里获取数据
-xn.param = function(key) {
+xo.param = function(key) {
 
 };
 
 // 模拟服务端 url() 函数
 
-xn.url = function(u, url_rewrite) {
+xo.url = function(u, url_rewrite) {
 	var on = window.url_rewrite_on || url_rewrite;
-	if(xn.strpos(u, '/') != -1) {
-		var path = xn.substr(u, 0, xn.strrpos(u, '/') + 1);
-		var query = xn.substr(u, xn.strrpos(u, '/') + 1);
+	if(xo.strpos(u, '/') != -1) {
+		var path = xo.substr(u, 0, xo.strrpos(u, '/') + 1);
+		var query = xo.substr(u, xo.strrpos(u, '/') + 1);
 	} else {
 		var path = '';
 		var query = u;
@@ -528,25 +528,25 @@ xn.url = function(u, url_rewrite) {
 	} else if(on == 1) {
 		r = path + query + ".htm";
 	} else if(on == 2) {
-		r = path + '?' + xn.str_replace('-', '/', query);
+		r = path + '?' + xo.str_replace('-', '/', query);
 	} else if(on == 3) {
-		r = path + xn.str_replace('-', '/', query);
+		r = path + xo.str_replace('-', '/', query);
 	}
 	return r;
 };
 
 // 将参数添加到 URL
-xn.url_add_arg = function(url, k, v) {
-	var pos = xn.strpos(url, '.htm');
+xo.url_add_arg = function(url, k, v) {
+	var pos = xo.strpos(url, '.htm');
 	if(pos === false) {
-		return xn.strpos(url, '?') === false ? url + "&" + k + "=" + v :  url + "?" + k + "=" + v;
+		return xo.strpos(url, '?') === false ? url + "&" + k + "=" + v :  url + "?" + k + "=" + v;
 	} else {
-		return xn.substr(url, 0, pos) + '-' + v + xn.substr(url, pos);
+		return xo.substr(url, 0, pos) + '-' + v + xo.substr(url, pos);
 	}
 };
 
 // 页面跳转的时间
-//xn.jumpdelay = xn.debug ? 20000000 : 2000;
+//xo.jumpdelay = xo.debug ? 20000000 : 2000;
 
 
 /********************* 对 JQuery 进行扩展 ************************/
@@ -572,21 +572,21 @@ Array.prototype.sort = function(arg) {
 	}
 }*/
 
-xn.arrlist_values = function(arrlist, key) {
+xo.arrlist_values = function(arrlist, key) {
 	var r = [];
 	arrlist.map(function(arr) { r.push(arr[key]); });
 	return r;
 };
 
-xn.arrlist_key_values = function(arrlist, key, val, pre) {
+xo.arrlist_key_values = function(arrlist, key, val, pre) {
 	var r = {};
 	var pre = pre || '';
 	arrlist.map(function(arr) { r[arr[pre+key]] = arr[val]; });
 	return r;
 };
 
-xn.arrlist_keep_keys = function(arrlist, keys) {
-	if(!xn.is_array(keys)) keys = [keys];
+xo.arrlist_keep_keys = function(arrlist, keys) {
+	if(!xo.is_array(keys)) keys = [keys];
 	for(k in arrlist) {
 		var arr = arrlist[k];
 		var newarr = {};
@@ -603,10 +603,10 @@ xn.arrlist_keep_keys = function(arrlist, keys) {
 	{uid:2, gid:2},
 	{uid:3, gid:1},
 ];
-var arrlist2 = xn.arrlist_keep_keys(arrlist, 'gid');
+var arrlist2 = xo.arrlist_keep_keys(arrlist, 'gid');
 console.log(arrlist2);*/
 
-xn.arrlist_multisort = function(arrlist, k, asc) {
+xo.arrlist_multisort = function(arrlist, k, asc) {
 	var arrlist = arrlist.sort(function(a, b) {
 		if(a[k] == b[k]) return 0;
 		var r = a[k] > b[k];
@@ -621,16 +621,16 @@ var arrlist = [
 	{uid:2, gid:2},
 	{uid:3, gid:1},
 ];
-var arrlist2 = xn.arrlist_multisort(arrlist, 'gid', false);
+var arrlist2 = xo.arrlist_multisort(arrlist, 'gid', false);
 console.log(arrlist2);
 */
 
-// if(xn.is_ie) document.documentElement.addBehavior("#default#userdata");
+// if(xo.is_ie) document.documentElement.addBehavior("#default#userdata");
 
 $.pdata = function(key, value) {
 	var r = '';
 	if(typeof value != 'undefined') {
-		value = xn.json_encode(value);
+		value = xo.json_encode(value);
 	}
 
 	// HTML 5
@@ -639,7 +639,7 @@ $.pdata = function(key, value) {
 		if(window.localStorage){
 			if(typeof value == 'undefined') {
 				r = localStorage.getItem(key);
-				return xn.json_decode(r);
+				return xo.json_decode(r);
 			} else {
 				return localStorage.setItem(key, value);
 			}
@@ -647,12 +647,12 @@ $.pdata = function(key, value) {
 	} catch(e) {}
 
 	// HTML 4
-	if(xn.is_ie && (!document.documentElement || typeof document.documentElement.load == 'unknown' || !document.documentElement.load)) {
+	if(xo.is_ie && (!document.documentElement || typeof document.documentElement.load == 'unknown' || !document.documentElement.load)) {
 		return '';
 	}
 	// get
 	if(typeof value == 'undefined') {
-		if(xn.is_ie) {
+		if(xo.is_ie) {
 			try {
 				document.documentElement.load(key);
 				r = document.documentElement.getAttribute(key);
@@ -667,10 +667,10 @@ $.pdata = function(key, value) {
 				r = '';
 			}
 		}
-		return xn.json_decode(r);
+		return xo.json_decode(r);
 	// set
 	} else {
-		if(xn.is_ie){
+		if(xo.is_ie){
 			try {
 				// fix: IE TEST for ie6 崩溃
 				document.documentElement.load(key);
@@ -732,9 +732,9 @@ $.xget = function(url, callback, retry) {
 		xhrFields: {withCredentials: true},
 		success: function(r){
 			if(!r) return callback(-100, 'Server Response Empty!');
-			var s = xn.json_decode(r);
+			var s = xo.json_decode(r);
 			if(!s) {
-				return callback(-101, r); // 'Server Response xn.json_decode() failed：'+
+				return callback(-101, r); // 'Server Response xo.json_decode() failed：'+
 			}
 			if(s.code === undefined) {
 				if($.isPlainObject(s)) {
@@ -815,7 +815,7 @@ $.xpost = function(url, postdata, callback, progress_callback) {
 		},
 		success: function(r){
 			if(!r) return callback(-1, 'Server Response Empty!');
-			var s = xn.json_decode(r);
+			var s = xo.json_decode(r);
 			if(!s || s.code === undefined) return callback(-1, 'Server Response Not JSON：'+r);
 			if(s.code == 0) {
 				return callback(0, s.message);
@@ -875,7 +875,7 @@ $.require = function() {
 				console.log('script load error:'+js);
 				_this.load(args, i+1);
 			};
-			if(xn.is_ie) {
+			if(xo.is_ie) {
 				script.onreadystatechange = function() {
 					if(script.readyState == 'loaded' || script.readyState == 'complete') {
 						_this.load(args, i+1);
@@ -925,7 +925,7 @@ $.fn.loading = function(action) {
 			var left = offset.left;
 			var top = offset.top;
 			var w = jthis.width();
-			var h = xn.min(jthis.height(), $(window).height());
+			var h = xo.min(jthis.height(), $(window).height());
 			var left = w / 2 - jloading.width() / 2;
 			var top = (h / 2 -  jloading.height() / 2) * 2 / 3;
 			jloading.css('position', 'absolute').css('left', left).css('top', top);
@@ -957,8 +957,8 @@ $.fn.base64_encode_file = function(width, height, action) {
 		reader.readAsDataURL(file);
 		reader.onload = function(e) {
 			// 如果是图片，并且设置了，宽高，和剪切模式
-			if(width && height && xn.substr(this.result, 0, 10) == 'data:image') {
-				xn.image_resize(this.result, function(code, message) {
+			if(width && height && xo.substr(this.result, 0, 10) == 'data:image') {
+				xo.image_resize(this.result, function(code, message) {
 					if(code == 0) {
 						if(jassoc) jassoc.attr('src', message.data);
 						jhidden.val(message.data); // base64
@@ -976,14 +976,14 @@ $.fn.base64_encode_file = function(width, height, action) {
 	});
 };
 
-xn.base64_data_image_type = function(s) {
+xo.base64_data_image_type = function(s) {
 	//data:image/png;base64
 	r = s.match(/^data:image\/(\w+);/i);
 	return r[1];
 };
 
 // 图片背景透明算法 by axiuno@gmail.com，只能处理小图片，效率做过改进，目前速度还不错。
-xn.image_background_opacity = function(data, width, height, callback) {
+xo.image_background_opacity = function(data, width, height, callback) {
 	var x = 0;
 	var y = 0;
 	//var map = {}; // 图片的状态位： 0: 未检测，1:检测过是背景，2：检测过不是背景
@@ -1039,7 +1039,7 @@ xn.image_background_opacity = function(data, width, height, callback) {
 	function get_one_unchecked() {
 		if(unchecked_arr.length == 0) return false;
 		var k = unchecked_arr.pop();
-		var r = xn.explode('-', k);
+		var r = xo.explode('-', k);
 		return r;
 	}
 	function checked_push(x, y) {
@@ -1069,8 +1069,8 @@ xn.image_background_opacity = function(data, width, height, callback) {
 		//if(unchecked.length > 1000) return;
 		// 遍历完毕，终止遍历
 		if(!curr) break;
-		var x = xn.intval(curr[0]);
-		var y = xn.intval(curr[1]);
+		var x = xo.intval(curr[0]);
+		var y = xo.intval(curr[1]);
 		
 		// 在 data 中的偏移量应该 * 4, rgba 各占一位。
 		var pos = 4 * ((y * width) + x);
@@ -1101,8 +1101,8 @@ xn.image_background_opacity = function(data, width, height, callback) {
 	}
 };
 
-xn.image_file_type = function(file_base64_data) {
-	var pre = xn.substr(file_base64_data, 0, 14);
+xo.image_file_type = function(file_base64_data) {
+	var pre = xo.substr(file_base64_data, 0, 14);
 	if(pre == 'data:image/gif') {
 		return 'gif';
 	} else if(pre == 'data:image/jpe' || pre == 'data:image/jpg') {
@@ -1114,16 +1114,16 @@ xn.image_file_type = function(file_base64_data) {
 }
 
 //对图片进行裁切，缩略，对黑色背景，透明化处理
-xn.image_resize = function(file_base64_data, callback, options) {
+xo.image_resize = function(file_base64_data, callback, options) {
 	var thumb_width = options.width || 1200;
 	var thumb_height = options.height || 2400;
 	var action = options.action || 'thumb';
-	var filetype = options.filetype || xn.image_file_type(file_base64_data);//xn.base64_data_image_type(file_base64_data);
+	var filetype = options.filetype || xo.image_file_type(file_base64_data);//xo.base64_data_image_type(file_base64_data);
 	var qulity = options.qulity || 0.9; // 图片质量, 1 为无损
 	
 	if(thumb_width < 1) return callback(-1, '缩略图宽度不能小于 1 / thumb image width length is less 1 pix');
-	if(xn.substr(file_base64_data, 0, 10) != 'data:image') return callback(-1, '传入的 base64 数据有问题 / deformed base64 data');
-	// && xn.substr(file_base64_data, 0, 14) != 'data:image/gif' gif 不支持\
+	if(xo.substr(file_base64_data, 0, 10) != 'data:image') return callback(-1, '传入的 base64 数据有问题 / deformed base64 data');
+	// && xo.substr(file_base64_data, 0, 14) != 'data:image/gif' gif 不支持\
 	
 	var img = new Image();
 	img.onload = function() {
@@ -1138,7 +1138,7 @@ xn.image_resize = function(file_base64_data, callback, options) {
 			var img_width = img.width;
 			var img_height = img.height;
 			
-			if(xn.substr(file_base64_data, 0, 14) == 'data:image/gif') return callback(0, {width: img_width, height: img_height, data: file_base64_data});
+			if(xo.substr(file_base64_data, 0, 14) == 'data:image/gif') return callback(0, {width: img_width, height: img_height, data: file_base64_data});
 			
 			// width, height: 计算出来的宽高（求）
 			// thumb_width, thumb_height: 要求的缩略宽高
@@ -1216,7 +1216,7 @@ xn.image_resize = function(file_base64_data, callback, options) {
 			var data = imagedata.data;
 			// 判断与 [0,0] 值相同的并且连续的像素为背景
 	
-			//xn.image_background_opacity(data, canvas_width, canvas_height);
+			//xo.image_background_opacity(data, canvas_width, canvas_height);
 	
 			// 将修改后的代码复制回画布中
 			ctx.putImageData(imagedata, 0, 0);
@@ -1227,7 +1227,7 @@ xn.image_resize = function(file_base64_data, callback, options) {
 			if(callback) callback(0, {width: width, height: height, data: s});
 		
 		};
-		water_img.src = options.water_image_url || xn.options.water_image_url;
+		water_img.src = options.water_image_url || xo.options.water_image_url;
 	};
 	img.onerror = function(e) {
 		console.log(e);
@@ -1242,7 +1242,7 @@ xn.image_resize = function(file_base64_data, callback, options) {
 	var upload_url = 'xxx.php'; // 服务端地址
 	var postdata = {width: 2048, height: 4096, action: 'thumb', filetype: 'jpg'}; // postdata|options 公用，一起传给服务端。
 	var progress = function(percent) { console.log('progress:'+ percent); }}; // 如果是图片，会根据此项设定进行缩略和剪切 thumb|clip
-	xn.upload_file(file, upload_url, postdata, function(code, json) {
+	xo.upload_file(file, upload_url, postdata, function(code, json) {
 		// 成功
 		if(code == 0) {
 			console.log(json.url);
@@ -1253,7 +1253,7 @@ xn.image_resize = function(file_base64_data, callback, options) {
 		}
 	}, progress);
 */
-xn.upload_file = function(file, upload_url, postdata, complete_callback, progress_callback, thumb_callback) {
+xo.upload_file = function(file, upload_url, postdata, complete_callback, progress_callback, thumb_callback) {
 	postdata = postdata || {};
 	postdata.width = postdata.width || 1200;
 	postdata.height = postdata.height || 2400;
@@ -1270,10 +1270,10 @@ xn.upload_file = function(file, upload_url, postdata, complete_callback, progres
 		
 		// gif 直接上传
 		// 图片进行缩放，然后上传
-		//  && xn.substr(base64_data, 0, 14) != 'data:image/gif'
-		if(xn.substr(base64_data, 0, 10) == 'data:image') {
+		//  && xo.substr(base64_data, 0, 14) != 'data:image/gif'
+		if(xo.substr(base64_data, 0, 10) == 'data:image') {
 			var filename = file.name ? file.name : (file.type == 'image/png' ? 'capture.png' : 'capture.jpg');
-			xn.image_resize(base64_data, function(code, message) {
+			xo.image_resize(base64_data, function(code, message) {
 				if(code != 0) return alert(message);
 				// message.width, message.height 是缩略后的宽度和高度
 				postdata.name = filename;
@@ -1294,7 +1294,7 @@ xn.upload_file = function(file, upload_url, postdata, complete_callback, progres
 	};
 		
 	// 如果为 base64 则不需要 new FileReader()
-	if(xn.is_string(file) && xn.substr(file, 0, 10) == 'data:image') {
+	if(xo.is_string(file) && xo.substr(file, 0, 10) == 'data:image') {
 		var base64_data = file;
 		if(thumb_callback) thumb_callback(base64_data);
 		ajax_upload_file(base64_data);
@@ -1311,7 +1311,7 @@ xn.upload_file = function(file, upload_url, postdata, complete_callback, progres
 };
 
 // 从事件对象中查找 file 对象，兼容 jquery event, clipboard, file.onchange
-xn.get_files_from_event = function(e) {
+xo.get_files_from_event = function(e) {
 	function get_paste_files(e) {
 		return e.clipboardData && e.clipboardData.items ? e.clipboardData.items : null;
 	}
@@ -1325,7 +1325,7 @@ xn.get_files_from_event = function(e) {
 };
 
 // 获取所有的 父节点集合，一直到最顶层节点为止。, IE8 没有 HTMLElement
-xn.nodeHasParent = function(node, topNode) {
+xo.nodeHasParent = function(node, topNode) {
 	if(!topNode) topNode = document.body;
 	var pnode = node.parentNode;
 	while(pnode) {
@@ -1382,9 +1382,9 @@ $.fn.checked = function(v) {
 	// 设置
 	if(v) {
 		this.each(function() {
-			if(xn.strtolower(this.tagName) == 'select') {
+			if(xo.strtolower(this.tagName) == 'select') {
 				$(this).find('option').filter(filter).prop('selected', true);
-			} else if(xn.strtolower(this.type) == 'checkbox' || strtolower(this.type) == 'radio') {
+			} else if(xo.strtolower(this.type) == 'checkbox' || strtolower(this.type) == 'radio') {
 				// console.log(v);
 				$(this).filter(filter).prop('checked', true);
 			}
@@ -1393,7 +1393,7 @@ $.fn.checked = function(v) {
 	// 获取，值用数组的方式返回
 	} else {
 		if(this.length == 0) return [];
-		var tagtype = xn.strtolower(this[0].tagName) == 'select' ? 'select' : xn.strtolower(this[0].type);
+		var tagtype = xo.strtolower(this[0].tagName) == 'select' ? 'select' : xo.strtolower(this[0].type);
 		var r = (tagtype == 'checkbox' ? [] : '');
 		for(var i=0; i<this.length; i++) {
 			var tag = this[i];
@@ -1547,7 +1547,7 @@ $.fn.serializeObject = function() {
 		var jthis = $(this);
 		var type = jthis.attr('type');
 		var name = jthis.attr('name');
-		if (name && xn.strtolower(this.nodeName) != 'fieldset' && !this.disabled && type != 'submit' && type != 'reset' && type != 'button' &&
+		if (name && xo.strtolower(this.nodeName) != 'fieldset' && !this.disabled && type != 'submit' && type != 'reset' && type != 'button' &&
 		((type != 'radio' && type != 'checkbox') || this.checked)) {
 			// 还有一些情况没有考虑, 比如: hidden 或 text 类型使用 name 数组时
 			if(type == 'radio' || type == 'checkbox') {
@@ -1567,7 +1567,7 @@ $.fn.attr_name_index = function(rowid) {
 		var jthis = $(this);
 		var name = jthis.attr('name');
 		name = name.replace(/\[(\d*)\]/, function(all, oldid) {
-			var newid = rowid === undefined ? xn.intval(oldid) + 1 : rowid;
+			var newid = rowid === undefined ? xo.intval(oldid) + 1 : rowid;
 			return '[' + newid + ']';
 		});
 		jthis.attr('name', name);
@@ -1648,11 +1648,11 @@ $.each_sync = function(array, func, callback){
          7        6       5
 
      将菜单定位于自己的周围：
-     $(this).xn_position($('#menuid'), 6);
+     $(this).xo_position($('#menuid'), 6);
 
 */
 // 将菜单定位于自己的周围
-$.fn.xn_position = function(jfloat, pos, offset) {
+$.fn.xo_position = function(jfloat, pos, offset) {
 	var jthis = $(this);
 	var jparent = jthis.offsetParent();
 	var pos = pos || 0;
@@ -1675,16 +1675,16 @@ $.fn.xn_position = function(jfloat, pos, offset) {
 	m.w = jfloat.outerWidth();
 	m.h = jfloat.outerHeight();
 	p.margin = {
-		left: xn.floatval(jthis.css('margin-left')),
-		top: xn.floatval(jthis.css('margin-top')),
-		right: xn.floatval(jthis.css('margin-right')),
-		bottom: xn.floatval(jthis.css('margin-bottom')),
+		left: xo.floatval(jthis.css('margin-left')),
+		top: xo.floatval(jthis.css('margin-top')),
+		right: xo.floatval(jthis.css('margin-right')),
+		bottom: xo.floatval(jthis.css('margin-bottom')),
 	};
 	p.border = {
-		left: xn.floatval(jthis.css('border-left-width')),
-		top: xn.floatval(jthis.css('border-top-width')),
-		right: xn.floatval(jthis.css('border-right-width')),
-		bottom: xn.floatval(jthis.css('border-bottom-width')),
+		left: xo.floatval(jthis.css('border-left-width')),
+		top: xo.floatval(jthis.css('border-top-width')),
+		right: xo.floatval(jthis.css('border-right-width')),
+		bottom: xo.floatval(jthis.css('border-bottom-width')),
 	};
 	//alert('margin-top:'+p.margin.top+', border-top:'+p.border.top);
 	
@@ -1768,9 +1768,9 @@ $.fn.xn_position = function(jfloat, pos, offset) {
          7        6       5
 
 	弹出菜单：
-	$(this).xn_menu($('#menuid'), 6);
+	$(this).xo_menu($('#menuid'), 6);
 */
-$.fn.xn_menu = function(jmenu, pos, option) {
+$.fn.xo_menu = function(jmenu, pos, option) {
 	// 生成一个箭头放到菜单的周围
 	var jthis = $(this);
 	var pos = pos || 6;
@@ -1808,12 +1808,12 @@ $.fn.xn_menu = function(jmenu, pos, option) {
 		12: {left: 0, top: 1},
 		1: {left: -10, top: 1},
 	};
-	jthis.xn_position(jmenu, pos, offset);
+	jthis.xo_position(jmenu, pos, offset);
 	jmenu.toggle();
 	
 	// arrow
 	var mpos = arr_pos_map[pos];
-	if(!option.hidearrow) jmenu.xn_position(jmenu.jarrow, mpos, arr_offset_map[mpos]);
+	if(!option.hidearrow) jmenu.xo_position(jmenu.jarrow, mpos, arr_offset_map[mpos]);
 	if(!option.hidearrow) jmenu.jarrow.toggle();
 	var menu_hide = function(e) {
 		if(jmenu.is(":hidden")) return;
@@ -1826,7 +1826,7 @@ $.fn.xn_menu = function(jmenu, pos, option) {
 };
 
 
-$.fn.xn_dropdown = function() {
+$.fn.xo_dropdown = function() {
 	return this.each(function() {
 		var jthis = $(this);
 		var jtoggler = jthis.find('.dropdown-toggle');
@@ -1834,13 +1834,13 @@ $.fn.xn_dropdown = function() {
 		var pos = jthis.data('pos') || 5;
 		var hidearrow = !!jthis.data('hidearrow');
 		jtoggler.on('click', function() {
-			jtoggler.xn_menu(jdropmenu, pos, {hidearrow: hidearrow});
+			jtoggler.xo_menu(jdropmenu, pos, {hidearrow: hidearrow});
 			return false;
 		});
 	});
 };
 
-$.fn.xn_toggle = function() {
+$.fn.xo_toggle = function() {
 	return this.each(function() {
 		var jthis = $(this);
 		var jtarget = $(jthis.data('target'));
@@ -1857,7 +1857,7 @@ $.fn.xn_toggle = function() {
 	});
 };
 
-$('.xn-dropdown').xn_dropdown();
-$('.xn-toggle').xn_toggle();
+$('.xo-dropdown').xo_dropdown();
+$('.xo-toggle').xo_toggle();
 
-console.log('xiuno.js loaded');
+console.log('xunio.js loaded');

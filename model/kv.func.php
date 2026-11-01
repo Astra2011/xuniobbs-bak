@@ -6,7 +6,7 @@
 // 无缓存
 function kv__get($k) {
 	$arr = db_find_one('kv', array('k'=>$k));
-	return $arr ? xn_json_decode($arr['v']) : NULL;
+	return $arr ? xo_json_decode($arr['v']) : NULL;
 }
 function kv_get($k) {
 	static $static = array();
@@ -20,7 +20,7 @@ function kv_set($k, $v, $life = 0) {
 	strlen($k) > 32 AND $k = md5($k);
 	$arr = array(
 		'k'=>$k,
-		'v'=>xn_json_encode($v),
+		'v'=>xo_json_encode($v),
 	);
 	$r = db_replace('kv', $arr);
 	return $r;

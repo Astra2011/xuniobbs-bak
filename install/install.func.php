@@ -26,7 +26,7 @@ function get_env(&$env, &$write) {
 
 	$write = array();
 	foreach($writedir as &$dir) {
-		$write[$dir] = xn_is_writable('./'.$dir);
+		$write[$dir] = xo_is_writable('./'.$dir);
 	}
 }
 

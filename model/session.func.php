@@ -3,7 +3,7 @@
 /*
 	php 默认的 session 采用文件存储，并且使用 flock() 文件锁避免并发访问不出问题（实际上还是无法解决业务层的并发读后再写入）
 	自定义的 session 采用数据表来存储，同样无法解决业务层并发请求问题。
-	xiuno.js $.each_sync() 串行化并发请求，可以避免客户端并发访问导致的 session 写入问题。
+	xunio.js $.each_sync() 串行化并发请求，可以避免客户端并发访问导致的 session 写入问题。
 */
 
 $sid = '';
@@ -61,11 +61,11 @@ function sess_new($sid) {
 	
 	$cookie_test = _COOKIE('cookie_test');
 	if($cookie_test) {
-		$cookie_test_decode = xn_decrypt($cookie_test, $conf['auth_key']);
+		$cookie_test_decode = xo_decrypt($cookie_test, $conf['auth_key']);
 		$g_session_invalid = ($cookie_test_decode != md5($agent.$longip));
 		setcookie('cookie_test', '', $time - 86400, '');
 	} else {
-		$cookie_test = xn_encrypt(md5($agent.$longip), $conf['auth_key']);
+		$cookie_test = xo_encrypt(md5($agent.$longip), $conf['auth_key']);
 		setcookie('cookie_test', $cookie_test, $time + 86400, '');
 		$g_session_invalid = FALSE;
 		return;

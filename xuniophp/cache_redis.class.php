@@ -22,13 +22,13 @@ class cache_redis {
                 if(!$r) {
                         return $this->error(-1, '连接 Redis 服务器失败。');
                 }
-                //$redis->select('xn');
+                //$redis->select('xo');
                 $this->link = $redis;
                 return $this->link;
         }
         public function set($k, $v, $life = 0) {
                 if(!$this->link && !$this->connect()) return FALSE;
-                $v = xn_json_encode($v);
+                $v = xo_json_encode($v);
                 $r = $this->link->set($k, $v);
                 $life AND $r AND $this->link->expire($k, $life);
                 return $r;
@@ -36,7 +36,7 @@ class cache_redis {
         public function get($k) {
                 if(!$this->link && !$this->connect()) return FALSE;
                 $r = $this->link->get($k);
-                return $r === FALSE ? NULL : xn_json_decode($r);
+                return $r === FALSE ? NULL : xo_json_decode($r);
         }
         public function delete($k) {
                 if(!$this->link && !$this->connect()) return FALSE;

@@ -38,9 +38,9 @@ $('.thread input[type="checkbox"]').parents('td').on('click', function(e) {
 $('.mod-button button.delete').on('click', function() {
 	var modtid = $('input[name="modtid"]').checked();
 	if(modtid.length == 0) return $.alert(lang.please_choose_thread);
-	$.confirm(xn.lang('confirm_delete_thread', {n:modtid.length}), function() {
-		var tids = xn.implode('_', modtid);
-		$.xpost(xn.url('mod-delete-'+tids), function(code, message) {
+	$.confirm(xo.lang('confirm_delete_thread', {n:modtid.length}), function() {
+		var tids = xo.implode('_', modtid);
+		$.xpost(xo.url('mod-delete-'+tids), function(code, message) {
 			if(code != 0) return $.alert(message);
 			$.alert(message).delay(1000).location('');
 		});
@@ -53,11 +53,11 @@ $('.mod-button button.delete').on('click', function() {
 $('.mod-button button.move').on('click', function() {
 	var modtid = $('input[name="modtid"]').checked();
 	if(modtid.length == 0) return $.alert(lang.please_choose_thread);
-	var select = xn.form_select('fid', forumarr, fid);
+	var select = xo.form_select('fid', forumarr, fid);
 	$.confirm(lang.move_forum, function() {
-		var tids = xn.implode('_', modtid);
+		var tids = xo.implode('_', modtid);
 		var newfid = $('select[name="fid"]').val();
-		$.xpost(xn.url('mod-move-'+tids+'-'+newfid), function(code, message) {
+		$.xpost(xo.url('mod-move-'+tids+'-'+newfid), function(code, message) {
 			if(code != 0) return $.alert(message);
 			$.alert(message).delay(1000).location('');
 		});
@@ -72,12 +72,12 @@ $('.mod-button button.top').on('click', function() {
 	if(modtid.length == 0) return $.alert(lang.please_choose_thread);
 	var lang_top = {"0": lang.top_0, "1": lang.top_1};
 	if(gid == 1) lang_top["3"] = lang.top_3; //  || gid == 2
-	var radios = xn.form_radio('top', lang_top);
+	var radios = xo.form_radio('top', lang_top);
 	$.confirm(lang.top_thread, function() {
-		var tids = xn.implode('_', modtid);
+		var tids = xo.implode('_', modtid);
 		var top = $('input[name="top"]').checked();
 		var postdata = {top: top};
-		$.xpost(xn.url('mod-top-'+tids), postdata, function(code, message) {
+		$.xpost(xo.url('mod-top-'+tids), postdata, function(code, message) {
 			if(code != 0) return $.alert(message);
 			$.alert(message).delay(1000).location('');
 		});
@@ -90,12 +90,12 @@ $('.mod-button button.top').on('click', function() {
 $('.mod-button button._close').on('click', function() {
 	var modtid = $('input[name="modtid"]').checked();
 	if(modtid.length == 0) return $.alert(lang.please_choose_thread);
-	var radios = xn.form_radio('close', {"0": lang.open, "1": lang.close});
+	var radios = xo.form_radio('close', {"0": lang.open, "1": lang.close});
 	$.confirm(lang.close_thread, function() {
-		var tids = xn.implode('_', modtid);
+		var tids = xo.implode('_', modtid);
 		var close = $('input[name="close"]').checked();
 		var postdata = {close: close};
-		$.xpost(xn.url('mod-close-'+tids), postdata, function(code, message) {
+		$.xpost(xo.url('mod-close-'+tids), postdata, function(code, message) {
 			if(code != 0) return $.alert(message);
 			$.alert(message).delay(1000).location('');
 		});
@@ -110,7 +110,7 @@ $('a.confirm').on('click', function() {
 	var jthis = $(this);
 	var text = jthis.data('confirm-text');
 	$.confirm(text, function() {
-		var method = xn.strtolower(jthis.data('method'));
+		var method = xo.strtolower(jthis.data('method'));
 		var href = jthis.data('href') || jthis.attr('href');
 		if(method == 'post') {
 			$.xpost(href, function(code, message) {
@@ -150,8 +150,8 @@ jmobile_collapsing_bavbar.on('touchmove', function(e) {
 });*/
 
 // hack: history.back() cannot back, go to the index
-//$('.xn-back').on('click', function() {
-	//$('.xn-back').delay(10000).location('./');
+//$('.xo-back').on('click', function() {
+	//$('.xo-back').delay(10000).location('./');
 	//return false;
 //});
 
@@ -173,7 +173,7 @@ $('body').on('click', '.post_delete', function() {
 					jthis.parents('.post').remove();
 					// 回复数 -1
 					var jposts = $('.posts');
-					jposts.html(xn.intval(jposts.html()) - 1);
+					jposts.html(xo.intval(jposts.html()) - 1);
 				}
 			} else {
 				$.alert(message);
@@ -196,13 +196,13 @@ $('body').on('click', '.post_reply', function() {
 	if(jli.hasClass('quote')) {
 		jli.removeClass('quote');
 		jform.find('input[name="quotepid"]').val(0);
-		jadvanced_reply.attr('href', xn.url('post-create-'+tid));
+		jadvanced_reply.attr('href', xo.url('post-create-'+tid));
 	} else {
 		jpostlist.find('.post').removeClass('quote');
 		jli.addClass('quote');
 		var s = jmessage.val();
 		jform.find('input[name="quotepid"]').val(pid);
-		jadvanced_reply.attr('href', xn.url('post-create-'+tid+'-0-'+pid));
+		jadvanced_reply.attr('href', xo.url('post-create-'+tid+'-0-'+pid));
 	}
 	jmessage.focus();
 	return false;

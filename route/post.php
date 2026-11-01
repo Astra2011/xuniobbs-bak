@@ -49,7 +49,7 @@ if($action == 'create') {
 		empty($message) AND message('message', lang('please_input_message'));
 		
 		$doctype = param('doctype', 0);
-		xn_strlen($message) > 2028000 AND message('message', lang('message_too_long'));
+		xo_strlen($message) > 2028000 AND message('message', lang('message_too_long'));
 		
 		$thread['top'] > 0 AND thread_top_cache_delete();
 		
@@ -126,7 +126,7 @@ if($action == 'create') {
 		// hook post_update_get_start.php
 		
 		$forumlist_allowthread = forum_list_access_filter($forumlist, $gid, 'allowthread');
-		$forumarr = xn_json_encode(arrlist_key_values($forumlist_allowthread, 'fid', 'name'));
+		$forumarr = xo_json_encode(arrlist_key_values($forumlist_allowthread, 'fid', 'name'));
 		
 		// 如果为数据库减肥，则 message 可能会被设置为空。
 		// if lost weight for the database, set the message field empty.

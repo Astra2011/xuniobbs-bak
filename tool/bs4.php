@@ -13,13 +13,13 @@ function glob_recursive($pattern, $flags = 0) {
 // 
     function file_ext($filename, $max = 16) {
         $ext = strtolower(substr(strrchr($filename, '.'), 1));
-        $ext = xn_urlencode($ext);
+        $ext = xo_urlencode($ext);
         strlen($ext) > $max AND $ext = substr($ext, 0, $max);
         if(!preg_match('#^\w+$#', $ext)) $ext = 'attach';
         return $ext;
 }
 
-function xn_urlencode($s) {
+function xo_urlencode($s) {
     $s = urlencode($s);
     $s = str_replace('_', '_5f', $s);
     $s = str_replace('-', '_2d', $s);

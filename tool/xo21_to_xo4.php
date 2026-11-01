@@ -1,49 +1,60 @@
 <?php
 
 /*
-	功能：本程序用于将 DiscuzX 转换到 xn4
+	功能：本程序用于将 xn21 转换到 xn4
 	步骤：
 		假定您的域名为：http://bbs.domain.com/
 		假定您的目录为：/data/wwwroot/bbs.domain.com/
 		
-		1. 备份好 DiscuzX 的数据库
-		2. 新建 Xiuno BBS 4.0 的数据库 xiuno4
-		3. 把DiscuzX 的移动到 /data/wwwroot/bbs.domain.com/dx2 目录，新上传 4.0 到 /data/wwwroot/bbs.domain.com/ 下
-		4. 安装 Xiuno BBS 4.0，访问 http://bbs.domain.com/install/
-		5. 安装完毕以后，将  dx_to_xn4.php 上传到 /data/wwwroot/bbs.domain.com/ 下
+		1. 备份好 2.1 的数据库
+		2. 新建 4.0 的数据库 xunio4
+		3. 把 2.1 的移动到 /data/wwwroot/bbs.domain.com/old 目录，新上传 4.0 到 /data/wwwroot/bbs.domain.com/ 下
+		4. 安装 4.0，访问 http://bbs.domain.com/install/
+		5. 安装完毕以后，将  xn21_to_xn4.php 上传到 /data/wwwroot/bbs.domain.com/ 下
 		6. 命令行执行:
 			cd /data/wwwroot/bbs.domain.com/
-			php dx_to_xn4.php
+			php xn21_to_xn4.php
 */
 
 // 需要在命令行下运行。
 
-define('DX_PATH', './old/');
-define('DX_CONF_FILE', DX_PATH.'config/config_global.php');
-define('UCENTER_CONF_FILE', DX_PATH.'config/config_ucenter.php');
-define('DX_ATTACH_PATH', DX_PATH.'data/attachment/');
-define('DX_AVATAR_PATH', DX_PATH.'uc_server/data/avatar/');
+define('XN2_PATH', '../ceshi.1lou.com/');
 
 define('DEBUG', 1);
 
 $tablepre = 'bbs_';
 
-if(!$conf = include './conf/conf.php') {
-	exit('请先安装完 Xiuno BBS 4.0。');
+if(!$oldconf = include XN2_PATH.'conf/conf.php') {
+	exit('请将原来的整站移动到 ./old 目录');
 }
-include './xiunophp/xiunophp.php';
 
-$dx = get_dx_db();
-$uc = get_uc_db();
+if(!$conf = include './conf/conf.php') {
+	exit('请先安装完 Xunio BBS 4.0。');
+}
 
-!$db->connect() AND exit('连接 4.0 数据库失败:'.$db->errstr);
-!$dx->connect() AND exit('连接 DiscuzX 数据库失败:'.$dx->errstr);
-!$uc->connect() AND exit('连接 UCenter 数据库失败:'.$uc->errstr);
+include './xuniophp/xuniophp.php';
 
+$oldconf['db']['type'] = 'mysql';
+$oldconf['db']['mysql']['master']['tablepre'] = 'bbs_';
+$oldconf['db']['mysql']['user'] = 'ceshi2';
+$oldconf['db']['mysql']['password'] = 'ceshi2';
+$oldconf['db']['mysql']['name'] = 'ceshi2';
+
+$db = db_new($conf['db']);
+$olddb = db_new($oldconf['db']);
+
+!db_connect($db) AND exit('连接 4.0 数据库失败:'.$db->errstr);
+!db_connect($olddb) AND exit('连接 3.0 数据库失败:'.$olddb->errstr);
+
+if($conf['db']['pdo_mysql']['master']['host'] == $oldconf['db']['pdo_mysql']['master']['host'] && $conf['db']['pdo_mysql']['master']['name'] == $oldconf['db']['pdo_mysql']['master']['name']) {
+	exit('不能在同一个数据库里升级，否则数据会被清空！请将新论坛安装到其他数据库。');
+}
+
+/*
 echo "upgrade group:\r\n";
-$grouplist = $dx->sql_find("SELECT * FROM {$tablepre}group");
+$grouplist = $olddb->sql_find("SELECT * FROM {$tablepre}group");
 $db->exec("TRUNCATE `{$tablepre}group`");
-foreach($grouplist as $group) {
+foreach ($grouplist as $group) {
 	$group['groupid'] > 10 && $group['groupid'] += 90;
 	$arr = array(
 		'gid'=>$group['groupid'],
@@ -60,6 +71,7 @@ foreach($grouplist as $group) {
 		'allowbanuser'=>$group['allowbanuser'],
 		'allowdeleteuser'=>$group['allowdeleteuser'],
 		'allowviewip'=>$group['allowviewip'],
+		
 	);
 	$sqladd = db_array_to_insert_sqladd($arr);
 	$r = $db->exec("INSERT INTO `{$tablepre}group` $sqladd");
@@ -68,12 +80,13 @@ foreach($grouplist as $group) {
 }
 echo "[ok]\r\n";
 unset($grouplist);
-
+*/
 
 echo "upgrade user:\r\n";
-$userlist = $dx->sql_find("SELECT * FROM {$tablepre}user");
+$userlist = $olddb->sql_find("SELECT uid FROM {$tablepre}user");
 $db->exec("TRUNCATE {$tablepre}user");
 foreach ($userlist as $user) {
+	$user = $olddb->sql_find_one("SELECT * FROM {$tablepre}user WHERE uid='$user[uid]'");
 	$user['groupid'] > 10 && $user['groupid'] += 90;
 	$arr = array(
 		'uid'=>$user['uid'],
@@ -85,19 +98,32 @@ foreach ($userlist as $user) {
 		'threads'=>$user['threads'],
 		'posts'=>$user['posts'],
 		'credits'=>$user['credits'],
-		'create_ip'=>$user['create_ip'],
-		'create_date'=>$user['create_date'],
+		'create_ip'=>$user['regip'],
+		'create_date'=>$user['regdate'],
 		'avatar'=>$user['avatar'],
 	);
 	$sqladd = db_array_to_insert_sqladd($arr);
 	$r = $db->exec("INSERT INTO bbs_user $sqladd");
 	if($r === FALSE) echo($db->errstr);
 	
-	echo ".";
+	// 拷贝头像
+	if($user['avatar']) {
+		$uid = $user['uid'];
+		$dir = xo_set_dir($uid,  './upload/avatar/');
+		
+		$oldpath = XN2_PATH.'upload/avatar/'.$dir.'/'.$uid."_huge.gif";
+		$newpath = './upload/avatar/'.$dir.'/'.$uid.".png";
+		
+		!is_file($newpath) && copy($oldpath, $newpath);
+	}
+	echo $user['uid'] % 100 == 0 ? "." : '';
 }
 echo "[ok]\r\n";
 unset($userlist);
 
+exit;
+
+/*
 echo "upgrade qq login:\r\n";
 
 $tablepre = $db->tablepre;
@@ -112,7 +138,7 @@ $sql = "CREATE TABLE IF NOT EXISTS {$tablepre}user_open_plat (
 $r = db_exec($sql);
 $r === FALSE AND message(-1, '创建表结构失败'); // 中断，安装失败。
 
-$userlist = $dx->sql_find("SELECT * FROM {$tablepre}user_qqlogin");
+$userlist = $olddb->sql_find("SELECT * FROM {$tablepre}user_qqlogin");
 if($userlist) {
 	$db->exec("TRUNCATE `bbs_user_open_plat`");
 	foreach ($userlist as $user) {
@@ -130,7 +156,7 @@ if($userlist) {
 }
 
 echo "upgrade forum:\r\n";
-$forumlist = $dx->sql_find("SELECT * FROM {$tablepre}forum");
+$forumlist = $olddb->sql_find("SELECT * FROM {$tablepre}forum");
 $db->exec("TRUNCATE `{$tablepre}forum`");
 foreach ($forumlist as $forum) {
 	$arr = array(
@@ -158,9 +184,10 @@ echo "[ok]\r\n";
 unset($forumlist);
 
 echo "upgrade forum_access:\r\n";
-$accesslist = $dx->sql_find("SELECT * FROM {$tablepre}forum_access");
+$accesslist = $olddb->sql_find("SELECT * FROM {$tablepre}forum_access");
 $db->exec("TRUNCATE `{$tablepre}forum_access`");
 foreach ($accesslist as $access) {
+	$access['groupid'] > 10 && $access['groupid'] += 90;
 	$arr = array(
 		'fid'=>$access['fid'],
 		'gid'=>$access['groupid'],
@@ -178,11 +205,14 @@ foreach ($accesslist as $access) {
 echo "[ok]\r\n";
 unset($accesslist);
 
+$i = 0;
+
 echo "upgrade thread:\r\n";
-$threadlist = $dx->sql_find("SELECT * FROM {$tablepre}thread");
+$threadlist = $olddb->sql_find("SELECT tid FROM {$tablepre}thread");
 $db->exec("TRUNCATE `{$tablepre}thread`");
 $db->exec("TRUNCATE `{$tablepre}thread_top`");
 foreach ($threadlist as $thread) {
+	$thread = $olddb->sql_find_one("SELECT * FROM {$tablepre}thread WHERE tid='$thread[tid]'");
 	$arr = array(
 		'fid'=>$thread['fid'],
 		'tid'=>$thread['tid'],
@@ -211,16 +241,19 @@ foreach ($threadlist as $thread) {
 	
 	$db->exec("INSERT INTO {$tablepre}mythread SET uid='$thread[uid]',tid='$thread[tid]'");
 	
-	echo ".";
+	if($i++ > 10) { echo  "."; $i = 0; }
 }
 echo "[ok]\r\n";
 unset($threadlist);
 
+*/
+/*
 echo "upgrade post:\r\n";
-$postlist = $dx->sql_find("SELECT * FROM {$tablepre}post");
+$postlist = $olddb->sql_find("SELECT pid FROM {$tablepre}post");
 $db->exec("TRUNCATE `{$tablepre}post`");
-$i = 0;
 foreach ($postlist as $post) {
+	$post = $olddb->sql_find_one("SELECT * FROM {$tablepre}post WHERE pid='$post[pid]'");
+	$thread = $olddb->sql_find_one("SELECT * FROM {$tablepre}thread WHERE tid='$post[tid]'");
 	if(strlen($post['message']) > 1024000) continue;
 	$arr = array(
 		'tid'=>$post['tid'],
@@ -237,15 +270,16 @@ foreach ($postlist as $post) {
 	$sqladd = db_array_to_insert_sqladd($arr);
 	$r = $db->exec("INSERT INTO {$tablepre}post $sqladd");
 	if($r === FALSE) echo($db->errstr);
-	if($i++ > 10) { echo  "."; $i = 0; }
+	if($i++ > 10) { echo  " . ".memory_get_usage().' '; $i = 0; }
 }
 echo "[ok]\r\n";
 unset($postlist);
 
 echo "upgrade attach:\r\n";
-$attachlist = $dx->sql_find("SELECT * FROM {$tablepre}attach");
+$attachlist = $olddb->sql_find("SELECT aid FROM {$tablepre}attach");
 $db->exec("TRUNCATE `{$tablepre}attach`");
 foreach ($attachlist as $attach) {
+	$attach = $olddb->sql_find_one("SELECT * FROM {$tablepre}attach WHERE aid='$attach[aid]'");
 	$arr = array(
 		'aid'=>$attach['aid'],
 		'tid'=>$attach['tid'],
@@ -267,13 +301,13 @@ foreach ($attachlist as $attach) {
 	$sqladd = db_array_to_insert_sqladd($arr);
 	$r = $db->exec("INSERT INTO {$tablepre}attach $sqladd");
 	if($r === FALSE) echo($db->errstr);
-	echo ".";
+	if($i++ > 10) { echo  "."; $i = 0; }
 }
 echo "[ok]\r\n";
 unset($attachlist);
 
 echo "upgrade modlog:\r\n";
-$modloglist = $dx->sql_find("SELECT * FROM {$tablepre}modlog");
+$modloglist = $olddb->sql_find("SELECT * FROM {$tablepre}modlog");
 foreach ($modloglist as $modlog) {
 	$arr = array(
 		'logid'=>$modlog['logid'],
@@ -311,7 +345,7 @@ $sql = "CREATE TABLE IF NOT EXISTS {$tablepre}friendlink (
 $r = db_exec($sql);
 $r === FALSE AND message(-1, '创建友情链接表结构失败');
 
-$linklist = $dx->sql_find("SELECT * FROM {$tablepre}friendlink");
+$linklist = $olddb->sql_find("SELECT * FROM {$tablepre}friendlink");
 if($linklist) {
 	foreach ($linklist as $link) {
 		$arr = array(
@@ -329,7 +363,7 @@ if($linklist) {
 }
 echo "[ok]\r\n";
 unset($linklist);
-
+*/
 
 // 主题分类
 
@@ -348,6 +382,9 @@ foreach($thread_type_map as $cateid=>$arr) {
 }
 
 $tablepre = $db->tablepre;
+db_exec("TRUNCATE {$tablepre}tag_cate");
+db_exec("TRUNCATE {$tablepre}tag");
+db_exec("TRUNCATE {$tablepre}tag_thread");
 $sql = "CREATE TABLE IF NOT EXISTS {$tablepre}tag_cate (
 	cateid int(11) unsigned NOT NULL AUTO_INCREMENT,
 	fid int(11) unsigned NOT NULL DEFAULT '0',		# 属于哪个版块
@@ -380,7 +417,7 @@ $cateid_map = array();
 $maxcateid = 0;
 $tagid_map = array();
 $maxtagid = 0;
-$tagcatelist = $dx->sql_find("SELECT * FROM {$tablepre}thread_type_cate");
+$tagcatelist = $olddb->sql_find("SELECT * FROM {$tablepre}thread_type_cate");
 if($tagcatelist) {
 	foreach ($tagcatelist as $tagcate) {
 		$cateid_map["$tagcate[fid]-$tagcate[cateid]"] = ++$maxcateid;
@@ -392,26 +429,28 @@ if($tagcatelist) {
 			'enable'=>$tagcate['enable'],
 		);
 		$sqladd = db_array_to_insert_sqladd($arr);
-		$r = $db->exec("INSERT INTO tag_cate $sqladd");
+		$r = $db->exec("INSERT INTO {$tablepre}tag_cate $sqladd");
 		echo ".";
 	}
 }
 echo "[ok]\r\n";
 unset($tagcatelist);
 
-$taglist = $dx->sql_find("SELECT * FROM {$tablepre}tag ORDER BY fid ASC, typeid ASC");
+$taglist = $olddb->sql_find("SELECT * FROM {$tablepre}thread_type ORDER BY fid ASC, typeid ASC");
 if($taglist) {
 	foreach ($taglist as $tag) {
 		$tagid_map["$tag[fid]-$tag[typeid]"] = ++$maxtagid;
+		$tagcateid = $thread_type_map3[$tag['typeid']]; // typeid 根据范围自动隐射到 cateid
+		$cateid = $cateid_map["$tag[fid]-$tagcateid"];	// 找到隐射的自增的 cateid
 		$arr = array(
-			'fid'=>$tag['fid'],
+			'cateid'=>$cateid,
 			'tagid'=>$maxtagid,
 			'name'=>$tag['typename'],
 			'rank'=>$tag['rank'],
 			'enable'=>$tag['enable'],
 		);
 		$sqladd = db_array_to_insert_sqladd($arr);
-		$r = $db->exec("INSERT INTO tag_cate $sqladd");
+		$r = $db->exec("INSERT INTO {$tablepre}tag $sqladd");
 		echo ".";
 	}
 }
@@ -423,7 +462,7 @@ unset($taglist);
   tid int(11) NOT NULL default '0',			# tid
   typeidsum int(11) unsigned NOT NULL default '0',	# 这个值是一个“和”
   */
-$tagdatalist = $dx->sql_find("SELECT * FROM {$tablepre}thread_type_data");
+$tagdatalist = $olddb->sql_find("SELECT * FROM {$tablepre}thread_type_data");
 if($tagdatalist) {
 	foreach($tagdatalist as $tagdata) {
 		// 过滤掉加和的值，只升级单个的值。
@@ -434,7 +473,7 @@ if($tagdatalist) {
 			'tid'=>$tagdata['tid'],
 		);
 		$sqladd = db_array_to_insert_sqladd($arr);
-		$r = $db->exec("INSERT INTO tag_thread $sqladd");
+		$r = $db->exec("INSERT INTO {$tablepre}tag_thread $sqladd");
 		echo ".";
 	}
 }
@@ -443,6 +482,7 @@ unset($tagdatalist);
 
 
 # 精华主题
+db_exec("TRUNCATE {$tablepre}thread_digest");
 $sql = "CREATE TABLE IF NOT EXISTS {$tablepre}thread_digest (
   fid smallint(6) NOT NULL default '0',			# 版块id
   tid int(11) unsigned NOT NULL default '0',		# 主题id
@@ -458,10 +498,10 @@ db_exec($sql);
 $sql = "ALTER TABLE {$tablepre}user ADD COLUMN digests tinyint(3) unsigned NOT NULL default '0';";
 db_exec($sql);
 echo "upgrade digest:\r\n";
-$digestlist = $dx->sql_find("SELECT * FROM {$tablepre}thread_digest");
+$digestlist = $olddb->sql_find("SELECT * FROM {$tablepre}thread_digest");
 $db->exec("TRUNCATE `{$tablepre}thread_digest`");
 foreach ($digestlist as $digest) {
-	$thread = $dx->sql_find_one("SELECT * FROM {$tablepre}thread WHERE tid='$digest[tid]'");
+	$thread = $olddb->sql_find_one("SELECT * FROM {$tablepre}thread WHERE tid='$digest[tid]'");
 	$arr = array(
 		'fid'=>$digest['fid'],
 		'tid'=>$digest['tid'],
@@ -482,64 +522,22 @@ unset($digestlist);
 
 // 站点介绍
 /*
-$arr = $dx->sql_find_one("SELECT * FROM kv WHERE k='sitebrief'");
+$arr = $olddb->sql_find_one("SELECT * FROM kv WHERE k='sitebrief'");
 $sitebrief = $arr['v'];
 file_replace_var('./conf/conf.php', array('sitebrief'=>$sitebrief));
 */
 
 // 递归拷贝目录
-copy_recusive(DX_PATH.'upload/avatar', "./upload/avatar");
-copy_recusive(DX_PATH.'upload/forum', "./upload/forum");
-copy_recusive(DX_PATH.'upload/attach', "./upload/attach");
+//copy_recusive(XN2_PATH.'upload/avatar', "./upload/avatar");
+//copy_recusive(XN2_PATH.'upload/forum', "./upload/forum");
+//copy_recusive(XN2_PATH.'upload/attach', "./upload/attach");
 
 mkdir('./upload/tmp', 0777);
 
 echo '<a href="../">升级完成，请手工移动 old/upload/ 目录下所有文件到 upload/ 目录下，点击进入论坛。</a>';
 
-
-
-// dx db instance
-function get_dx_db() {
-	$conf = include BBS_PATH.'conf/conf.php';
-	include DX2_CONF_FILE;
-	$dbconf = array(
-		'type' => $conf['db']['type'],
-		'master' => array (
-			'host' => $_config['db'][1]['dbhost'],
-			'user' => $_config['db'][1]['dbuser'],
-			'password' => $_config['db'][1]['dbpw'],
-			'name' => $_config['db'][1]['dbname'],
-			'charset' => 'utf8',	// 要求取出 utf-8 数据 mysql 4.1 以后支持转码
-			//'charset' => $_config['db'][1]['dbcharset'],
-			'tablepre' => $_config['db'][1]['tablepre'],
-			'engine'=>'MyISAM',
-		),
-		'slaves' => array ()
-	);
-	$dx_db = db_new($dbconf);
-	return $dx_db;
-}
-
-// ucenter db instance
-function get_uc_db() {
-	$conf = include BBS_PATH.'conf/conf.php';
-	include UCENTER_CONF_FILE;
-	$dbconf = array(
-		'type' => $conf['db']['type'],
-		'master' => array (
-			'host' => UC_DBHOST,
-			'user' => UC_DBUSER,
-			'password' => UC_DBPW,
-			'name' => UC_DBNAME,
-			'charset' => 'utf8',	// 要求取出 utf-8 数据 mysql 4.1 以后支持转码
-			//'charset' => UC_DBCHARSET,
-			'tablepre' => $tablepre[1],
-			'engine'=>'MyISAM',
-		),
-		'slaves' => array ()
-	);
-	$uc_db = db_new($dbconf);
-	return $uc_db;
-}
+// tag 缓存的时间
+include './model/kv.func.php';
+setting_set('tag_update_time', $time);
 
 ?>

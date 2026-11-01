@@ -1,12 +1,12 @@
 <?php
 
-function xn_message($code, $message) {
+function xo_message($code, $message) {
 	$ajax = $_SERVER['ajax'];
-	echo $ajax ? xn_json_encode(array('code'=>$code, 'message'=>$message)) : $message;
+	echo $ajax ? xo_json_encode(array('code'=>$code, 'message'=>$message)) : $message;
 	exit;
 }
 
-function xn_log_post_data() {
+function xo_log_post_data() {
 	$method = $_SERVER['method'];
 	if($method != 'POST') return;
 	$post = $_POST;
@@ -14,7 +14,7 @@ function xn_log_post_data() {
 	isset($post['password_new']) AND $post['password_new'] = '******'; 	// 干掉密码信息
 	isset($post['password_old']) AND $post['password_old'] = '******'; 	// 干掉密码信息
 
-	xn_log(xn_json_encode($post), 'post_data');
+	xo_log(xo_json_encode($post), 'post_data');
 }
 
 // 中断流程很危险！可能会导致数据问题，线上模式不允许中断流程！
@@ -31,7 +31,7 @@ function error_handle($errno, $errstr, $errfile, $errline) {
 	
 	$subject = "Error[$errno]: $errstr, File: $errfile, Line: $errline";
 	$message = array();
-	xn_log($subject, 'php_error'); // 所有PHP错误报告都记录日志
+	xo_log($subject, 'php_error'); // 所有PHP错误报告都记录日志
 
 	$arr = debug_backtrace();
 	array_shift($arr);
@@ -48,12 +48,12 @@ function error_handle($errno, $errstr, $errfile, $errline) {
 			<div>".implode("<br>\r\n", $message)."</div>
 		</fieldset>";
 	echo ($ajax || IN_CMD) ? $txt : $html;
-	DEBUG == 2 AND xn_log($txt, 'debug_error');
+	DEBUG == 2 AND xo_log($txt, 'debug_error');
 	return TRUE;
 }
 
 // 使用全局变量记录错误信息
-function xn_error($no, $str, $return = FALSE) {
+function xo_error($no, $str, $return = FALSE) {
 	global $errno, $errstr;
 	$errno = $no;
 	$errstr = $str;
@@ -86,7 +86,7 @@ function param($key, $defval = '', $htmlspecialchars = TRUE, $addslashes = FALSE
 // 安全获取单词类参数
 function param_word($key, $len = 32) {
 	$s = param($key);
-	$s = xn_safe_word($s, $len);
+	$s = xo_safe_word($s, $len);
 	return $s;
 }
 
@@ -102,18 +102,18 @@ function param_base64($key, $len = 0) {
 function param_json($key) {
 	$s = param($key, '', FALSE);
 	if(empty($s)) return '';
-	$arr = xn_json_decode($s);
+	$arr = xo_json_decode($s);
 	return $arr;
 }
 
 function param_url($key) {
 	$s = param($key, '', FALSE);
-	$arr = xn_urldecode($s);
+	$arr = xo_urldecode($s);
 	return $arr;
 }
 
 // 安全过滤字符串，仅仅保留 [a-zA-Z0-9_]
-function xn_safe_word($s, $len) {
+function xo_safe_word($s, $len) {
 	$s = preg_replace('#\W+#', '', $s);
 	$s = substr($s, 0, $len);
 	return $s;
@@ -192,16 +192,16 @@ function jump($message, $url = '', $delay = 3) {
 	return '<a href="'.$url.'">'.$message.'</a>'.$htmladd;
 }
 
-function xn_strlen($s) {
+function xo_strlen($s) {
 	return mb_strlen($s, 'UTF-8');
 }
 
-function xn_substr($s, $start, $len) {
+function xo_substr($s, $start, $len) {
 	return mb_substr($s, $start, $len, 'UTF-8');
 }
 
 // txt 转换到 html
-function xn_txt_to_html($s) {
+function xo_txt_to_html($s) {
 	$s = htmlspecialchars($s);
 	$s = str_replace(" ", '&nbsp; ', $s);
 	$s = str_replace("\t", ' &nbsp; &nbsp; &nbsp; &nbsp;', $s);
@@ -210,7 +210,7 @@ function xn_txt_to_html($s) {
 	return $s;
 }
 
-function xn_urlencode($s) {
+function xo_urlencode($s) {
     $s = urlencode($s);
     $s = str_replace('_', '_5f', $s);
     $s = str_replace('-', '_2d', $s);
@@ -221,13 +221,13 @@ function xn_urlencode($s) {
     return $s; 
 }
 
-function xn_urldecode($s) {
+function xo_urldecode($s) {
     $s = str_replace('_', '%', $s);
     $s = urldecode($s);
     return $s; 
 }
 
-function xn_json_encode($data, $pretty = FALSE, $level = 0) {
+function xo_json_encode($data, $pretty = FALSE, $level = 0) {
 	if(version_compare(PHP_VERSION, '5.4.0') >= 0) {
 		return json_encode($data, JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
 	}
@@ -257,8 +257,8 @@ function xn_json_encode($data, $pretty = FALSE, $level = 0) {
 			$output_indexed = array();
 			$output_associative = array();
 			foreach($data as $key => $value) {
-				$output_indexed[] = xn_json_encode($value, $pretty, $level + 1);
-				$output_associative[] = $tab2.'"'.$key.'":' . xn_json_encode($value, $pretty, $level + 1);
+				$output_indexed[] = xo_json_encode($value, $pretty, $level + 1);
+				$output_associative[] = $tab2.'"'.$key.'":' . xo_json_encode($value, $pretty, $level + 1);
 				if ($output_index_count !== NULL && $output_index_count++ !== $key) {
 					$output_index_count = NULL;
 				}
@@ -273,21 +273,21 @@ function xn_json_encode($data, $pretty = FALSE, $level = 0) {
 	}
 }
 
-function xn_json_decode($json) {
+function xo_json_decode($json) {
 	$json = trim($json, "\xEF\xBB\xBF");
 	$json = trim($json, "\xFE\xFF");
 	return json_decode($json, 1);
 }
 
 /*
-function xn_json_encode($arg) {
+function xo_json_encode($arg) {
 	$r = '';
 	switch (gettype($arg)) {
 		case 'array':
-			$r = is_number_array($arg) ? xn_json_number_array_to_string($arg) : xn_json_assoc_array_to_string($arg);
+			$r = is_number_array($arg) ? xo_json_number_array_to_string($arg) : xo_json_assoc_array_to_string($arg);
 		break;
 		case 'object':
-			return xn_json_encode(get_object_vars($arg));
+			return xo_json_encode(get_object_vars($arg));
 		break;
 		case 'integer':
 		case 'double':
@@ -316,20 +316,20 @@ function xn_json_encode($arg) {
 	return $r;
 }
 
-function xn_json_number_array_to_string($arr) {
+function xo_json_number_array_to_string($arr) {
 	$s = '';
 	foreach ($arr as $k=>$v) {
-		$s .= ','.xn_json_encode($v);
+		$s .= ','.xo_json_encode($v);
 	}
 	$s = substr($s, 1);
 	$r = '['.$s.']';
 	return $r;
 }
 
-function xn_json_assoc_array_to_string($arr) {
+function xo_json_assoc_array_to_string($arr) {
 	$s = '';
 	foreach ($arr as $k=>$v) {
-		$s .= ',"'.$k.'":'.xn_json_encode($v);
+		$s .= ',"'.$k.'":'.xo_json_encode($v);
 	}
 	$s = substr($s, 1);
 	$r = '{'.$s.'}';
@@ -346,7 +346,7 @@ function is_number_array($arr) {
 
 /*
 // 此函数太耗费资源已经废弃。
-function xn_json_encode($json) {
+function xo_json_encode($json) {
 	if(version_compare(PHP_VERSION, '5.4.0') == 1) {
 		return json_encode($json, JSON_UNESCAPED_UNICODE);
 	} else {
@@ -579,12 +579,12 @@ function ip() {
 */
 
 // 日志记录
-function xn_log($s, $file = 'error') {
+function xo_log($s, $file = 'error') {
 	if(DEBUG == 0 && strpos($file, 'error') === FALSE) return;
 	$time = $_SERVER['time'];
 	$ip = $_SERVER['ip'];
 	$conf = _SERVER('conf');
-	$uid = intval(G('uid')); // xiunophp 未定义 $uid
+	$uid = intval(G('uid')); // xuniophp 未定义 $uid
 	$day = date('Ym', $time); // 按照月存放，否则 Ymd 目录太多。
 	$mtime = date('Y-m-d H:i:s'); // 默认值为 time()
 	$url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
@@ -811,7 +811,7 @@ function https_post($url, $post = '', $cookie = '', $timeout = 30, $times = 1, $
 		$s = file_get_contents($url, NULL, $stream, 0, 4096000);
 		return $s;
 	} elseif (!function_exists('curl_init')) {
-		return xn_error(-1, 'server not installed curl.');
+		return xo_error(-1, 'server not installed curl.');
 	}
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -835,7 +835,7 @@ function https_post($url, $post = '', $cookie = '', $timeout = 30, $times = 1, $
 	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 	$data = curl_exec($ch);
 	if(curl_errno($ch)) {
-		return xn_error(-1, 'Errno'.curl_error($ch));
+		return xo_error(-1, 'Errno'.curl_error($ch));
 	}
 	if(!$data) {
 		curl_close($ch);
@@ -856,7 +856,7 @@ function https_post($url, $post = '', $cookie = '', $timeout = 30, $times = 1, $
 	return $data;
 }
 
-// 多线程抓取数据，需要CURL支持，一般在命令行下执行，此函数收集于互联网，由 xiuno 整理，经过测试，会导致 CPU 100%。
+// 多线程抓取数据，需要CURL支持，一般在命令行下执行，此函数收集于互联网，由 xunio 整理，经过测试，会导致 CPU 100%。
 function http_multi_get($urls) {
 	// 如果不支持，则转为单线程顺序抓取
 	$data = array();
@@ -911,10 +911,10 @@ function file_replace_var($filepath, $replace = array(), $pretty = FALSE) {
 		return $r;
 	} elseif($ext == 'js' || $ext == 'json') {
 		$s = file_get_contents_try($filepath);
-		$arr = xn_json_decode($s);
+		$arr = xo_json_decode($s);
 		if(empty($arr)) return FALSE;
 		$arr = array_merge($arr, $replace);
-		$s = xn_json_encode($arr, $pretty);
+		$s = xo_json_encode($arr, $pretty);
 		file_backup($filepath);
 		$r = file_put_contents_try($filepath, $s);
 		$r != strlen($s) ? file_backup_restore($filepath) : file_backup_unlink($filepath);
@@ -940,7 +940,7 @@ function is_backfile($filepath) {
 function file_backup($filepath) {
 	$backfile = file_backname($filepath);
 	if(is_file($backfile)) return TRUE; // 备份已经存在
-	$r = xn_copy($filepath, $backfile);
+	$r = xo_copy($filepath, $backfile);
 	clearstatcache();
 	return $r && filesize($backfile) == filesize($filepath);
 }
@@ -948,16 +948,16 @@ function file_backup($filepath) {
 // 还原备份
 function file_backup_restore($filepath) {
 	$backfile = file_backname($filepath);
-	$r = xn_copy($backfile, $filepath);
+	$r = xo_copy($backfile, $filepath);
 	clearstatcache();
-	$r && filesize($backfile) == filesize($filepath) && xn_unlink($backfile);
+	$r && filesize($backfile) == filesize($filepath) && xo_unlink($backfile);
 	return $r;
 }
 
 // 删除备份
 function file_backup_unlink($filepath) {
 	$backfile = file_backname($filepath);
-	$r = xn_unlink($backfile);
+	$r = xo_unlink($backfile);
 	return $r;
 }
 
@@ -1003,14 +1003,14 @@ function in_string($s, $str) {
 
 function move_upload_file($srcfile, $destfile) {
 	//$r = move_uploaded_file($srcfile, $destfile);
-	$r = xn_copy($srcfile, $destfile);
+	$r = xo_copy($srcfile, $destfile);
 	return $r;
 }
 
 // 文件后缀名，不包含 .
 function file_ext($filename, $max = 16) {
 	$ext = strtolower(substr(strrchr($filename, '.'), 1));
-	$ext = xn_urlencode($ext);
+	$ext = xo_urlencode($ext);
 	strlen($ext) > $max AND $ext = substr($ext, 0, $max);
 	if(!preg_match('#^\w+$#', $ext)) $ext = 'attach';
 	return $ext;
@@ -1056,7 +1056,7 @@ function http_url_path() {
  *     c => d
  * )
  */
-function xn_url_parse($request_url) {
+function xo_url_parse($request_url) {
 	// 处理: /demo/?user-login.htm?a=b&c=d
 	// 结果：/demo/user-login.htm?a=b&c=d
 	$request_url = str_replace('/?', '/', $request_url);
@@ -1104,7 +1104,7 @@ function xn_url_parse($request_url) {
 	// 是否开启 /user/login 这种格式的 URL
 	$conf = _SERVER('conf');
 	if(!empty($conf['url_rewrite_on']) && $conf['url_rewrite_on'] == 3) {
-		$r = xn_url_parse_path_format($_SERVER['REQUEST_URI']) + $r;
+		$r = xo_url_parse_path_format($_SERVER['REQUEST_URI']) + $r;
 	}
 
 	isset($r[0]) AND $r[0] == 'index.php' AND $r[0] = 'index';
@@ -1112,7 +1112,7 @@ function xn_url_parse($request_url) {
 }
 
 // 将参数添加到 URL
-function xn_url_add_arg($url, $k, $v) {
+function xo_url_add_arg($url, $k, $v) {
 	$pos = strpos($url, '.htm');
 	if($pos === FALSE) {
 		return strpos($url, '?') === FALSE ? $url."&$k=$v" :  $url."?$k=$v";
@@ -1130,7 +1130,7 @@ function xn_url_add_arg($url, $k, $v) {
  *     b => 2
  * )
  */
-function xn_url_parse_path_format($s) {
+function xo_url_parse_path_format($s) {
 	$get = array();
 	substr($s, 0, 1) == '/' AND $s = substr($s, 1);
 	$arr = explode('/', $s);
@@ -1178,7 +1178,7 @@ function rmdir_recusive($dir, $keepdir = 0) {
 	}
 	if($filearr) {
 		foreach($filearr as $file) {
-			xn_unlink($file);
+			xo_unlink($file);
 		}
 	}
 	if($dirarr) {
@@ -1186,37 +1186,37 @@ function rmdir_recusive($dir, $keepdir = 0) {
 			rmdir_recusive($file);
 		}
 	}
-	if(!$keepdir) xn_rmdir($dir);
+	if(!$keepdir) xo_rmdir($dir);
 	return TRUE;
 }
 
-function xn_copy($src, $dest) {
+function xo_copy($src, $dest) {
 	$r = is_file($src) ? copy($src, $dest) : FALSE;
 	return $r;
 }
 
-function xn_mkdir($dir, $mod = NULL, $recusive = NULL) {
+function xo_mkdir($dir, $mod = NULL, $recusive = NULL) {
 	$r = !is_dir($dir) ? mkdir($dir, $mod, $recusive) : FALSE;
 	return $r;
 }
 
-function xn_rmdir($dir) {
+function xo_rmdir($dir) {
 	$r = is_dir($dir) ? rmdir($dir) : FALSE;
 	return $r;
 }
 
-function xn_unlink($file) {
+function xo_unlink($file) {
 	$r = is_file($file) ? unlink($file) : FALSE;
 	return $r;
 }
 
-function xn_filemtime($file) {
+function xo_filemtime($file) {
 	return is_file($file) ? filemtime($file) : 0;
 }
 
 /*
 	实例：
-	xn_set_dir(123, APP_PATH.'upload');
+	xo_set_dir(123, APP_PATH.'upload');
 	
 	000/000/1.jpg
 	000/000/100.jpg
@@ -1226,7 +1226,7 @@ function xn_filemtime($file) {
 	000/001/001.jpg
 	000/002/001.jpg
 */
-function xn_set_dir($id, $dir = './') {
+function xo_set_dir($id, $dir = './') {
 
 	$id = sprintf("%09d", $id);
 	$s1 = substr($id, 0, 3);
@@ -1240,7 +1240,7 @@ function xn_set_dir($id, $dir = './') {
 }
 
 // 取得路径：001/123
-function xn_get_dir($id) {
+function xo_get_dir($id) {
 	$id = sprintf("%09d", $id);
 	$s1 = substr($id, 0, 3);
 	$s2 = substr($id, 3, 3);
@@ -1258,7 +1258,7 @@ function copy_recusive($src, $dst) {
 			if(is_dir($src . '/' . $file)) {
 				copy_recusive($src.'/'.$file,$dst.'/'.$file);
 			}  else {
-				xn_copy($src.'/'.$file, $dst.'/'.$file);
+				xo_copy($src.'/'.$file, $dst.'/'.$file);
 			}
 		}
 	}
@@ -1266,7 +1266,7 @@ function copy_recusive($src, $dst) {
 }
 
 // 随机字符
-function xn_rand($n = 16) {
+function xo_rand($n = 16) {
 	$str = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
 	$len = strlen($str);
 	$return = '';
@@ -1278,7 +1278,7 @@ function xn_rand($n = 16) {
 }
 
 // 检测文件是否可写，兼容 windows
-function xn_is_writable($file) {
+function xo_is_writable($file) {
 	
 	if(PHP_OS != 'WINNT') {
 		return is_writable($file);
@@ -1294,7 +1294,7 @@ function xn_is_writable($file) {
 			$r = touch($tmpfile);
 			if(!$r) return FALSE;
 			if(!is_file($tmpfile)) return FALSE;
-			xn_unlink($tmpfile);
+			xo_unlink($tmpfile);
 			return TRUE;
 		} else {
 			return FALSE;
@@ -1302,10 +1302,10 @@ function xn_is_writable($file) {
 	}
 }
 
-function xn_shutdown_handle() {
+function xo_shutdown_handle() {
 }
 
-function xn_debug_info() {
+function xo_debug_info() {
 	$db = $_SERVER['db'];
 	$starttime = $_SERVER['starttime'];
 	$s = '';
@@ -1323,10 +1323,10 @@ function xn_debug_info() {
 			}
 			$s .= "</ul>\r\n";
 			$s .= '_REQUEST:<br>';
-			$s .= xn_txt_to_html(print_r($_REQUEST, 1));
+			$s .= xo_txt_to_html(print_r($_REQUEST, 1));
 			if(!empty($_SESSION)) {
 				$s .= '_SESSION:<br>';
-				$s .= xn_txt_to_html(print_r($_SESSION, 1));
+				$s .= xo_txt_to_html(print_r($_SESSION, 1));
 			}
 			$s .= '';
 		}

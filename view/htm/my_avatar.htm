@@ -26,10 +26,10 @@ var jprogress = $('#avatar_progress');
 var jimg = $('#avatar_img');
 jprogress.hide();
 javatar_upload.on('change', function(e) {
-	var files = xn.get_files_from_event(e);
-	xn.upload_file(
+	var files = xo.get_files_from_event(e);
+	xo.upload_file(
 		files[0], 
-		xn.url('my-avatar'), 
+		xo.url('my-avatar'), 
 		{width: 128, height: 128, action: 'clip', filetype: 'png'}, 
 		function(code, message) {
 			if(code == 0) {

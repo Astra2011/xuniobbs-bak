@@ -163,7 +163,7 @@ return array(
 	'plugin_detail'=>'Détails de l\'extension',
 	'plugin_brief_url'=>'URL de présentation',
 	'plugin_not_exists'=>'Extension inexistante',
-	'plugin_versio_not_match'=>'Cette extension requiert au minimum Xiuno BBS {bbs_version}, votre version actuelle : {version}',
+	'plugin_versio_not_match'=>'Cette extension requiert au minimum Xunio BBS {bbs_version}, votre version actuelle : {version}',
 	'plugin_download_sucessfully'=>'Extension ({dir}) téléchargée avec succès, cliquez pour installer',
 	'plugin_install_sucessfully'=>'Extension ( {name} ) installée avec succès',
 	'plugin_unstall_sucessfully'=>'Extension ( {name} ) désinstallée avec succès. Pour supprimer complètement, effacez manuellement le répertoire {dir}',

@@ -17,20 +17,20 @@
 // 需要在命令行下运行。
 
 define('DEBUG', 1);
-define('XIUNO_BBS_2_PATH', '/data/wwwroot/bbs.xiuno.com/');
-define('XIUNO_BBS_3_PATH', './');
-define('BBS_PATH', XIUNO_BBS_2_PATH);
+define('XUNIO_BBS_2_PATH', '/data/wwwroot/bbs.xiuno.com/');
+define('XUNIO_BBS_3_PATH', './');
+define('BBS_PATH', XUNIO_BBS_2_PATH);
 $tablepre = 'bbs_';
 
 define('APP_NAME', 'convert');
 
-!is_dir(XIUNO_BBS_2_PATH) AND exit('请修改源代码，设置 XiunoBBS 2.1 的目录。');
-!is_dir(XIUNO_BBS_3_PATH) AND exit('请修改源代码，设置 XiunoBBS 3.0 的目录。');
+!is_dir(XUNIO_BBS_2_PATH) AND exit('请修改源代码，设置 XunioBBS 2.1 的目录。');
+!is_dir(XUNIO_BBS_3_PATH) AND exit('请修改源代码，设置 XunioBBS 3.0 的目录。');
 
-$conf = include XIUNO_BBS_3_PATH.'conf/conf.php';
-$oldconf = include XIUNO_BBS_2_PATH.'conf/conf.php';
+$conf = include XUNIO_BBS_3_PATH.'conf/conf.php';
+$oldconf = include XUNIO_BBS_2_PATH.'conf/conf.php';
 
-include './xiunophp/xiunophp.php';
+include './xuniophp/xuniophp.php';
 !empty($_SERVER['REMOTE_ADDR']) AND exit('本升级程序需要在命令行下执行，不支持 WEB 访问。');
 
 $dbconf = $conf['db'][$conf['db']['type']]['master'];
@@ -110,9 +110,9 @@ foreach ($userlist as $user) {
 	// 拷贝用户头像
 	$uid = $user['uid'];
 	$olddir = get_old_dir($uid);
-	$newdir = set_new_dir($uid, XIUNO_BBS_3_PATH.'upload/avatar/');
-	$oldpath = XIUNO_BBS_2_PATH.'upload/avatar/'.$olddir.$uid.'_big.gif';
-	$newpath = XIUNO_BBS_3_PATH.'upload/avatar/'.$newdir.$uid.'.png';
+	$newdir = set_new_dir($uid, XUNIO_BBS_3_PATH.'upload/avatar/');
+	$oldpath = XUNIO_BBS_2_PATH.'upload/avatar/'.$olddir.$uid.'_big.gif';
+	$newpath = XUNIO_BBS_3_PATH.'upload/avatar/'.$newdir.$uid.'.png';
 	is_file($oldpath) AND !is_file($newpath) AND copy($oldpath, $newpath);
 	echo ".";
 }
@@ -168,8 +168,8 @@ foreach ($forumlist as $forum) {
 	$r = $db->exec("INSERT INTO bbs_forum SET $sqladd");
 	
 	// 拷贝文件
-	// $oldpath = XIUNO_BBS_2_PATH.'upload/forum/'.$fid.'.png';
-	// $newpath = XIUNO_BBS_3_PATH.'upload/forum/'.$fid.'.png';
+	// $oldpath = XUNIO_BBS_2_PATH.'upload/forum/'.$fid.'.png';
+	// $newpath = XUNIO_BBS_3_PATH.'upload/forum/'.$fid.'.png';
 	// is_file($oldpath) AND !is_file($newpath) && copy($oldpath, $newpath);
 	echo ".";
 }
@@ -287,8 +287,8 @@ foreach ($attachlist as $attach) {
 	$sqladd = array_to_sqladd($arr);
 	$r = $db->exec("INSERT INTO bbs_attach SET $sqladd");
 	
-	$oldpath = XIUNO_BBS_2_PATH.'upload/'.$attach['filename'];
-	$newpath = XIUNO_BBS_3_PATH.'upload/'.$attach['filename'];
+	$oldpath = XUNIO_BBS_2_PATH.'upload/'.$attach['filename'];
+	$newpath = XUNIO_BBS_3_PATH.'upload/'.$attach['filename'];
 	
 	$newdir = substr($newpath, 0, strrpos($newpath, '/'));
 	!is_dir($newdir) AND mkdir($newdir, 0777, TRUE);
@@ -299,11 +299,11 @@ foreach ($attachlist as $attach) {
 	/*
 	$aid = $attach['aid'];
 	$olddir = get_old_dir($aid);
-	$newdir = set_new_dir($aid, XIUNO_BBS_3_PATH.'upload/attach/');
+	$newdir = set_new_dir($aid, XUNIO_BBS_3_PATH.'upload/attach/');
 	$oldurl = 'upload/attach/'.$attach['filename'];
 	$newurl = 'upload/attach/'.$newdir.substr($attach['filename'], strrpos($attach['filename'], '/') + 1);
-	$oldpath = XIUNO_BBS_2_PATH.$oldurl;
-	$newpath = XIUNO_BBS_3_PATH.$newurl;
+	$oldpath = XUNIO_BBS_2_PATH.$oldurl;
+	$newpath = XUNIO_BBS_3_PATH.$newurl;
 	
 	is_file($oldpath) AND !is_file($newpath) && copy($oldpath, $newpath);
 	if(is_file($oldpath)) {

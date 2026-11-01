@@ -89,14 +89,14 @@ var juserlist = $('#userlist');
 jsrchtype.val(jsrchtype.attr('value'));
 
 jcreate.on('click', function(event) {
-	window.location = xn.url('user-create');
+	window.location = xo.url('user-create');
 });
 
 jsearch.on('click', function(){
 	var srchtype = jsrchtype.val();
 	srchtype = srchtype ? srchtype : 'uid';
 	var keyword = $("#keyword").val();
-	var url = xn.url('user-list-'+srchtype+'-'+xn.urlencode(keyword)+'-1');
+	var url = xo.url('user-list-'+srchtype+'-'+xo.urlencode(keyword)+'-1');
 	window.location = url;
 });
 jkeyword.on('keydown', function(e) {
@@ -112,7 +112,7 @@ jconfirm.on('click', function(){
 		jtr = $(this).parents('tr');
 		var uid = jtr.attr('uid');
 		if(uid == 1) return alert('<?php echo lang('user_admin_cant_be_deleted');?>');
-		$.xpost(xn.url('user-delete'), {uid:uid}, function(code, message) {
+		$.xpost(xo.url('user-delete'), {uid:uid}, function(code, message) {
 			if(code != 0) return $.alert(message);
 			jtr.remove();
 		});

@@ -1608,9 +1608,9 @@ class HTML_White {
 
 
 
-// class xn_html_safe 由 axiuno@gmail.com 编写，此函数移动到了 model/misc.func.php, 加入了 hook
-/*function xn_html_safe($doc, $arg = array()) {
-	include_once XIUNOPHP_PATH.'xn_html_safe.func.php';
+// class xo_html_safe 由 axiuno@gmail.com 编写，此函数移动到了 model/misc.func.php, 加入了 hook
+/*function xo_html_safe($doc, $arg = array()) {
+	include_once XUNIOPHP_PATH.'xo_html_safe.func.php';
 	empty($arg['table_max_width']) AND $arg['table_max_width'] = 746; // 这个宽度为 bbs 回帖宽度
 	$pattern = array (
 		//'img_url'=>'#^(https?://[^\'"\\\\<>:\s]+(:\d+)?)?([^\'"\\\\<>:\s]+?)*$#is',
@@ -1725,15 +1725,15 @@ class HTML_White {
 	return $result;
 }*/
 
-// echo xn_html_safe('+ab-');
+// echo xo_html_safe('+ab-');
 
 // 最大宽度限制
-//$s = '<table class="table" style="width:1126px; margin-bottom:1rem; color:rgb(55, 58, 60); font-family:none; line-height:24px; min-width:800px; background-color:rgb(255, 255, 255);"><tbody><tr valign="top"><td width="60" style="padding:0.5rem 0.75rem;"><a href="http://plugin.xiuno.com/plugin-read-xn_syntax_hightlighter.htm" target="_blank"><img src="http://plugin.xiuno.com/upload/plugin/27/icon.png" width="54" height="54"></a></td><td width="220" style="padding:0.5rem 0.75rem;"><a href="http://plugin.xiuno.com/plugin-read-xn_syntax_hightlighter.htm"><span style="font-weight:bolder;">代码高亮&nbsp;</span></a><span class="small" style="font-size:13px;">v1.1&nbsp;</span><br><span class="small" style="font-size:13px;">xn_syntax_hightlighter</span><br><span class="small" style="font-size:13px;">作者：axiuno</span></td></tr></tbody></table>';
-//echo xn_html_safe($s);
+//$s = '<table class="table" style="width:1126px; margin-bottom:1rem; color:rgb(55, 58, 60); font-family:none; line-height:24px; min-width:800px; background-color:rgb(255, 255, 255);"><tbody><tr valign="top"><td width="60" style="padding:0.5rem 0.75rem;"><a href="http://plugin.xiuno.com/plugin-read-xo_syntax_hightlighter.htm" target="_blank"><img src="http://plugin.xiuno.com/upload/plugin/27/icon.png" width="54" height="54"></a></td><td width="220" style="padding:0.5rem 0.75rem;"><a href="http://plugin.xiuno.com/plugin-read-xo_syntax_hightlighter.htm"><span style="font-weight:bolder;">代码高亮&nbsp;</span></a><span class="small" style="font-size:13px;">v1.1&nbsp;</span><br><span class="small" style="font-size:13px;">xo_syntax_hightlighter</span><br><span class="small" style="font-size:13px;">作者：axiuno</span></td></tr></tbody></table>';
+//echo xo_html_safe($s);
 
 /*
 $s = '<div><p align="center"><iframe width="800" height="600" src="http://player.yoduku.com/embed/XMTY5NjY0NTM5Mg==" frameborder="0" allowfullscreen="1"></iframe></p></div>';
-echo xn_html_safe($s);
+echo xo_html_safe($s);
 */
 
 /*
@@ -1747,7 +1747,7 @@ $s = '
 		<tr><td>内容</td></tr>
 	</table>';
 
-echo xn_html_safe($s);
+echo xo_html_safe($s);
 
 <b>abcc</b>
 <table class="abc" style="width:100%px; background:url(1.jpg) no-repeat ;">

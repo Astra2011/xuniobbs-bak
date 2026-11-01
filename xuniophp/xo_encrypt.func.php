@@ -2,31 +2,31 @@
 
 /*
 
-	加载 xiuno.so 能大大提高加密解密的速度，大约 250 倍，并且安全性会得到更大的提升。
+	加载 xunio.so 能大大提高加密解密的速度，大约 250 倍，并且安全性会得到更大的提升。
 	
-	xiuno.so 中包含了
-	xiuno_key()
-	xiuno_encrypt($data, $key)
-	xiuno_decrypt($data, $key)
-	xiuno_get_cpuid(0);
+	xunio.so 中包含了
+	xunio_key()
+	xunio_encrypt($data, $key)
+	xunio_decrypt($data, $key)
+	xunio_get_cpuid(0);
 	
 */
 
 // 获取配置文件中的 key，优先从扩展中获取（比较安全）。 
-function xn_key($fromso = TRUE) {
+function xo_key($fromso = TRUE) {
 	$conf = _SERVER('conf');
-	return ($fromso && function_exists('xiuno_key')) ? xiuno_key() : (isset($conf['auth_key']) ? $conf['auth_key'] : '');
+	return ($fromso && function_exists('xunio_key')) ? xunio_key() : (isset($conf['auth_key']) ? $conf['auth_key'] : '');
 }
 
 // 安全的加密 key，过期时间 100 秒，如果最后 2 位 大于 90，则
 // 临时使用，一般用作数据传输和校验
-function xn_safe_key() {
+function xo_safe_key() {
 	global $conf, $longip, $time, $useragent;
 	$conf = _SERVER('conf');
 	$longip = _SERVER('longip');
 	$time = _SERVER('time');
 	$useragent = _SERVER('useragent');
-	$key = xn_key();
+	$key = xo_key();
 	$behind = intval(substr($time, -2, 2));
 	$t = $behind > 80 ? $time - 20 : ($behind < 20 ? $time - 40 : $time); // 修正范围，防止进位，有效时间窗口
 	$front = substr($t, 0, -2);
@@ -34,28 +34,28 @@ function xn_safe_key() {
 	return $key;
 }
 
-function xn_encrypt($txt, $key = '') {
-	empty($key) AND $key = xn_key();
-	$encrypt = function_exists('xiuno_encrypt') ? xiuno_encrypt($txt, $key) : xxtea_encrypt($txt, $key);
-	return xn_urlencode(base64_encode($encrypt));
+function xo_encrypt($txt, $key = '') {
+	empty($key) AND $key = xo_key();
+	$encrypt = function_exists('xunio_encrypt') ? xunio_encrypt($txt, $key) : xxtea_encrypt($txt, $key);
+	return xo_urlencode(base64_encode($encrypt));
 }
 
-function xn_decrypt($txt, $key = '') {
-	empty($key) AND $key = xn_key();
-	$encrypt = base64_decode(xn_urldecode($txt));
-	$ret = function_exists('xiuno_decrypt') ? xiuno_decrypt($encrypt, $key) : xxtea_decrypt($encrypt, $key);
+function xo_decrypt($txt, $key = '') {
+	empty($key) AND $key = xo_key();
+	$encrypt = base64_decode(xo_urldecode($txt));
+	$ret = function_exists('xunio_decrypt') ? xunio_decrypt($encrypt, $key) : xxtea_decrypt($encrypt, $key);
 	return $ret;
 }
 
 if(!function_exists('xxtea_encrypt')) {
 	// 兼容 3.0，自定打开
 	/*function encrypt($txt, $key = 'abcd9667676effff') {
-		return xn_encrypt($txt, $key);
+		return xo_encrypt($txt, $key);
 	}
 	
 	
 	function decrypt($txt, $key = 'abcd9667676effff') {
-		return xn_decrypt($txt, $key);
+		return xo_decrypt($txt, $key);
 	}
 	*/
 	// ---------------------> encrypt function

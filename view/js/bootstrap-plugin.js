@@ -72,14 +72,14 @@ $.confirm = function(subject, ok_callback, options) {
 // --------------------- eval script start ---------------------------------
 
 // 获取当前已经加载的 js
-xn.get_loaded_script = function () {
+xo.get_loaded_script = function () {
 	var arr = [];
 	$('script[src]').each(function() {
 		arr.push($(this).attr('src'));
 	});
 	return arr;
 }
-xn.get_stylesheet_link = function (s) {
+xo.get_stylesheet_link = function (s) {
 	var arr = [];
 	var r = s.match(/<link[^>]*?href=\s*\"([^"]+)\"[^>]*>/ig);
 	if(!r) return arr;
@@ -89,7 +89,7 @@ xn.get_stylesheet_link = function (s) {
 	}
 	return arr;
 }
-xn.get_script_src = function (s) {
+xo.get_script_src = function (s) {
 	var arr = [];
 	var r = s.match(/<script[^>]*?src=\s*\"([^"]+)\"[^>]*><\/script>/ig);
 	if(!r) return arr;
@@ -99,24 +99,24 @@ xn.get_script_src = function (s) {
 	}
 	return arr;
 }
-xn.get_script_section = function (s) {
+xo.get_script_section = function (s) {
 	var r = '';
 	var arr = s.match(/<script[^>]+ajax-eval="true"[^>]*>([\s\S]+?)<\/script>/ig);
 	return arr ? arr : [];
 }
-xn.strip_script_src = function (s) {
+xo.strip_script_src = function (s) {
 	s = s.replace(/<script[^>]*?src=\s*\"([^"]+)\"[^>]*><\/script>/ig, '');
 	return s;
 }
-xn.strip_script_section = function (s) {
+xo.strip_script_section = function (s) {
 	s = s.replace(/<script([^>]*)>([\s\S]+?)<\/script>/ig, '');
 	return s;
 }
-xn.strip_stylesheet_link = function (s) {
+xo.strip_stylesheet_link = function (s) {
 	s = s.replace(/<link[^>]*?href=\s*\"([^"]+)\"[^>]*>/ig, '');
 	return s;
 }
-xn.eval_script = function (arr, args) {
+xo.eval_script = function (arr, args) {
 	if(!arr) return;
 	for(var i=0; i<arr.length; i++) {
 		var s = arr[i].replace(/<script([^>]*)>([\s\S]+?)<\/script>/i, '$2');
@@ -131,7 +131,7 @@ xn.eval_script = function (arr, args) {
 		}
 	}
 }
-xn.eval_stylesheet = function(arr) {
+xo.eval_stylesheet = function(arr) {
 	if(!arr) return;
 	if(!$.required_css) $.required_css = {};
 	for(var i=0; i<arr.length; i++) {
@@ -140,7 +140,7 @@ xn.eval_stylesheet = function(arr) {
 	}
 }
 
-xn.get_title_body_script_css = function (s) {
+xo.get_title_body_script_css = function (s) {
 	var s = $.trim(s);
 	
 	/* 过滤掉 IE 兼容代码
@@ -152,16 +152,16 @@ xn.get_title_body_script_css = function (s) {
 	
 	var title = '';
 	var body = '';
-	var script_sections = xn.get_script_section(s);
-	var stylesheet_links = xn.get_stylesheet_link(s);
+	var script_sections = xo.get_script_section(s);
+	var stylesheet_links = xo.get_stylesheet_link(s);
 	
-	var arr1 = xn.get_loaded_script();
-	var arr2 = xn.get_script_src(s);
-	var script_srcs = xn.array_diff(arr2, arr1); // 避免重复加载 js
+	var arr1 = xo.get_loaded_script();
+	var arr2 = xo.get_script_src(s);
+	var script_srcs = xo.array_diff(arr2, arr1); // 避免重复加载 js
 	
-	s = xn.strip_script_src(s);
-	s = xn.strip_script_section(s);
-	s = xn.strip_stylesheet_link(s);
+	s = xo.strip_script_src(s);
+	s = xo.strip_script_section(s);
+	s = xo.strip_stylesheet_link(s);
 	
 	var r = s.match(/<title>([^<]+?)<\/title>/i);
 	if(r && r[1]) title = r[1];
@@ -302,7 +302,7 @@ $.ajax_modal = function(url, title, size, callback, arg) {
 	$.xget(url, function(code, message) {
 		// 对页面 html 进行解析
 		if(code == -101) {
-			var r = xn.get_title_body_script_css(message);
+			var r = xo.get_title_body_script_css(message);
 			jmodal.find('.modal-body').html(r.body);
 			jmodal.find('.modal-footer').hide();
 		} else {
@@ -310,14 +310,14 @@ $.ajax_modal = function(url, title, size, callback, arg) {
 			return;
 		}
 		// eval script, css
-		xn.eval_stylesheet(r.stylesheet_links);
+		xo.eval_stylesheet(r.stylesheet_links);
 		jmodal.script_sections = r.script_sections;
 		if(r.script_srcs.length > 0) {
 			$.require(r.script_srcs, function() { 
-				xn.eval_script(r.script_sections, {jmodal: jmodal, callback: callback, arg: arg});
+				xo.eval_script(r.script_sections, {jmodal: jmodal, callback: callback, arg: arg});
 			});
 		} else {
-			xn.eval_script(r.script_sections, {jmodal: jmodal, callback: callback, arg: arg});
+			xo.eval_script(r.script_sections, {jmodal: jmodal, callback: callback, arg: arg});
 		}
 	});
 	return jmodal;

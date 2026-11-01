@@ -10,7 +10,7 @@ function admin_token_check() {
 	$useragent_md5 = md5($useragent);
 	
 	//$key = md5($longip.$useragent_md5.$conf['auth_key']); // 有些环境是动态 IP
-	$key = md5((XN_ADMIN_BIND_IP ? $longip : '').$useragent_md5.xn_key());
+	$key = md5((XN_ADMIN_BIND_IP ? $longip : '').$useragent_md5.xo_key());
 	
 	// hook admin_token_check_start.php
 	
@@ -19,7 +19,7 @@ function admin_token_check() {
 		$_REQUEST[0] = 'index';
 		$_REQUEST[1] = 'login';
 	} else {
-		$s = xn_decrypt($admin_token, $key);
+		$s = xo_decrypt($admin_token, $key);
 		if(empty($s)) {
 			setcookie('bbs_admin_token', '', 0, '', '', '', TRUE);
 			//message(-1, lang('admin_token_error'));
@@ -48,14 +48,14 @@ function admin_token_set() {
 	global $longip, $time, $useragent, $conf;
 	$useragent_md5 = md5($useragent);
 	//$key = md5($longip.$useragent_md5.$conf['auth_key']);
-	$key = md5((XN_ADMIN_BIND_IP ? $longip : '').$useragent_md5.xn_key());
+	$key = md5((XN_ADMIN_BIND_IP ? $longip : '').$useragent_md5.xo_key());
 	
 	// hook admin_token_set_start.php
 	
 	$admin_token = param('bbs_admin_token');
 	$s = "$longip	$time";
 	
-	$admin_token = xn_encrypt($s, $key);
+	$admin_token = xo_encrypt($s, $key);
 	setcookie('bbs_admin_token', $admin_token, $time + 3600, '',  '', 0, TRUE);
 	
 	// hook admin_token_set_end.php

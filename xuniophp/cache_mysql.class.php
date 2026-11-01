@@ -39,7 +39,7 @@ class cache_mysql {
                 $expiry = $life ? $time + $life : 0;
                 $arr= array(
                 	'k'=>$k,
-                	'v'=>xn_json_encode($v),
+                	'v'=>xo_json_encode($v),
                 	'expiry'=>$expiry,
                 );
                 $r = db_replace($this->table, $arr, $this->db);
@@ -64,7 +64,7 @@ class cache_mysql {
                 	db_delete($this->table, array('k'=>$k), $this->db);
                         return NULL;
                 }
-                return xn_json_decode($arr['v'], 1);
+                return xo_json_decode($arr['v'], 1);
         }
         public function delete($k) {
         	$r = db_delete($this->table, array('k'=>$k), $this->db);

@@ -14,7 +14,7 @@ $lang += include APP_PATH."lang/$conf[lang]/bbs_install.php";
 $conf['log_path'] = APP_PATH.$conf['log_path']; 
 $conf['tmp_path'] = APP_PATH.$conf['tmp_path']; 
 
-include APP_PATH.'xiunophp/xiunophp.php';
+include APP_PATH.'xuniophp/xuniophp.php';
 include APP_PATH.'model/misc.func.php';
 include APP_PATH.'model/plugin.func.php';
 include APP_PATH.'model/user.func.php';
@@ -48,7 +48,7 @@ if(empty($action)) {
 		setcookie('lang', $_lang);
 		
 		//$conf['lang'] = $_lang;
-		//xn_copy(APP_PATH.'./conf/conf.default.php', APP_PATH.'./conf/conf.backup.php');
+		//xo_copy(APP_PATH.'./conf/conf.default.php', APP_PATH.'./conf/conf.backup.php');
 		//$r = file_replace_var(APP_PATH.'conf/conf.default.php', array('lang'=>$_lang));
 		//$r === FALSE AND message(-1, jump(lang('please_set_conf_file_writable'), ''));
 		
@@ -184,14 +184,14 @@ if(empty($action)) {
 		copy(APP_PATH.'conf/conf.default.php', APP_PATH.'conf/conf.php');
 		
 		// 管理员密码
-		$salt = xn_rand(16);
+		$salt = xo_rand(16);
 		$password = md5(md5($adminpass).$salt);
 		$update = array('username'=>$adminuser, 'email'=>$adminemail, 'password'=>$password, 'salt'=>$salt, 'create_date'=>$time, 'create_ip'=>$longip);
 		db_update('user', array('uid'=>1), $update);
 		
 		$replace = array();
 		$replace['db'] = $conf['db'];
-		$replace['auth_key'] = xn_rand(64);
+		$replace['auth_key'] = xo_rand(64);
 		$replace['installed'] = 1;
 		file_replace_var(APP_PATH.'conf/conf.php', $replace);
 		
@@ -211,10 +211,10 @@ if(empty($action)) {
 		
 		forum_update(1, array('name'=>lang('default_forum_name'), 'brief'=>lang('default_forum_brief')));
 				
-		xn_mkdir(APP_PATH.'upload/tmp', 0777);
-		xn_mkdir(APP_PATH.'upload/attach', 0777);
-		xn_mkdir(APP_PATH.'upload/avatar', 0777);
-		xn_mkdir(APP_PATH.'upload/forum', 0777);
+		xo_mkdir(APP_PATH.'upload/tmp', 0777);
+		xo_mkdir(APP_PATH.'upload/attach', 0777);
+		xo_mkdir(APP_PATH.'upload/avatar', 0777);
+		xo_mkdir(APP_PATH.'upload/forum', 0777);
 		
 		message(0, jump(lang('conguralation_installed'), '../'));
 	}

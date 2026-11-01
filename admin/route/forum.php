@@ -182,7 +182,7 @@ if(empty($action) || $action == 'list') {
 // 废弃
 } elseif($action == 'getname') {
 	
-	$uids = xn_urldecode(param(2));
+	$uids = xo_urldecode(param(2));
 	$arr = explode(',', $uids);
 	$names = array();
 	$err = '';

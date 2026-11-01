@@ -157,7 +157,7 @@
 		
 		<!--{hook thread_page_after.htm}-->
 		
-		<a role="button" class="btn btn-secondary btn-block xn-back col-lg-6 mx-auto mb-3" href="javascript:history.back();"><?php echo lang('back');?></a>
+		<a role="button" class="btn btn-secondary btn-block xo-back col-lg-6 mx-auto mb-3" href="javascript:history.back();"><?php echo lang('back');?></a>
 		
 	</div>
 	<div class="col-lg-3 d-none d-lg-block aside">
@@ -221,11 +221,11 @@ jform.on('submit', function() {
 			
 			// 楼层 +1
 			var jfloor = $('#newfloor');
-			jfloor.html(xn.intval(jfloor.html()) + 1);
+			jfloor.html(xo.intval(jfloor.html()) + 1);
 			
 			// 回复数 +1
 			var jposts = $('.posts');
-			jposts.html(xn.intval(jposts.html()) + 1);
+			jposts.html(xo.intval(jposts.html()) + 1);
 			
 		} else if(code < 0) {
 			$.alert(message);
@@ -257,7 +257,7 @@ function resize_image() {
 				this.org_width = img_width;
 				this.org_height = img_height;
 			}
-			//var percent = xn.min(100, xn.ceil((img_width / jmessage_width) * 100));
+			//var percent = xo.min(100, xo.ceil((img_width / jmessage_width) * 100));
 			if(img_width > jmessage_width) {
 				if(this.tagName == 'IMG') {
 					jimg.width(jmessage_width);

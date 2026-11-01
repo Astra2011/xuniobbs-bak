@@ -296,7 +296,7 @@ class php_zip {
 
 		$header['stored_filename'] = $header['filename'];
 		$header['status']		  = "ok";
-		$header['external']		  = 0;	// 重要修正! 无法解压文件 by xiuno
+		$header['external']		  = 0;	// 重要修正! 无法解压文件 by xunio
 		if(substr($header['filename'], -1) == '/'){ $header['external'] = 0x41FF0010; }
 		return $header;
 	}
@@ -359,7 +359,7 @@ class php_zip {
 				fwrite($fp, $binary_data, 8);
 				fclose($fp);
 
-				// 此处存在兼容性问题，在php5.3 下有问题，由 xiuno 修正。
+				// 此处存在兼容性问题，在php5.3 下有问题，由 xunio 修正。
 				$gzfile = $to.$header['filename'].'.gz';
 				$s = file_get_contents($gzfile);
 				$unzipdata = $this->compatible_gzinflate($s);
@@ -500,7 +500,7 @@ class php_zip {
 	}
 }
 
-function xn_mkdir_recusive($path) {
+function xo_mkdir_recusive($path) {
 	// 查找最后一个 /
 	if(empty($path) || strpos($path, '/') === FALSE || $path == '/') return;
 	if(!is_dir($path)) {
@@ -517,12 +517,12 @@ function xn_mkdir_recusive($path) {
 	}
 }
 
-function xn_mkdir_by_filename($filename) {
+function xo_mkdir_by_filename($filename) {
 	$path = substr($filename, 0, strrpos($filename, '/'));
-	xn_mkdir_recusive($path);
+	xo_mkdir_recusive($path);
 }
 
-function xn_unzip_old($zipfile, $destpath) {
+function xo_unzip_old($zipfile, $destpath) {
 	$conf = _SERVER('conf');
 	$tmppath = empty($conf['tmp_path']) ? ini_get('upload_tmp_dir').'/' : $conf['tmp_path'];
 	$destpath = str_replace('\\', '/', $destpath);
@@ -535,7 +535,7 @@ function xn_unzip_old($zipfile, $destpath) {
 	foreach($archive->files as $file) {
 		// 判断目录是否存在,
 		if(strpos($file, '..')) continue; // 安全过滤
-		xn_mkdir_by_filename($destpath.$file);
+		xo_mkdir_by_filename($destpath.$file);
 		copy($tmppath.$file, $destpath.$file);
 		unlink($tmppath.$file);
 	}
@@ -545,7 +545,7 @@ function xn_unzip_old($zipfile, $destpath) {
 }
 
 // 不支持对 storage 打包
-function xn_zip_old($destzip, $srcpath) {
+function xo_zip_old($destzip, $srcpath) {
 	$conf = _SERVER('conf');
 	$tmppath = empty($conf['tmp_path']) ? ini_get('upload_tmp_dir').'/' : $conf['tmp_path'];
 	$tmppath == '/' AND $tmppath = './';
@@ -554,8 +554,8 @@ function xn_zip_old($destzip, $srcpath) {
 	$arr = pathinfo($srcpath);
 	$srcpathnew1 = $tmppath.$arr['basename'].'/';
 	$srcpathnew2 = $tmppath.$arr['basename'].'/'.$arr['basename'].'/';
-	xn_mkdir($srcpathnew1, 0777);
-	xn_mkdir($srcpathnew2, 0777);
+	xo_mkdir($srcpathnew1, 0777);
+	xo_mkdir($srcpathnew2, 0777);
 	copy_recusive($srcpath, $srcpathnew2);
 	substr($srcpath, -1, 1) != '/' && $srcpath .= '/';
 	$tmpzip = $tmppath.rand(1, 10000000000).'.tmp.zip';

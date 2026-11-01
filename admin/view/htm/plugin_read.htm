@@ -149,11 +149,11 @@ $('#nav li.nav-item-plugin').addClass('active');
 var dir = '<?php echo $dir;?>';
 	
 var t = setInterval(function() {
-	$.xget(xn.url('plugin-is_bought-'+dir), function(code, message) {
+	$.xget(xo.url('plugin-is_bought-'+dir), function(code, message) {
 		if(code == 0) {
 			// 支付成功，跳转到下载。
 			clearInterval(t);
-			window.location = xn.url('plugin-download-'+dir);
+			window.location = xo.url('plugin-download-'+dir);
 		}
 	});
 }, 5000);

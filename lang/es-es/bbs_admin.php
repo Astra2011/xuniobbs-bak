@@ -163,7 +163,7 @@ return array(
 	'plugin_detail'=>'Detalles del complemento',
 	'plugin_brief_url'=>'URL de presentación',
 	'plugin_not_exists'=>'El complemento no existe',
-	'plugin_versio_not_match'=>'Este complemento requiere Xiuno BBS {bbs_version} como mínimo, su versión actual: {version}',
+	'plugin_versio_not_match'=>'Este complemento requiere Xunio BBS {bbs_version} como mínimo, su versión actual: {version}',
 	'plugin_download_sucessfully'=>'Complemento ({dir}) descargado correctamente, haga clic para instalar',
 	'plugin_install_sucessfully'=>'Complemento ( {name} ) instalado correctamente',
 	'plugin_unstall_sucessfully'=>'Complemento ( {name} ) desinstalado correctamente. Para eliminarlo por completo, borre manualmente el directorio {dir}',

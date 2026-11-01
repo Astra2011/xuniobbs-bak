@@ -163,7 +163,7 @@ return array(
 	'plugin_detail'=>'Plugin-Details',
 	'plugin_brief_url'=>'Plugin-Einführungs-URL',
 	'plugin_not_exists'=>'Plugin existiert nicht',
-	'plugin_versio_not_match'=>'Dieses Plugin erfordert mindestens Xiuno BBS {bbs_version}, Ihre aktuelle Version: {version}',
+	'plugin_versio_not_match'=>'Dieses Plugin erfordert mindestens Xunio BBS {bbs_version}, Ihre aktuelle Version: {version}',
 	'plugin_download_sucessfully'=>'Plugin ({dir}) erfolgreich heruntergeladen, bitte zum Installieren klicken',
 	'plugin_install_sucessfully'=>'Plugin ( {name} ) erfolgreich installiert',
 	'plugin_unstall_sucessfully'=>'Plugin ( {name} ) erfolgreich deinstalliert. Zum vollständigen Entfernen bitte Verzeichnis {dir} manuell löschen',

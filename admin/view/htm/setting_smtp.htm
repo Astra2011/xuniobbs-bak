@@ -56,13 +56,13 @@
 <script>
 
 // 模板初始化
-var maxrowid = Math.max(xn.array_keys(smtplist));
-var smtplist = <?php echo xn_json_encode($smtplist);?>;
+var maxrowid = Math.max(xo.array_keys(smtplist));
+var smtplist = <?php echo xo_json_encode($smtplist);?>;
 var jsmtp_tpl = $('#smtp_tpl');
 var jsmtp_body = $('#smtp_body');
 var tpl = jsmtp_tpl.text();
 function row_add(v) {
-	var s = xn.template(tpl, v);
+	var s = xo.template(tpl, v);
 	jsmtp_body.append(s);
 }
 $.each(smtplist, function(k, v) {

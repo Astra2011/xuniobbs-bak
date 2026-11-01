@@ -1,7 +1,7 @@
 <?php
 
 /*
-	Xiuno BBS 4.0 本地化图片程序
+	Xunio BBS 4.0 本地化图片程序
 	
 	将文件存放于 tool/save_remote_image.php
 	cd tool/
@@ -25,7 +25,7 @@ include '../index.php';
 
 $lastpid = intval(kv_get('save_last_pid'));
 
-xn_mkdir($conf['upload_path']."remote/");
+xo_mkdir($conf['upload_path']."remote/");
 
 //$types = array(1=>'gif', 2=>'jpg', 3=>'png', 4=>'swf', 5=>'psd', 6=>'bmp');
 
@@ -35,7 +35,7 @@ while(1) {
 	$day = date('Ymd', time());
 	$attach_dir = $conf['upload_path']."attach/$day/";
 	$attach_url = $conf['upload_url']."attach/$day/";
-	xn_mkdir($attach_dir);
+	xo_mkdir($attach_dir);
 
 	// 获取帖子
 	$postlist = db_find('post', array('pid'=>array('>'=>$lastpid)), array('pid'=>1), 1, 10);
@@ -53,7 +53,7 @@ while(1) {
 				}
 				$ext = file_ext($url);
 				if(!in_array($ext, array('gif', 'jpg', 'png', 'bmp'))) continue;
-				$filename = xn_rand(16).'.'.$ext;
+				$filename = xo_rand(16).'.'.$ext;
 				$destpath = $attach_dir.$filename;
 				$desturl = $attach_url.$filename;
 				$s2 = str_replace($url, $desturl, $s);

@@ -219,13 +219,13 @@ function post_find_by_tid($tid, $page = 1, $pagesize = 50) {
 // <img src="/view/img/face/1.gif"/>
 // <blockquote class="blockquote">
 function user_post_message_format(&$s) {
-	if(xn_strlen($s) < 100) return;
+	if(xo_strlen($s) < 100) return;
 	$s = preg_replace('#<blockquote\s+class="blockquote">.*?</blockquote>#is', '', $s);
 	$s = str_ireplace(array('<br>', '<br />', '<br/>', '</p>', '</tr>', '</div>', '</li>', '</dd>'. '</dt>'), "\r\n", $s);
 	$s = str_ireplace(array('&nbsp;'), " ", $s);
 	$s = strip_tags($s);
 	$s = preg_replace('#[\r\n]+#', "\n", $s);
-	$s = xn_substr(trim($s), 0, 100);
+	$s = xo_substr(trim($s), 0, 100);
 	$s = str_replace("\n", '<br>', $s);
 }
 
@@ -351,14 +351,14 @@ function post_message_fmt(&$arr, $gid) {
 	// hook post_message_fmt_start.php
 
 	// 超长内容截取
-	$arr['message'] = xn_substr($arr['message'], 0, 2028000);
+	$arr['message'] = xo_substr($arr['message'], 0, 2028000);
 	
 	// 格式转换: 类型，0: html, 1: txt; 2: markdown; 3: ubb
 	$arr['message_fmt'] = htmlspecialchars($arr['message']);
 	
 	// 入库的时候进行转换，编辑的时候，自行调取 message, 或者 message_fmt
-	$arr['doctype'] == 0 && $arr['message_fmt'] = ($gid == 1 ? $arr['message'] : xn_html_safe($arr['message']));
-	$arr['doctype'] == 1 && $arr['message_fmt'] = xn_txt_to_html($arr['message']);
+	$arr['doctype'] == 0 && $arr['message_fmt'] = ($gid == 1 ? $arr['message'] : xo_html_safe($arr['message']));
+	$arr['doctype'] == 1 && $arr['message_fmt'] = xo_txt_to_html($arr['message']);
 	
 	// hook post_message_fmt_end.php
 	
@@ -371,8 +371,8 @@ function post_brief($s, $len = 100) {
 	// hook post_brief_start.php
 	$s = strip_tags($s);
 	$s = htmlspecialchars($s);
-	$more = xn_strlen($s) > $len ? ' ... ' : '';
-	$s = xn_substr($s, 0, $len).$more;
+	$more = xo_strlen($s) > $len ? ' ... ' : '';
+	$s = xo_substr($s, 0, $len).$more;
 	// hook post_brief_end.php
 	return $s;
 }

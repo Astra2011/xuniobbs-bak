@@ -3338,9 +3338,9 @@ class SMTP {
 
 /*
 	$smtp = array('host'=>'smtp.163.com', 'port'=>25, 'user'=>'zhangsan', 'pass'=>'123456');
-	xn_send_mail($smtp, $username, $email, $subject, $message);
+	xo_send_mail($smtp, $username, $email, $subject, $message);
 */
-function xn_send_mail($smtp, $username, $email, $subject, $message, $charset = 'UTF-8') {
+function xo_send_mail($smtp, $username, $email, $subject, $message, $charset = 'UTF-8') {
 	// 部分 SMTP 不支持UTF-8
 	/*
 	if(in_array($smtp, array('smtp.126.com', 'smtp.163.com'))) {
@@ -3384,7 +3384,7 @@ function xn_send_mail($smtp, $username, $email, $subject, $message, $charset = '
 	//$mail->AddAttachment("images/phpmailer.gif");      // attachment
 	//$mail->AddAttachment("images/phpmailer_mini.gif"); // attachment
 	if(!$mail->Send()) {
-		return xn_error(-1, $mail->ErrorInfo);
+		return xo_error(-1, $mail->ErrorInfo);
 	} else {
 		return TRUE;
 	}
@@ -3396,7 +3396,7 @@ $username = 'zhangsan';
 $email = 'axiuno@gmail.com';
 $subject = 'test';
 $message = 'test';
-xn_send_mail($smtp, $username, $email, $subject, $message);
+xo_send_mail($smtp, $username, $email, $subject, $message);
 */
 
 ?>

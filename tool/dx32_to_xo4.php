@@ -1,15 +1,15 @@
 <?php
 
 /*
-	功能：本程序用于将 DiscuzX 3.4 转换到 xn4
+	功能：本程序用于将 DiscuzX 2 转换到 xn4
 	步骤：
 		假定您的域名为：http://bbs.domain.com/
 		假定您的目录为：/data/wwwroot/bbs.domain.com/
 		
 		1. 备份好 DiscuzX 的数据库
-		2. 新建 Xiuno BBS 4.0 的数据库 xiuno4
+		2. 新建 Xunio BBS 4.0 的数据库 xunio4
 		3. 把DiscuzX 的移动到 /data/wwwroot/bbs.domain.com/dx2 目录，新上传 4.0 到 /data/wwwroot/bbs.domain.com/ 下
-		4. 安装 Xiuno BBS 4.0，访问 http://bbs.domain.com/install/
+		4. 安装 Xunio BBS 4.0，访问 http://bbs.domain.com/install/
 		5. 安装完毕以后，将  dx_to_xn4.php 上传到 /data/wwwroot/bbs.domain.com/ 下
 		6. 命令行执行:
 			cd /data/wwwroot/bbs.domain.com/
@@ -29,9 +29,9 @@ define('DEBUG', 1);
 $tablepre = 'bbs_';
 
 if(!$conf = include './conf/conf.php') {
-	exit('请先安装完 Xiuno BBS 4.0。');
+	exit('请先安装完 Xunio BBS 4.0。');
 }
-include './xiunophp/xiunophp.php';
+include './xuniophp/xuniophp.php';
 
 $dx = get_dx_db();
 $uc = get_uc_db();
@@ -41,8 +41,8 @@ $uc = get_uc_db();
 !$uc->connect() AND exit('连接 UCenter 数据库失败:'.$uc->errstr);
 
 echo "upgrade group:\r\n";
-$grouplist = $dx->sql_find("SELECT * FROM {$tablepre}_common_usergroup");
-$db->exec("TRUNCATE `{$tablepre}_common_usergroup`");
+$grouplist = $dx->sql_find("SELECT * FROM {$tablepre}group");
+$db->exec("TRUNCATE `{$tablepre}group`");
 foreach($grouplist as $group) {
 	$group['groupid'] > 10 && $group['groupid'] += 90;
 	$arr = array(
@@ -500,23 +500,21 @@ echo '<a href="../">升级完成，请手工移动 old/upload/ 目录下所有�
 
 // dx db instance
 function get_dx_db() {
-	$conf = include './conf/conf.php';
-	include DX_CONF_FILE;
+	$conf = include BBS_PATH.'conf/conf.php';
+	include DX2_CONF_FILE;
 	$dbconf = array(
 		'type' => $conf['db']['type'],
-		'pdo_mysql'=> array(
-			'master' => array (
-				'host' => $_config['db'][1]['dbhost'],
-				'user' => $_config['db'][1]['dbuser'],
-				'password' => $_config['db'][1]['dbpw'],
-				'name' => $_config['db'][1]['dbname'],
-				'charset' => 'utf8',	// 要求取出 utf-8 数据 mysql 4.1 以后支持转码
-				//'charset' => $_config['db'][1]['dbcharset'],
-				'tablepre' => $_config['db'][1]['tablepre'],
-				'engine'=>'MyISAM',
-			),
-			'slaves' => array ()
-		)
+		'master' => array (
+			'host' => $_config['db'][1]['dbhost'],
+			'user' => $_config['db'][1]['dbuser'],
+			'password' => $_config['db'][1]['dbpw'],
+			'name' => $_config['db'][1]['dbname'],
+			'charset' => 'utf8',	// 要求取出 utf-8 数据 mysql 4.1 以后支持转码
+			//'charset' => $_config['db'][1]['dbcharset'],
+			'tablepre' => $_config['db'][1]['tablepre'],
+			'engine'=>'MyISAM',
+		),
+		'slaves' => array ()
 	);
 	$dx_db = db_new($dbconf);
 	return $dx_db;
@@ -524,23 +522,21 @@ function get_dx_db() {
 
 // ucenter db instance
 function get_uc_db() {
-	$conf = include './conf/conf.php';
+	$conf = include BBS_PATH.'conf/conf.php';
 	include UCENTER_CONF_FILE;
 	$dbconf = array(
 		'type' => $conf['db']['type'],
-		'pdo_mysql'=> array(
-			'master' => array (
-				'host' => UC_DBHOST,
-				'user' => UC_DBUSER,
-				'password' => UC_DBPW,
-				'name' => UC_DBNAME,
-				'charset' => 'utf8',	// 要求取出 utf-8 数据 mysql 4.1 以后支持转码
-				//'charset' => UC_DBCHARSET,
-				'tablepre' => UC_DBTABLEPRE,
-				'engine'=>'MyISAM',
-			),
-			'slaves' => array ()
+		'master' => array (
+			'host' => UC_DBHOST,
+			'user' => UC_DBUSER,
+			'password' => UC_DBPW,
+			'name' => UC_DBNAME,
+			'charset' => 'utf8',	// 要求取出 utf-8 数据 mysql 4.1 以后支持转码
+			//'charset' => UC_DBCHARSET,
+			'tablepre' => $tablepre[1],
+			'engine'=>'MyISAM',
 		),
+		'slaves' => array ()
 	);
 	$uc_db = db_new($dbconf);
 	return $uc_db;

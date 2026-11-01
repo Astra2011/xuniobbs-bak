@@ -13,7 +13,7 @@ if(empty($action) || $action == 'list') {
 		
 	$pagesize = 20;
 	$srchtype = param(2);
-	$keyword  = trim(xn_urldecode(param(3)));
+	$keyword  = trim(xo_urldecode(param(3)));
 	$page     = param(4, 1);
 
 	// hook admin_user_list_start.php
@@ -82,7 +82,7 @@ if(empty($action) || $action == 'list') {
 		$_user = user_read_by_username($username);
 		$_user AND message('username', lang('user_already_exists'));
 
-		$salt = xn_rand(16);
+		$salt = xo_rand(16);
 		$r = user_create(array(
 			'username'=>$username,
 			'password'=>md5(md5($password).$salt),
@@ -153,7 +153,7 @@ if(empty($action) || $action == 'list') {
 		$arr['gid'] = $_gid;
 		
 		if($password) {
-			$salt = xn_rand(16);
+			$salt = xo_rand(16);
 			$arr['password'] = md5(md5($password).$salt);
 			$arr['salt'] = $salt;
 		}

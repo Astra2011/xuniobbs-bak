@@ -1,4 +1,4 @@
-# Xiuno BBS 4.0 表结构
+# Xunio BBS 4.0 表结构
 
 ### 用户表 ###
 DROP TABLE IF EXISTS `bbs_user`;

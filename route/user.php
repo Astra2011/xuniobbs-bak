@@ -2,7 +2,7 @@
 
 !defined('DEBUG') AND exit('Access Denied.');
 
-include _include(XIUNOPHP_PATH.'xn_send_mail.func.php');
+include _include(XUNIOPHP_PATH.'xo_send_mail.func.php');
 
 $action = param(1);
 
@@ -151,7 +151,7 @@ if(empty($action)) {
 		
 		!is_password($password, $err) AND message('password', $err);
 		
-		$salt = xn_rand(16);
+		$salt = xo_rand(16);
 		$pwd = md5($password.$salt);
 		$gid = 101;
 		$_user = array (
@@ -343,20 +343,20 @@ if(empty($action)) {
 	$smtp = $smtplist[$arr[0]];
 	
 	// hook user_send_code_before.php
-	$r = xn_send_mail($smtp, $conf['sitename'], $email, $subject, $message);
+	$r = xo_send_mail($smtp, $conf['sitename'], $email, $subject, $message);
 	// hook user_send_code_after.php
 	
 	if($r === TRUE) {
 		message(0, lang('send_successfully'));
 	} else {
-		xn_log($errstr, 'send_mail_error');
+		xo_log($errstr, 'send_mail_error');
 		message(-1, $errstr);
 	}
 
 // 简单的同步登陆实现：| sync login implement simply
 /* 
 	将用户信息通过 token 传递给其他系统 | send user information to other system by token
-	两边系统将 auth_key 设置为一致，用 xn_encrypt() xn_decrypt() 加密解密。all subsystem set auth_key to correct by xn_encrypt() xn_decrypt()
+	两边系统将 auth_key 设置为一致，用 xo_encrypt() xo_decrypt() 加密解密。all subsystem set auth_key to correct by xo_encrypt() xo_decrypt()
 */
 } elseif($action == 'synlogin') {
 
@@ -364,7 +364,7 @@ if(empty($action)) {
 	$token = param('token');
 	$return_url = param('return_url');
 	
-	$s = xn_decrypt($token);
+	$s = xo_decrypt($token);
 	!$s AND message(-1, lang('unauthorized_access'));
 	list($_time, $_useragent) = explode("\t", $s);
 	$useragent != $_useragent AND message(-1, lang('authorized_get_failed'));
@@ -386,12 +386,12 @@ if(empty($action)) {
 			'email'=>$user['email'],
 			'mobile'=>$user['mobile'],
 		);
-		$s = xn_json_encode($arr);
-		$s = xn_encrypt($s);
+		$s = xo_json_encode($arr);
+		$s = xo_encrypt($s);
 		
 		// 将 token 附加到 URL，跳转回去 | add token into URL, jump back
-		$url = xn_urldecode($return_url).'?token='.$s;
-		//$url = xn_url_add_arg($return_url, 'token', $s);
+		$url = xo_urldecode($return_url).'?token='.$s;
+		//$url = xo_url_add_arg($return_url, 'token', $s);
 		http_location($url);
 	}
 

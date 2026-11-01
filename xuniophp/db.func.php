@@ -12,7 +12,7 @@ function db_new($dbconf) {
 			case 'pdo_mysql':  $db = new db_pdo_mysql($dbconf['pdo_mysql']);	break;
 			case 'pdo_sqlite': $db = new db_pdo_sqlite($dbconf['pdo_sqlite']);	break;
 			case 'pdo_mongodb': $db = new db_pdo_mongodb($dbconf['pdo_mongodb']);	break;
-			default: return xn_error(-1, 'Not suppported db type:'.$dbconf['type']);
+			default: return xo_error(-1, 'Not suppported db type:'.$dbconf['type']);
 		}
 		if(!$db || ($db && $db->errstr)) {
 			$errno = -1;
@@ -77,7 +77,7 @@ function db_exec($sql, $d = NULL) {
 	$d = $d ? $d : $db;
 	if(!$d) return FALSE;
 	
-	DEBUG AND xn_log($sql, 'db_exec');
+	DEBUG AND xo_log($sql, 'db_exec');
 	
 	$n = $d->exec($sql);
 	
@@ -204,7 +204,7 @@ function db_errno_errstr($r, $d = NULL, $sql = '') {
 		$errno = $d->errno;
 		$errstr = db_errstr_safe($errno, $d->errstr);
 		$s = 'SQL:'.$sql."\r\nerrno: ".$errno.", errstr: ".$errstr;
-		xn_log($s, 'db_error');
+		xo_log($s, 'db_error');
 	}
 }
 

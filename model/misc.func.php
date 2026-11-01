@@ -90,9 +90,9 @@ function message($code, $message, $extra = array()) {
 	
 	// 防止 message 本身出现错误死循环
 	static $called = FALSE;
-	$called ? exit(xn_json_encode($arr)) : $called = TRUE;
+	$called ? exit(xo_json_encode($arr)) : $called = TRUE;
 	if($ajax) {
-		echo xn_json_encode($arr);
+		echo xo_json_encode($arr);
 	} else {
 		if(IN_CMD) {
 			if(is_array($message) || is_object($message)) {
@@ -114,13 +114,13 @@ function message($code, $message, $extra = array()) {
 }
 
 // 上锁
-function xn_lock_start($lockname = '', $life = 10) {
+function xo_lock_start($lockname = '', $life = 10) {
 	global $conf, $time;
 	$lockfile = $conf['tmp_path'].'lock_'.$lockname.'.lock';
 	if(is_file($lockfile)) {
 		// 大于 $life 秒，删除锁
 		if($time - filemtime($lockfile) > $life) {
-			xn_unlink($lockfile);
+			xo_unlink($lockfile);
 		} else {
 			// 锁存在，上锁失败。
 			return FALSE;
@@ -132,20 +132,20 @@ function xn_lock_start($lockname = '', $life = 10) {
 }
 
 // 删除锁
-function xn_lock_end($lockname = '') {
+function xo_lock_end($lockname = '') {
 	global $conf, $time;
 	$lockfile = $conf['tmp_path'].'lock_'.$lockname.'.lock';
-	xn_unlink($lockfile);
+	xo_unlink($lockfile);
 }
 
 
-// class xn_html_safe 由 axiuno@gmail.com 编写
+// class xo_html_safe 由 axiuno@gmail.com 编写
 
-include_once XIUNOPHP_PATH.'xn_html_safe.func.php';
+include_once XUNIOPHP_PATH.'xo_html_safe.func.php';
 
-function xn_html_safe($doc, $arg = array()) {
+function xo_html_safe($doc, $arg = array()) {
 	
-	// hook model_xn_html_safe_start.php
+	// hook model_xo_html_safe_start.php
 	
 	empty($arg['table_max_width']) AND $arg['table_max_width'] = 746; // 这个宽度为 bbs 回帖宽度
 	
@@ -258,13 +258,13 @@ function xn_html_safe($doc, $arg = array()) {
 		
 	);
 	
-	// hook model_xn_html_safe_new_before.php
+	// hook model_xo_html_safe_new_before.php
 	$safehtml = new HTML_White($white_tag, $white_value, $white_css, $arg);
 	
-	// hook model_xn_html_safe_parse_before.php
+	// hook model_xo_html_safe_parse_before.php
 	$result = $safehtml->parse($doc);
 	
-	// hook model_xn_html_safe_end.php
+	// hook model_xo_html_safe_end.php
 	
 	return $result;
 }

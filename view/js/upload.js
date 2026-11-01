@@ -155,7 +155,7 @@ FileUploader.prototype.start = function(posturl, postdata, filename) {
 					// 如果是图片：
 					//data:image/jpeg;base64,
 					//data:application/x-msdownload;base64,
-					if(_this.thumb_width > 0 && xn.substr(filedata, 0, 10) == 'data:image' && xn.substr(filedata, 0, 14) != 'data:image/gif') {
+					if(_this.thumb_width > 0 && xo.substr(filedata, 0, 10) == 'data:image' && xo.substr(filedata, 0, 14) != 'data:image/gif') {
 						var img = new Image();
 						img.onload = function() {
 							var canvas = document.createElement('canvas');
@@ -179,7 +179,7 @@ FileUploader.prototype.start = function(posturl, postdata, filename) {
 							}
 							var data = s.substring(s.indexOf(',') + 1);
 							var r = {name: file.name, width: width, height: height, data: data};
-							xml_http_request(file, xn.json_encode(r));
+							xml_http_request(file, xo.json_encode(r));
 							
 						};
 						img.src = filedata;
@@ -187,7 +187,7 @@ FileUploader.prototype.start = function(posturl, postdata, filename) {
 						var s = filedata;
 						var data = s.substring(s.indexOf(',') + 1);
 						var r = {name: file.name, width: 0, height: 0, data: data};
-						xml_http_request(file, xn.json_encode(r));
+						xml_http_request(file, xo.json_encode(r));
 					}
 				};
 				reader.onerror = function(e) { console.log(e); };

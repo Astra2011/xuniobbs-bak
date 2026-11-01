@@ -39,17 +39,17 @@ return array(
 	'admin_username' => 'Administrator-Benutzername',
 	'admin_pw' => 'Administrator-Passwort',
 	'installing_about_moment' => 'Installation läuft, dauert etwa eine Minute',
-	'license_title' => 'Xiuno BBS 4.0 chinesische Lizenzvereinbarung',
-	'license_content' => 'Vielen Dank, dass Sie sich für Xiuno BBS 4.0 entschieden haben. Es ist ein inländisches, kompaktes und stabiles leichtgewichtiges Forum, das auch bei großen Datenmengen eine hohe Belastbarkeit bewahrt. Es hat nur etwas mehr als 20 Tabellen, der Quellcode ist komprimiert etwa 1 MB groß, läuft sehr schnell, verarbeitet einzelne Anfragen im 0,01-Sekunden-Bereich und kann in Umgebungen mit APC, Yac, XCache bis zu 0,00x Sekunden erreichen. Die Abhängigkeit von Drittanbieter-Bibliotheken ist äußerst gering, im Frontend nur jquery.js. Der Autor betrachtet es wie einen rein handgefertigten Ferrari – kraftvoll und ohne jegliches Übergewicht, einfach zu deployen und zu warten, eine sehr gute Grundlage für die Sekundärentwicklung.
+	'license_title' => 'Xunio BBS 4.0 chinesische Lizenzvereinbarung',
+	'license_content' => 'Vielen Dank, dass Sie sich für Xunio BBS 4.0 entschieden haben. Es ist ein inländisches, kompaktes und stabiles leichtgewichtiges Forum, das auch bei großen Datenmengen eine hohe Belastbarkeit bewahrt. Es hat nur etwas mehr als 20 Tabellen, der Quellcode ist komprimiert etwa 1 MB groß, läuft sehr schnell, verarbeitet einzelne Anfragen im 0,01-Sekunden-Bereich und kann in Umgebungen mit APC, Yac, XCache bis zu 0,00x Sekunden erreichen. Die Abhängigkeit von Drittanbieter-Bibliotheken ist äußerst gering, im Frontend nur jquery.js. Der Autor betrachtet es wie einen rein handgefertigten Ferrari – kraftvoll und ohne jegliches Übergewicht, einfach zu deployen und zu warten, eine sehr gute Grundlage für die Sekundärentwicklung.
 	
-Xiuno BBS 4.0 verwendet Bootstrap 4 + JQuery 3 als Frontend-Bibliotheken und unterstützt mobile Browser umfassend. Das Backend XiunoPHP 4.0 unterstützt den NoSQL-Zugriff auf verschiedene Datenbanken – diese Version ist ein großer Sprung nach vorn.
+Xunio BBS 4.0 verwendet Bootstrap 4 + JQuery 3 als Frontend-Bibliotheken und unterstützt mobile Browser umfassend. Das Backend XunioPHP 4.0 unterstützt den NoSQL-Zugriff auf verschiedene Datenbanken – diese Version ist ein großer Sprung nach vorn.
 	
-Xiuno wird „Xiuluo" ausgesprochen, englisch Shura, im Buddhismus eine der sechs Daseinsbereiche – der „Ashura-Bereich", der sich zwischen dem Menschen- und dem Götterbereich befindet.
+Xunio wird „Xiuluo" ausgesprochen, englisch Shura, im Buddhismus eine der sechs Daseinsbereiche – der „Ashura-Bereich", der sich zwischen dem Menschen- und dem Götterbereich befindet.
 
-Xiuno BBS 4.0 wird unter der MIT-Lizenz veröffentlicht. Sie dürfen es frei ändern, abgeleitete Versionen erstellen und kommerziell nutzen, ohne rechtliche Risiken befürchten zu müssen (nach Änderungen sollte der ursprüngliche Urheberrechtshinweis erhalten bleiben).',
+Xunio BBS 4.0 wird unter der MIT-Lizenz veröffentlicht. Sie dürfen es frei ändern, abgeleitete Versionen erstellen und kommerziell nutzen, ohne rechtliche Risiken befürchten zu müssen (nach Änderungen sollte der ursprüngliche Urheberrechtshinweis erhalten bleiben).',
 	'license_date' => 'Veröffentlicht: 22. Januar 2018',
 	'agree_license_to_continue' => 'Vereinbarung zustimmen und Installation fortsetzen',
-	'install_title' => 'Xiuno BBS 4.0 Installationsassistent',
+	'install_title' => 'Xunio BBS 4.0 Installationsassistent',
 	'install_guide' => 'Installationsassistent',
 	
 	'function_check' => 'Prüfung der Funktionsabhängigkeiten',

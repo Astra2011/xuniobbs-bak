@@ -93,7 +93,7 @@ jarrlist.on('click', 'a.row_edit', function() {
 	var jthis = $(this);
 	var jtr = jthis.parents('tr');
 	var rowid = jtr.attr('rowid');
-	window.location = xn.url('forum-update-'+rowid);
+	window.location = xo.url('forum-update-'+rowid);
 });
 
 // 删除
@@ -115,7 +115,7 @@ jadd.on('click', function() {
 	var jclone = jarrlist.find('tr').last().clone();
 	jclone.insertAfter(jarrlist.find('tr').last());
 	var jfid = jclone.find('input[name^="fid"]');
-	//var rowid = xn.intval(jfid.val()) + 1;
+	//var rowid = xo.intval(jfid.val()) + 1;
 	var rowid = ++maxfid;
 	jfid.val(rowid);
 	jclone.attr('rowid', rowid);

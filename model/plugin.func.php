@@ -80,7 +80,7 @@ function plugin_init() {
 			$dir = file_name($path);
 			$conffile = $path."/conf.json";
 			if(!is_file($conffile)) continue;
-			$arr = xn_json_decode(file_get_contents($conffile));
+			$arr = xo_json_decode(file_get_contents($conffile));
 			if(empty($arr)) continue;
 			$plugins[$dir] = $arr;
 			
@@ -104,8 +104,8 @@ function plugin_init() {
 /*
 	返回依赖的插件数组：
 	array(
-		'xn_ad'=>'1.0',
-		'xn_umeditor'=>'1.0',
+		'xo_ad'=>'1.0',
+		'xo_umeditor'=>'1.0',
 	);
 */
 function plugin_dependencies($dir) {
@@ -126,8 +126,8 @@ function plugin_dependencies($dir) {
 /*
 	返回被依赖的插件数组：
 	array(
-		'xn_ad'=>'1.0',
-		'xn_umeditor'=>'1.0',
+		'xo_ad'=>'1.0',
+		'xo_umeditor'=>'1.0',
 	);
 */
 function plugin_by_dependencies($dir) {
@@ -165,7 +165,7 @@ function plugin_enable($dir) {
 function plugin_clear_tmp_dir() {
 	global $conf;
 	rmdir_recusive($conf['tmp_path'], TRUE);
-	xn_unlink($conf['tmp_path'].'model.min.php');
+	xo_unlink($conf['tmp_path'].'model.min.php');
 }
 
 function plugin_disable($dir) {
@@ -269,7 +269,7 @@ function plugin_paths_enabled() {
 		foreach($plugin_paths as $path) {
 			$conffile = $path."/conf.json";
 			if(!is_file($conffile)) continue;
-			$pconf = xn_json_decode(file_get_contents($conffile));
+			$pconf = xo_json_decode(file_get_contents($conffile));
 			if(empty($pconf)) continue;
 			if(empty($pconf['enable']) || empty($pconf['installed'])) continue;
 			$return_paths[$path] = $pconf;
@@ -422,9 +422,9 @@ function plugin_official_list_cache() {
 		$s = http_get($url);
 		
 		// 检查返回值是否正确
-		if(empty($s)) return xn_error(-1, '从官方获取插件数据失败。');
-		$r = xn_json_decode($s);
-		if(empty($r)) return xn_error(-1, '从官方获取插件数据格式不对。');
+		if(empty($s)) return xo_error(-1, '从官方获取插件数据失败。');
+		$r = xo_json_decode($s);
+		if(empty($r)) return xo_error(-1, '从官方获取插件数据格式不对。');
 		
 		$s = $r;
 		cache_set('plugin_official_list', $s, 3600); // 缓存时间 1 小时。

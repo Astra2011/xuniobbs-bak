@@ -163,7 +163,7 @@ return array(
 	'plugin_detail'=>'플러그인 상세',
 	'plugin_brief_url'=>'플러그인 소개 URL',
 	'plugin_not_exists'=>'플러그인이 존재하지 않습니다',
-	'plugin_versio_not_match'=>'이 플러그인이 의존하는 Xiuno BBS 최소 버전은 {bbs_version}입니다. 현재 버전: {version}',
+	'plugin_versio_not_match'=>'이 플러그인이 의존하는 Xunio BBS 최소 버전은 {bbs_version}입니다. 현재 버전: {version}',
 	'plugin_download_sucessfully'=>'플러그인 ({dir}) 다운로드 성공, 클릭하여 설치하세요',
 	'plugin_install_sucessfully'=>'플러그인 ( {name} ) 설치 성공',
 	'plugin_unstall_sucessfully'=>'플러그인 ( {name} ) 제거 성공. 완전히 삭제하려면 {dir} 디렉터리를 수동으로 삭제하세요',
