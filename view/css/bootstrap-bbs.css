@@ -21,9 +21,34 @@ html, body {
   font-family: "Helvetica Neue", Helvetica, "Microsoft Yahei", "Hiragino Sans GB", "WenQuanYi Micro Hei", "微软雅黑", "华文细黑", STHeiti, sans-serif;
 }
 
-/* 稳定滚动条 gutter：始终为滚动条预留空间，避免有/无滚动条的页面之间内容横向左右起伏 */
+/* 滚动条槽常驻但视觉透明：宽度恒定避免页面左右起伏，无滚动条时也不留白条 */
 html {
-  scrollbar-gutter: stable;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+html:hover {
+  scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+}
+
+html::-webkit-scrollbar {
+  width: 10px;
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 5px;
+}
+
+html:hover::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* 滚动条槽已常驻，弹窗时无需再补偿 body 内边距 */
+body.modal-open {
+  padding-right: 0 !important;
 }
 
 /* 页脚固定在底部 */
