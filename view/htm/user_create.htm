@@ -123,7 +123,7 @@ jform.on('submit', function() {
 	jsubmit.button('loading');
 	$.xpost(jform.attr('action'), postdata, function(code, message) {
 		if(code == 0) {
-			jsubmit.button(message).delay(1000).location(referer);
+			jsubmit.button(message).delay(350).location(referer);
 		} else if(xo.is_number(code)) {
 			alert(message);
 			jsubmit.button('reset');

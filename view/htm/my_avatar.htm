@@ -34,7 +34,7 @@ javatar_upload.on('change', function(e) {
 			if(code == 0) {
 				jimg.attr('src', message.url+'?'+Math.random());
 				$.alert('成功');
-				jprogress.delay(1000).hide();
+				jprogress.delay(350).hide();
 			} else {
 				$.alert(message);
 			}

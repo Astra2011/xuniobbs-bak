@@ -37,7 +37,7 @@ jform.on('submit', function() {
 	var postdata = jform.serializeObject();
 	$.xpost(jform.attr('action'), postdata, function(code, message) {
 		if(code == 0) {
-			jsubmit.button(message).delay(1000).location('./');
+			jsubmit.button(message).delay(350).location('./');
 		} else if(code == 'email') {
 			jemail.alert(message).focus();
 			jsubmit.button('reset');

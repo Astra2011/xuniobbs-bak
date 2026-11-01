@@ -272,3 +272,16 @@ a:not([href]):not([tabindex]):focus {
   color: #f8f9fa;
   background: #868e96;
 }
+
+/* ---------- 按钮焦点与按下状态 ---------- */
+/* Bootstrap 5.2 的 .btn:focus 会给按钮加 0 0 0 .25rem 的外发光。点击这类会跳转的
+   按钮（后台选项卡、首页导航）时，发光刚淡入到一半页面就换了，看起来像被硬生生收回。
+   鼠标点击不再显示焦点环，键盘 Tab 仍保留，不影响无障碍。 */
+.btn:focus:not(:focus-visible) {
+  box-shadow: none;
+}
+
+/* 按下状态立即生效，不等 0.15s 过渡。否则跳转瞬间颜色停在半路，回弹感就没了 */
+.btn:active {
+  transition: none;
+}
