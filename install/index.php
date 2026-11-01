@@ -9,8 +9,6 @@ define('MESSAGE_HTM_PATH', INSTALL_PATH.'view/htm/message.htm');
 // 切换到上一级目录，操作很方便。
 
 $conf = (include APP_PATH.'conf/conf.default.php');
-$lang = include APP_PATH."lang/$conf[lang]/bbs.php";
-$lang += include APP_PATH."lang/$conf[lang]/bbs_install.php";
 $conf['log_path'] = APP_PATH.$conf['log_path']; 
 $conf['tmp_path'] = APP_PATH.$conf['tmp_path']; 
 
@@ -21,6 +19,16 @@ include APP_PATH.'model/user.func.php';
 include APP_PATH.'model/group.func.php';
 include APP_PATH.'model/form.func.php';
 include APP_PATH.'model/forum.func.php';
+
+// 安装语言：URL 参数 > cookie > 默认配置
+$install_langs = array_keys(lang_list());
+$_lang = isset($_GET['lang']) ? $_GET['lang'] : (isset($_COOKIE['lang']) ? $_COOKIE['lang'] : $conf['lang']);
+in_array($_lang, $install_langs) OR $_lang = 'zh-cn';
+
+$lang = include APP_PATH."lang/$_lang/bbs.php";
+$lang += include APP_PATH."lang/$_lang/bbs_install.php";
+$_SERVER['lang'] = $lang;
+
 include INSTALL_PATH.'install.func.php';
 
 $action = param('action');
@@ -28,8 +36,9 @@ $action = param('action');
 // 安装初始化检测,放这里
 is_file(APP_PATH.'conf/conf.php') AND DEBUG != 2 AND message(0, jump(lang('installed_tips'), '../'));
 
-// 从 cookie 中获取数据，默认为中文
-$_lang = param('lang', 'zh-cn');
+// 语言已在文件开头确定（URL 参数 / cookie）
+$_lang = param('lang', $_lang);
+in_array($_lang, $install_langs) OR $_lang = 'zh-cn';
 
 
 
@@ -38,13 +47,13 @@ if(empty($action)) {
 	
 	if($method == 'GET') {
 		$input = array();
-		$input['lang'] = form_select('lang', array('zh-cn'=>'简体中文', 'zh-tw'=>'正體中文', 'en-us'=>'English', 'ru-ru'=>'Русский', 'th-th'=>'ไทย'), $conf['lang']);
+		$input['lang'] = form_select('lang', lang_list(), $_lang);
 		
 		// 修改 conf.php
 		include INSTALL_PATH."view/htm/index.htm";
 	} else {
 		$_lang = param('lang');
-		!in_array($_lang, array('zh-cn', 'zh-tw', 'en-us', 'ru-ru', 'th-th')) AND $_lang = 'zh-cn';
+		!in_array($_lang, $install_langs) AND $_lang = 'zh-cn';
 		setcookie('lang', $_lang);
 		
 		//$conf['lang'] = $_lang;

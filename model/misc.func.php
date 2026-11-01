@@ -2,6 +2,28 @@
 
 // hook model_misc_start.php
 
+// 可用语言列表：语言代码 => 本土语言名称
+// 名称不随界面语言变化，保证任何国家的用户都能认出自己的语言
+function lang_list() {
+	$langs = array(
+		'zh-cn' => '简体中文',
+		'zh-tw' => '繁體中文',
+		'en-us' => 'English',
+		'ja-jp' => '日本語',
+		'ko-kr' => '한국어',
+		'de-de' => 'Deutsch',
+		'fr-fr' => 'Français',
+		'es-es' => 'Español',
+	);
+	// 过滤掉没有语言包的目录
+	foreach($langs as $code => $name) {
+		if(!is_file(APP_PATH."lang/$code/bbs.php")) {
+			unset($langs[$code]);
+		}
+	}
+	return $langs;
+}
+
 
 /*
 	url("thread-create-1.htm");

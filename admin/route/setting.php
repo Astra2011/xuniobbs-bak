@@ -23,7 +23,7 @@ if($action == 'base') {
 		$input['user_create_on'] = form_radio_yes_no('user_create_on', $conf['user_create_on']);
 		$input['user_create_email_on'] = form_radio_yes_no('user_create_email_on', $conf['user_create_email_on']);
 		$input['user_resetpw_on'] = form_radio_yes_no('user_resetpw_on', $conf['user_resetpw_on']);
-		$input['lang'] = form_select('lang', array('zh-cn'=>lang('lang_zh_cn'), 'zh-tw'=>lang('lang_zh_tw'), 'en-us'=>lang('lang_en_us'), 'ru-ru'=>lang('lang_ru_ru'), 'th-th'=>lang('lang_th_th')), $conf['lang']);
+		$input['lang'] = form_select('lang', lang_list(), $conf['lang']);
 		
 		$header['title'] = lang('admin_site_setting');
 		$header['mobile_title'] =lang('admin_site_setting');
@@ -42,6 +42,8 @@ if($action == 'base') {
 		$user_resetpw_on = param('user_resetpw_on', 0);
 		
 		$_lang = param('lang');
+		$_langs = lang_list();
+		!isset($_langs[$_lang]) AND $_lang = $conf['lang'];
 		
 		// hook admin_setting_base_post_start.php
 		

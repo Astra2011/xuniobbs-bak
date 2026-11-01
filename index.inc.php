@@ -7,6 +7,7 @@
 $sid = sess_start();
 
 // 语言 / Language
+is_file(APP_PATH."lang/$conf[lang]/bbs.php") OR $conf['lang'] = 'zh-cn';
 $_SERVER['lang'] = $lang = include _include(APP_PATH."lang/$conf[lang]/bbs.php");
 
 // 用户组 / Group
