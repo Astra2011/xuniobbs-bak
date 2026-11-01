@@ -44,28 +44,52 @@ function user_password_algo() {
 	return defined('PASSWORD_ARGON2ID') ? PASSWORD_ARGON2ID : PASSWORD_BCRYPT;
 }
 
-// 算法参数，可在 conf.php 的 password 段覆盖，缺省值见下
+// 当前环境的 PHP 内存上限，单位字节，-1 表示不限制
+function user_password_memory_limit() {
+	$v = trim((string)ini_get('memory_limit'));
+	if($v === '' || $v === '-1') return -1;
+	$num = intval($v);
+	$unit = strtolower(substr($v, -1));
+	if($unit == 'g') return $num * 1073741824;
+	if($unit == 'm') return $num * 1048576;
+	if($unit == 'k') return $num * 1024;
+	return $num;
+}
+
+// 算法参数，可在 conf.php 的 password 段覆盖，缺省按环境自动选档
 // Argon2id：memory_cost 单位为 KiB，65536 即 64 MiB；time_cost 为迭代轮数；threads 为并行度
 // bcrypt：cost 每加 1 计算量翻倍
 function user_password_options() {
 	global $conf;
 	$options = array();
 	if(user_password_algo() === PASSWORD_BCRYPT) {
-		$cost = isset($conf['password']['cost']) ? intval($conf['password']['cost']) : 10;
+		$cost = !empty($conf['password']['cost']) ? intval($conf['password']['cost']) : 10;
 		$cost < 4 AND $cost = 4;
 		$cost > 12 AND $cost = 12;
 		$options['cost'] = $cost;
-	} else {
-		$memory_cost = isset($conf['password']['memory_cost']) ? intval($conf['password']['memory_cost']) : 65536;
-		$time_cost = isset($conf['password']['time_cost']) ? intval($conf['password']['time_cost']) : 4;
-		$threads = isset($conf['password']['threads']) ? intval($conf['password']['threads']) : 1;
-		$memory_cost < 8192 AND $memory_cost = 8192;
-		$time_cost < 1 AND $time_cost = 1;
-		$threads < 1 AND $threads = 1;
-		$options['memory_cost'] = $memory_cost;
-		$options['time_cost'] = $time_cost;
-		$options['threads'] = $threads;
+		return $options;
 	}
+	// 缺省取 OWASP 推荐档 46 MiB / 1 轮，单次约 70ms
+	$memory_cost = 47104;
+	$time_cost = 1;
+	$threads = 1;
+	// 虚拟主机常见 memory_limit 只有 64M，46 MiB 的哈希内存再叠上脚本开销容易吃紧，
+	// 此时自动降一档到 OWASP 第二档 19 MiB / 2 轮：速度快一倍，强度仍在推荐范围内
+	$limit = user_password_memory_limit();
+	if($limit > 0 && $limit < $memory_cost * 2048) {
+		$memory_cost = 19456;
+		$time_cost = 2;
+	}
+	// conf.php 里显式指定时以配置为准
+	if(!empty($conf['password']['memory_cost'])) $memory_cost = intval($conf['password']['memory_cost']);
+	if(!empty($conf['password']['time_cost'])) $time_cost = intval($conf['password']['time_cost']);
+	if(!empty($conf['password']['threads'])) $threads = intval($conf['password']['threads']);
+	$memory_cost < 8192 AND $memory_cost = 8192;
+	$time_cost < 1 AND $time_cost = 1;
+	$threads < 1 AND $threads = 1;
+	$options['memory_cost'] = $memory_cost;
+	$options['time_cost'] = $time_cost;
+	$options['threads'] = $threads;
 	return $options;
 }
 
@@ -112,11 +136,16 @@ function user_password_upgrade($password, $user) {
 		// 直接把摘要当密码存下来会让用户下次登录失败，这种情况跳过，等下次明文登录再迁
 		$salt = isset($user['salt']) ? $user['salt'] : '';
 		if($salt === '' || !hash_equals(md5(md5($password).$salt), $hash)) return FALSE;
-		user_update($user['uid'], array('password'=>user_password_hash($password), 'salt'=>''));
+		$newhash = user_password_hash($password);
+		// 生成失败会回落 bcrypt，这时不写库，避免每次登录都白算一遍
+		if(password_needs_rehash($newhash, user_password_algo(), user_password_options())) return FALSE;
+		user_update($user['uid'], array('password'=>$newhash, 'salt'=>''));
 		return TRUE;
 	}
 	if(password_needs_rehash($hash, user_password_algo(), user_password_options())) {
-		user_update($user['uid'], array('password'=>user_password_hash($password)));
+		$newhash = user_password_hash($password);
+		if(password_needs_rehash($newhash, user_password_algo(), user_password_options())) return FALSE;
+		user_update($user['uid'], array('password'=>$newhash));
 		return TRUE;
 	}
 	return FALSE;

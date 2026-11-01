@@ -63,6 +63,9 @@ Xunio BBS 4.0 est publié sous licence MIT. Vous pouvez librement le modifier, c
 	'function_glob_not_exists' => 'La fonctionnalité d\'extension du backend dépend de cette fonction. Configurez php.ini avec disabled_functions = ; pour lever la restriction',
 	'function_gzcompress_not_exists' => 'La fonctionnalité d\'extension du backend dépend de cette fonction. Sur Linux, ajoutez --with-zlib ; sur Windows, décommentez extension=php_zlib.dll dans php.ini',
 	'function_mb_substr_not_exists' => 'Le système dépend de cette fonction. Sur Linux, ajoutez --with-mbstring ; sur Windows, décommentez extension=php_mbstring.dll dans php.ini',
+	'function_password_hash_not_exists' => 'Le stockage des mots de passe nécessite ces deux fonctions (intégrées à PHP 5.5+), absentes ici. Mettez à jour PHP ou vérifiez disabled_functions dans php.ini',
+	'argon2_not_exists' => 'Ce PHP n\'est pas compilé avec le support Argon2. Les mots de passe seront stockés avec bcrypt. Tout fonctionne, la robustesse est légèrement inférieure',
+	'argon2_fallback' => 'bcrypt utilisé',
 	
 	// hook lang_fr_fr_bbs_install.php
 

@@ -62,6 +62,9 @@ BBS Xunio 4 using the MIT agreement, you can freely modify, derived version, com
 	'function_glob_not_exists' => 'Plugin install dependent on it, please setting php.ini, set disabled_functions = ; Lifting restrictions on this function',
 	'function_gzcompress_not_exists' => 'Plugin install dependent on it, on Linux server, add compile argument: --with-zlib, on Windows Server, please setting php.ini open extension=php_zlib.dll',
 	'function_mb_substr_not_exists' => 'System dependent on it, on Linux server, add compile argument: --with-mbstring, on Windows Server, please setting php.ini open extension=php_mbstring.dll',
+	'function_password_hash_not_exists' => 'Password storage needs these two functions (built into PHP 5.5+), which are missing here. Please upgrade PHP, or check disabled_functions in php.ini',
+	'argon2_not_exists' => 'Argon2 is not enabled in this PHP build. Passwords will be stored with bcrypt instead. Everything works, with slightly lower strength',
+	'argon2_fallback' => 'Will use bcrypt',
 	
 	// hook lang_en_us_bbs_install.php
 );

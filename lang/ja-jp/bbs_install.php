@@ -63,6 +63,9 @@ Xunio BBS 4.0 は MIT ライセンスで公開されています。自由に改�
 	'function_glob_not_exists' => 'バックエンドのプラグイン機能はこの関数に依存しています。php.ini を設定し、disabled_functions = ; に設定してこの関数の制限を解除してください',
 	'function_gzcompress_not_exists' => 'バックエンドのプラグイン機能はこの関数に依存しています。Linuxホストではコンパイルパラメータ --with-zlib を追加し、Windowsホストでは php.ini の extension=php_zlib.dll のコメントを解除してください',
 	'function_mb_substr_not_exists' => 'システムはこの関数に依存しています。Linuxホストではコンパイルパラメータ --with-mbstring を追加し、Windowsホストでは php.ini の extension=php_mbstring.dll のコメントを解除してください',
+	'function_password_hash_not_exists' => 'パスワード保存にはこの2つの関数が必要です（PHP 5.5+ に標準搭載）。現在の環境にはありません。PHP をアップグレードするか、php.ini の disabled_functions を確認してください',
+	'argon2_not_exists' => 'この PHP では Argon2 が有効になっていません。パスワードは bcrypt で保存されます。動作に支障はありませんが、強度はやや劣ります',
+	'argon2_fallback' => 'bcrypt を使用',
 	
 	// hook lang_ja_jp_bbs_install.php
 

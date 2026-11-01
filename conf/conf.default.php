@@ -38,11 +38,11 @@ return array (
 	),
 	// 密码摘要参数。算法优先 Argon2id（环境不支持时回落 bcrypt），此处只调开销：
 	// memory_cost 单位为 KiB，65536 即 64 MiB；time_cost 为迭代轮数；threads 为并行度。
+	// 密码哈希参数。留空即按当前环境自动选档：
+	// Argon2id 默认 46 MiB / 1 轮（约 70ms），memory_limit 低于 96M 时自动降到 19 MiB / 2 轮。
+	// 需要固定参数时填 memory_cost / time_cost / threads，memory_cost 单位为 KiB。
 	// 并发登录较多或内存吃紧的机器可下调 memory_cost（不低于 8192），安全性随之下降。
 	'password' => array (
-		'memory_cost' => 65536,
-		'time_cost' => 4,
-		'threads' => 1,
 		'cost' => 10,		// 回落 bcrypt 时的 cost
 	),
 	
