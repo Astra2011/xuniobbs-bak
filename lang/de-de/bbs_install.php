@@ -66,6 +66,9 @@ Xunio BBS 4.0 wird unter der MIT-Lizenz veröffentlicht. Sie dürfen es frei än
 	'function_password_hash_not_exists' => 'Die Passwortspeicherung benötigt diese beiden Funktionen (in PHP 5.5+ enthalten), die hier fehlen. Bitte PHP aktualisieren oder disabled_functions in der php.ini prüfen',
 	'argon2_not_exists' => 'Dieses PHP wurde ohne Argon2-Unterstützung gebaut. Passwörter werden mit bcrypt gespeichert. Alles funktioniert, die Stärke ist etwas geringer',
 	'argon2_fallback' => 'bcrypt wird verwendet',
+	'function_hash_hmac_not_exists' => 'Die Integritätsprüfung von Login-Tokens benötigt diese Funktion (hash-Erweiterung, seit PHP 5.1.2 eingebaut), die fehlt. Prüfen Sie disabled_functions in der php.ini',
+	'openssl_not_exists' => 'Die openssl-Erweiterung ist deaktiviert; die Token-Verschlüsselung nutzt dann reines PHP. Funktioniert, ist aber etwas langsamer',
+	'openssl_fallback' => 'Reines PHP wird verwendet',
 	
 	// hook lang_de_de_bbs_install.php
 

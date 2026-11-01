@@ -66,6 +66,9 @@ Xunio BBS 4.0 采用 MIT 協議發布，您可以自由修改、派生版本、�
 	'function_password_hash_not_exists' => '密碼儲存依賴這兩個函數（PHP 5.5+ 內建），當前環境缺失。請升級 PHP，或檢查 php.ini 的 disabled_functions 是否禁用了它們',
 	'argon2_not_exists' => '當前 PHP 未啟用 Argon2 支援，密碼將用 bcrypt 儲存。不影響使用，強度略低於 Argon2id',
 	'argon2_fallback' => '將使用 bcrypt',
+	'function_hash_hmac_not_exists' => '登入權杖的完整性校驗依賴該函數（hash 擴展，PHP 5.1.2+ 內建），目前環境缺失。請檢查 php.ini 的 disabled_functions 是否停用它',
+	'openssl_not_exists' => '目前 PHP 未啟用 openssl 擴展，權杖加密將退回純 PHP 實作，功能正常但效能略低',
+	'openssl_fallback' => '將使用純 PHP',
 	
 	// hook lang_zh_tw_bbs_admin.php
 );

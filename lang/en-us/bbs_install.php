@@ -65,6 +65,9 @@ BBS Xunio 4 using the MIT agreement, you can freely modify, derived version, com
 	'function_password_hash_not_exists' => 'Password storage needs these two functions (built into PHP 5.5+), which are missing here. Please upgrade PHP, or check disabled_functions in php.ini',
 	'argon2_not_exists' => 'Argon2 is not enabled in this PHP build. Passwords will be stored with bcrypt instead. Everything works, with slightly lower strength',
 	'argon2_fallback' => 'Will use bcrypt',
+	'function_hash_hmac_not_exists' => 'Token integrity verification relies on this function (hash extension, built-in since PHP 5.1.2), which is missing. Check php.ini disabled_functions',
+	'openssl_not_exists' => 'openssl extension is not enabled; token encryption will fall back to pure PHP. Works but slightly slower',
+	'openssl_fallback' => 'Will use pure PHP',
 	
 	// hook lang_en_us_bbs_install.php
 );

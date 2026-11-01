@@ -66,6 +66,9 @@ Xunio BBS 4.0은 MIT 라이선스로 공개됩니다. 자유롭게 수정·파�
 	'function_password_hash_not_exists' => '비밀번호 저장에는 이 두 함수가 필요합니다(PHP 5.5+ 내장). 현재 환경에는 없습니다. PHP를 업그레이드하거나 php.ini의 disabled_functions를 확인하세요',
 	'argon2_not_exists' => '이 PHP에서는 Argon2가 활성화되지 않았습니다. 비밀번호는 bcrypt로 저장됩니다. 사용에는 문제가 없지만 강도는 다소 낮습니다',
 	'argon2_fallback' => 'bcrypt 사용',
+	'function_hash_hmac_not_exists' => '로그인 토큰 무결성 검증은 이 함수(hash 확장, PHP 5.1.2+ 내장)에 의존하는데 현재 환경에 없습니다. php.ini의 disabled_functions를 확인하세요',
+	'openssl_not_exists' => 'openssl 확장이 비활성화되어 토큰 암호화가 순수 PHP 구현으로 대체됩니다. 기능은 정상이나 성능이 약간 낮습니다',
+	'openssl_fallback' => '순수 PHP 사용',
 	
 	// hook lang_ko_kr_bbs_install.php
 
