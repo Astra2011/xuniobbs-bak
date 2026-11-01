@@ -138,6 +138,76 @@ if($action == 'base') {
 
 		message(0, lang('save_successfully'));
 	}
+} elseif($action == 'hook_rank') {
+
+	// hook admin_setting_hook_rank_get_post.php
+
+	if($method == 'GET') {
+
+		// hook admin_setting_hook_rank_get_start.php
+
+		$header['title'] = lang('admin_setting_hook_rank');
+		$header['mobile_title'] = lang('admin_setting_hook_rank');
+
+		plugin_init();
+
+		// 收集已启用（installed && enable）插件，按 hook_rank 升序
+		$pluginlist = array();
+		foreach($plugins as $dir=>$pconf) {
+			if(empty($pconf['installed']) || empty($pconf['enable'])) continue;
+			$pluginlist[$dir] = array(
+				'dir'=>$dir,
+				'name'=>isset($pconf['name']) ? $pconf['name'] : $dir,
+				'hook_rank'=>isset($pconf['hook_rank']) ? intval($pconf['hook_rank']) : 0,
+				'hooks'=>isset($pconf['hooks']) ? array_keys($pconf['hooks']) : array(),
+			);
+		}
+		// 按 hook_rank 升序（序号小先执行），同 rank 按 dir 升序
+		uasort($pluginlist, function($a, $b) {
+			if($a['hook_rank'] == $b['hook_rank']) {
+				return strcmp($a['dir'], $b['dir']);
+			}
+			return $a['hook_rank'] > $b['hook_rank'] ? 1 : -1;
+		});
+		$pluginlist = array_values($pluginlist);
+		$plugincount = count($pluginlist);
+
+		// hook admin_setting_hook_rank_get_end.php
+
+		include _include(ADMIN_PATH."view/htm/setting_hook_rank.htm");
+
+	} else {
+
+		// hook admin_setting_hook_rank_post_start.php
+
+		$dir = param('dir', '', FALSE);
+		$dir2 = param('dir2', '', FALSE);
+		if(empty($dir) || empty($dir2)) {
+			message(-1, lang('hook_rank_invalid'));
+		}
+		if(!is_word($dir) || !is_word($dir2)) {
+			message(-1, lang('hook_rank_invalid'));
+		}
+
+		plugin_init();
+
+		if(!isset($plugins[$dir]) || !isset($plugins[$dir2])) {
+			message(-1, lang('plugin_not_exists'));
+		}
+
+		// 交换两个插件的 hook_rank（缺失的按 0 处理，再统一补齐）
+		$rank1 = isset($plugins[$dir]['hook_rank']) ? intval($plugins[$dir]['hook_rank']) : 0;
+		$rank2 = isset($plugins[$dir2]['hook_rank']) ? intval($plugins[$dir2]['hook_rank']) : 0;
+
+		file_replace_var(APP_PATH."plugin/$dir/conf.json", array('hook_rank'=>$rank2), TRUE);
+		file_replace_var(APP_PATH."plugin/$dir2/conf.json", array('hook_rank'=>$rank1), TRUE);
+
+		plugin_clear_tmp_dir();
+
+		// hook admin_setting_hook_rank_post_end.php
+
+		message(0, lang('save_successfully'));
+	}
 }
 
 // hook admin_setting_end.php

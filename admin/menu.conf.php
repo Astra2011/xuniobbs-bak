@@ -9,6 +9,7 @@ return array(
 			'base'=>array('url'=>url('setting-base'), 'text'=>lang('admin_setting_base')),
 			'smtp'=>array('url'=>url('setting-smtp'), 'text'=>lang('admin_setting_smtp')),
 			'plugin_protect'=>array('url'=>url('setting-plugin_protect'), 'text'=>lang('admin_setting_plugin_protect')),
+			'hook_rank'=>array('url'=>url('setting-hook_rank'), 'text'=>lang('admin_setting_hook_rank')),
 		)
 	),
 	'forum' => array(

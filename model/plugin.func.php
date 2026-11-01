@@ -154,6 +154,9 @@ function plugin_enable($dir) {
 	//plugin_overwrite($dir, 'install');
 	//plugin_hook($dir, 'install');
 	
+	// 启用时若尚未分配排序序号，则自动分配（先来后到）
+	plugin_hook_rank_assign($dir);
+	
 	file_replace_var(APP_PATH."plugin/$dir/conf.json", array('enable'=>1), TRUE);
 	
 	plugin_clear_tmp_dir();
@@ -168,6 +171,30 @@ function plugin_clear_tmp_dir() {
 	xo_unlink($conf['tmp_path'].'model.min.php');
 }
 
+// 分配插件级全局排序序号：返回当前所有插件中的最大 hook_rank，供新插件取 max+1
+// 卸载/禁用时 hook_rank 保留，不回收，避免重装后序号漂移导致行为不稳定
+function plugin_hook_rank_max() {
+	global $plugins;
+	$max = 0;
+	foreach($plugins as $dir=>$pconf) {
+		$r = isset($pconf['hook_rank']) ? intval($pconf['hook_rank']) : 0;
+		$r > $max AND $max = $r;
+	}
+	return $max;
+}
+
+// 为尚未分配 hook_rank 的插件自动分配一个全局唯一递增序号（先来后到，顺序稳定）
+function plugin_hook_rank_assign($dir) {
+	global $plugins;
+	if(!isset($plugins[$dir])) return 0;
+	$cur = isset($plugins[$dir]['hook_rank']) ? intval($plugins[$dir]['hook_rank']) : 0;
+	if($cur > 0) return $cur; // 已分配过，保持不变
+	$rank = plugin_hook_rank_max() + 1;
+	$plugins[$dir]['hook_rank'] = $rank;
+	file_replace_var(APP_PATH."plugin/$dir/conf.json", array('hook_rank'=>$rank), TRUE);
+	return $rank;
+}
+
 function plugin_disable($dir) {
 	global $plugins;
 	
@@ -180,6 +207,7 @@ function plugin_disable($dir) {
 	//plugin_overwrite($dir, 'unstall');
 	//plugin_hook($dir, 'unstall');
 	
+	// 注意：禁用时不回收 hook_rank，保留原序号，重新启用后顺序不变
 	file_replace_var(APP_PATH."plugin/$dir/conf.json", array('enable'=>0), TRUE);
 	
 	plugin_clear_tmp_dir();
@@ -226,6 +254,9 @@ function plugin_install($dir) {
 	
 	// 2. 钩子的方式
 	//plugin_hook($dir, 'install');
+	
+	// 安装时若尚未分配排序序号，则自动分配（先来后到）
+	plugin_hook_rank_assign($dir);
 	
 	// 写入配置文件
 	file_replace_var(APP_PATH."plugin/$dir/conf.json", array('installed'=>1, 'enable'=>1), TRUE);
@@ -348,17 +379,24 @@ function plugin_compile_srcfile_callback($m) {
 		//$plugin_paths = glob(APP_PATH.'plugin/*', GLOB_ONLYDIR);
 		foreach($plugin_paths as $path=>$pconf) {
 			$dir = file_name($path);
+			// 插件级全局排序序号：序号小=先安装=先执行；未分配的给 0（同 rank 时按目录名升序兜底）
+			$rank = isset($pconf['hook_rank']) ? intval($pconf['hook_rank']) : 0;
 			$hookpaths = glob(APP_PATH."plugin/$dir/hook/*.*"); // path
 			if(is_array($hookpaths)) {
 				foreach($hookpaths as $hookpath) {
 					$hookname = file_name($hookpath);
-					$rank = isset($pconf['hooks_rank']["$hookname"]) ? $pconf['hooks_rank']["$hookname"] : 0;
-					$hooks[$hookname][] = array('hookpath'=>$hookpath, 'rank'=>$rank);
+					$hooks[$hookname][] = array('hookpath'=>$hookpath, 'rank'=>$rank, 'dir'=>$dir);
 				}
 			}
 		}
 		foreach ($hooks as $hookname=>$arrlist) {
-			$arrlist = arrlist_multisort($arrlist, 'rank', FALSE);
+			// 排序规则：hook_rank 升序（序号小=先安装=先执行），同 rank 时按插件目录名升序，保证顺序确定、可复现
+			usort($arrlist, function($a, $b) {
+				if($a['rank'] == $b['rank']) {
+					return strcmp($a['dir'], $b['dir']);
+				}
+				return $a['rank'] > $b['rank'] ? 1 : -1;
+			});
 			$hooks[$hookname] = arrlist_values($arrlist, 'hookpath');
 		}
 		
@@ -460,6 +498,7 @@ function plugin_read_by_dir($dir, $local_first = TRUE) {
 	!isset($local['enable']) && $local['enable'] = 0;
 	!isset($local['hooks']) && $local['hooks'] = array();
 	!isset($local['hooks_rank']) && $local['hooks_rank'] = array();
+	!isset($local['hook_rank']) && $local['hook_rank'] = 0;
 	!isset($local['dependencies']) && $local['dependencies'] = array();
 	!isset($local['icon_url']) && $local['icon_url'] = '';
 	!isset($local['have_setting']) && $local['have_setting'] = 0;
