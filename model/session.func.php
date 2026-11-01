@@ -10,6 +10,18 @@ $sid = '';
 $g_session = array();	
 $g_session_invalid = FALSE; // 0: 有效， 1：无效
 
+// 记录到会话里的来访地址。xo_url_parse() 建立会话之后才执行，此时 REQUEST_URI_NO_PATH
+// 还是空的，直接取会把 url 写成空串；这里退回到 REQUEST_URI 自己截。字段长度取 255。
+function sess_url() {
+	$url = _SERVER('REQUEST_URI_NO_PATH', '');
+	if($url === '' || $url === NULL) {
+		$url = _SERVER('REQUEST_URI', '');
+		$pos = strrpos($url, '/');
+		$pos === FALSE OR $url = substr($url, $pos + 1);
+	}
+	return substr($url, 0, 255);
+}
+
 // 可以指定独立的 session 服务器，在系统压力巨大的时候可以考虑优化
 //$g_sess_db = $db;
 
@@ -72,8 +84,8 @@ function sess_new($sid) {
 	}
 	
 	// 可能会暴涨
-	$url = _SERVER('REQUEST_URI_NO_PATH');
-	
+	$url = sess_url();
+
 	$arr = array(
 		'sid'=>$sid,
 		'uid'=>0,
@@ -82,7 +94,7 @@ function sess_new($sid) {
 		'last_date'=>$time,
 		'data'=> '',
 		'ip'=> $longip,
-		'useragent'=> $agent,
+		'useragent'=> substr($agent, 0, 128),
 		'bigdata'=> 0,
 	);
 	$g_session = $arr;
@@ -123,7 +135,7 @@ function sess_write($sid, $data) {
 	
 	function_exists('chdir') AND chdir(APP_PATH);
 	
-	$url = _SERVER('REQUEST_URI_NO_PATH');
+	$url = sess_url();
 	$agent = _SERVER('HTTP_USER_AGENT');
 	$arr = array(
 		'uid'=>$uid,
@@ -132,16 +144,17 @@ function sess_write($sid, $data) {
 		'last_date'=>$time,
 		'data'=> $data,
 		'ip'=> $longip,
-		'useragent'=> $agent,
+		'useragent'=> substr($agent, 0, 128),
 		'bigdata'=> 0,
 	);
 	
-	// 开启 session 延迟更新，减轻压力，会导致不重要的数据(useragent,url)显示有些延迟，单位为秒。
+	// 开启 session 延迟更新，减轻压力，会导致不重要的数据(fid,url,useragent)显示有些延迟，单位为秒。
+	// last_date 不能跟着跳过：在线判定和 sess_gc() 都以它为准，跳过后活跃用户会被当成离线，
+	// 甚至被回收掉。
 	$session_delay_update_on = !empty($conf['session_delay_update']) && $time - $g_session['last_date'] < $conf['session_delay_update'];
 	if($session_delay_update_on) {
 		unset($arr['fid']);
 		unset($arr['url']);
-		unset($arr['last_date']);
 	}
 	
 	// 判断数据是否超长
@@ -197,7 +210,12 @@ function sess_start() {
 	ini_set('session.cookie_httponly', 'On'); // 打开后 js 获取不到 HTTP 设置的 cookie, 有效防止 XSS，这个对于安全很重要，除非有 BUG，否则不要关闭。
 	PHP_VERSION_ID >= 70300 AND ini_set('session.cookie_samesite', 'Lax'); // 跨站请求不携带 sid
 	
-	ini_set('session.gc_maxlifetime', $conf['online_hold_time']);	// 活动时间 $conf['online_hold_time']
+	// 会话行保留时间与「在线」判定窗口是两件事：前者决定多久不访问要重新登录，
+	// 后者决定首页在线数字怎么算。保留时间不能小于在线窗口，否则刚活跃的会话会被清掉。
+	$gclife = empty($conf['session_gc_time']) ? 86400 : intval($conf['session_gc_time']);
+	$hold = empty($conf['online_hold_time']) ? 900 : intval($conf['online_hold_time']);
+	$gclife < $hold * 2 AND $gclife = $hold * 2;
+	ini_set('session.gc_maxlifetime', $gclife);	// 会话数据保留时间
 	ini_set('session.gc_probability', 1); 	// 垃圾回收概率 = gc_probability/gc_divisor
 	ini_set('session.gc_divisor', 500); 	// 垃圾回收时间 5 秒，在线人数 * 10 
 	
@@ -220,27 +238,80 @@ function sess_start() {
 	return $sid;
 }
 
+// 在线判定窗口（秒）
+function online_hold_time() {
+	global $conf;
+	$hold = empty($conf['online_hold_time']) ? 900 : intval($conf['online_hold_time']);
+	return $hold < 60 ? 60 : $hold;
+}
+
+// 数字刷新间隔（秒）。查一次库至少要扫一遍在线会话，没必要每个请求都做。
+function online_update_span() {
+	global $conf;
+	$span = empty($conf['online_update_span']) ? 60 : intval($conf['online_update_span']);
+	return $span < 10 ? 10 : $span;
+}
+
+// 在线统计：会员按 uid 去重，同一账号在多处登录只算一个人；游客按会话数。
+// 会话表里同一账号会有多行（换浏览器、清 cookie），直接 COUNT(*) 会把一个人算成十几个人。
+function online_stat() {
+	global $time, $db;
+	
+	$stat = cache_get('online_stat');
+	if(is_array($stat) && isset($stat['member'])) return $stat;
+	
+	$expiry = $time - online_hold_time();
+	$tablepre = $db->tablepre;
+	
+	$arr = db_sql_find_one("SELECT COUNT(DISTINCT uid) AS c FROM {$tablepre}session WHERE uid > 0 AND last_date > $expiry");
+	$member = empty($arr) ? 0 : intval($arr['c']);
+	$guest = intval(db_count('session', array('uid'=>0, 'last_date'=>array('>'=>$expiry))));
+	
+	$stat = array(
+		'member'=>$member,
+		'guest'=>$guest,
+		'total'=>$member + $guest,
+		'date'=>$time,
+	);
+	cache_set('online_stat', $stat, online_update_span());
+	return $stat;
+}
+
+// 会员在线人数
 function online_count() {
-	return db_count('session');
+	$stat = online_stat();
+	return $stat['member'];
 }
 
-function online_find_cache() {
-	return db_find('session');
+// 在线信息统一入口，插件可直接调用
+// 返回 array(member=>会员数, guest=>游客数, total=>总数, date=>统计时间)
+function online_stat_get() {
+	return online_stat();
 }
 
+// 在线会员列表，同一账号只保留最近一次访问
 function online_list_cache() {
+	global $time;
+	
 	$onlinelist = cache_get('online_list');
-	if($onlinelist === NULL) {
-		$onlinelist = db_find('session', array('uid'=>array('>'=>0)), array('last_date'=>-1), 1, 500);
-		foreach($onlinelist as &$online) {
-			$user = user_read_cache($online['uid']);
-			$online['username'] = $user['username'];
-			$online['gid'] = $user['gid'];
-			$online['ip_fmt'] = long2ip($online['ip']);
-			$online['last_date_fmt'] = date('Y-n-j H:i', $online['last_date']);
-		}
-		cache_set('online_list', $onlinelist, 300);
+	if(is_array($onlinelist)) return $onlinelist;
+	
+	$expiry = $time - online_hold_time();
+	$list = db_find('session', array('uid'=>array('>'=>0), 'last_date'=>array('>'=>$expiry)), array('last_date'=>-1), 1, 500);
+	$onlinelist = array();
+	$seen = array();
+	foreach($list as $online) {
+		if(isset($seen[$online['uid']])) continue;
+		$seen[$online['uid']] = 1;
+		$user = user_read_cache($online['uid']);
+		$online['username'] = $user['username'];
+		$online['gid'] = $user['gid'];
+		$online['ip_fmt'] = long2ip($online['ip']);
+		$online['last_date_fmt'] = date('Y-n-j H:i', $online['last_date']);
+		$onlinelist[] = $online;
+		if(count($onlinelist) >= 200) break;
 	}
+	cache_set('online_list', $onlinelist, online_update_span());
 	return $onlinelist;
 }
 

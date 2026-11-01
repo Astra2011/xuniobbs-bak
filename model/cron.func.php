@@ -17,9 +17,8 @@ function cron_run($force = 0) {
 		if($lock === NULL) {
 			cache_set('cron_lock_1', 1, 10); // 设置 10 秒超时
 			
-			sess_gc($conf['online_hold_time']);
-			
-			$runtime['onlines'] = max(1, online_count());
+			// 会话行按保留时间清理，与「在线」判定窗口无关
+			sess_gc(empty($conf['session_gc_time']) ? 86400 : $conf['session_gc_time']);
 			
 			runtime_set('cron_1_last_date', $time);
 			

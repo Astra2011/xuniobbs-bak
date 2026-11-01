@@ -100,8 +100,9 @@ return array (
 	'pagesize' => 20,
 	'postlist_pagesize' => 100,
 	'cache_thread_list_pages' => 10,
-	'online_update_span' => 120,	// 在线更新频度，大站设置的长一些
-	'online_hold_time' => 3600,	// 在线的时间
+	'online_update_span' => 60,	// 在线数字的刷新间隔（秒），大站设置的长一些
+	'online_hold_time' => 900,	// 会员多少秒内没有动作即视为离线，只影响在线数字
+	'session_gc_time' => 86400,	// 会话数据保留时间，超过才清理；须大于 online_hold_time
 	'session_delay_update' => 0,
 	'upload_image_width' => 927,	// 上传图片自动缩略的最大宽度
 	'order_default' => 'lastpid',

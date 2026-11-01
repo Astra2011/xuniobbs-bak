@@ -193,6 +193,8 @@ if(empty($action)) {
 	$uid = 0;
 	$_SESSION['uid'] = $uid;
 	user_token_clear();
+	// 直接销毁这条会话，退出后立即从在线会员里消失，不用等在线窗口过期
+	session_destroy();
 	
 	// hook user_logout_end.php
 	

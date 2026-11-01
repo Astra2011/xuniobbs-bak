@@ -216,7 +216,7 @@ CREATE TABLE bbs_session (
   sid char(32) NOT NULL default '0',			# 随机生成 id 不能重复 uniqueid() 13 位
   uid int(11) unsigned NOT NULL default '0',		# 用户id 未登录为 0，可以重复
   fid tinyint(3) unsigned NOT NULL default '0',		# 所在的版块
-  url char(32) NOT NULL default '',			# 当前访问 url
+  url varchar(255) NOT NULL default '',			# 当前访问 url
   ip int(11) unsigned NOT NULL default '0',		# 用户ip
   useragent char(128) NOT NULL default '',		# 用户浏览器信息
   data char(255) NOT NULL default '',			# session 数据，超大数据存入大表。

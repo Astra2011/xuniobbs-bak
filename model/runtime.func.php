@@ -15,13 +15,16 @@ function runtime_init() {
 		$runtime['todayusers'] = 0;
 		$runtime['todayposts'] = 0;
 		$runtime['todaythreads'] = 0;
-		$runtime['onlines'] = max(1, online_count());
+		$runtime['onlines'] = online_count();
 		$runtime['cron_1_last_date'] = 0;
 		$runtime['cron_2_last_date'] = 0;
 		
 		cache_set('runtime', $runtime);
 		
 	}
+	// 在线人数变化快，跟着 runtime 一起长期缓存会停在初始化那一刻，
+	// 这里每次按 online_update_span 的节奏刷新一次
+	$runtime['onlines'] = online_count();
 	// hook model_runtime_init_end.php
 	return $runtime;
 }
