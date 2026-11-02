@@ -28,7 +28,7 @@ if($action == 'create') {
 		
 		$header['title'] = lang('create_thread');
 		$header['mobile_title'] = $fid ? $forum['name'] : '';
-		$header['mobile_linke'] = url("forum-$fid");
+		$header['mobile_link'] = url("forum-$fid");
 		
 		// hook thread_create_get_end.php
 		

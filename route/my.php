@@ -10,7 +10,7 @@ $user = user_read($uid);
 user_login_check();
 
 $header['mobile_title'] = $user['username'];
-$header['mobile_linke'] = url("my");
+$header['mobile_link'] = url("my");
 
 is_numeric($action) AND $action = '';
 

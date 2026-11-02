@@ -49,10 +49,9 @@ function admin_token_check() {
 		}
 		list($_ip, $_time) = explode("\t", $s);
 		
-		// 后台超过 3600 自动退出。
+		// 后台超过 3600 自动退出；开启 IP 绑定且 IP 变化立即失效。
 		// Background / more than 3600 automatic withdrawal.
-		//if($_ip != $longip || $time - $_time > 3600) {
-		if((XN_ADMIN_BIND_IP && $_ip != $longip || !XN_ADMIN_BIND_IP) && $time - $_time > 3600) {
+		if((XN_ADMIN_BIND_IP && $_ip != $longip) || $time - $_time > 3600) {
 			xo_cookie_set('bbs_admin_token', '', 0);
 			message(-1, lang('admin_token_expiry'));
 		}

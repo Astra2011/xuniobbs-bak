@@ -194,7 +194,7 @@ function check_runlevel() {
 	if($gid == 1) return;
 	$param0 = param(0);
 	$param1 = param(1);
-	if($param0 == 'user' && in_array($param1, array('login', 'create', 'logout', 'sendinitpw', 'resetpw', 'resetpw_sendcode', 'resetpw_complete', 'synlogin'))) return;
+	if($param0 == 'user' && in_array($param1, array('login', 'create', 'logout', 'resetpw', 'resetpw_complete', 'send_code', 'synlogin'))) return;
 	switch ($conf['runlevel']) {
 		case 0: message(-1, $conf['runlevel_reason']); break;
 		case 1: message(-1, lang('runlevel_reson_1')); break;

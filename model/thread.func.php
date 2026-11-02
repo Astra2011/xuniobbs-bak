@@ -376,11 +376,13 @@ function thread_safe_info($thread) {
 
 function thread_get_level($n, $levelarr) {
 	// hook model_thread_get_level_start.php
+	$return = 0;
 	foreach($levelarr as $k=>$level) {
 		if($n <= $level) return $k;
+		$return = $k;
 	}
 	// hook model_thread_get_level_end.php
-	return $k;
+	return $return;
 }
 
 

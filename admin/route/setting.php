@@ -108,7 +108,7 @@ if($action == 'base') {
 			);
 		}
 		$r = file_put_contents_try(APP_PATH.'conf/smtp.conf.php', "<?php\r\nreturn ".var_export($smtplist,true).";\r\n?>");
-		!$r AND message(-1, lang('conf/smtp.conf.php', array('file'=>'conf/smtp.conf.php')));
+		!$r AND message(-1, lang('write_to_file_failed'));
 		
 		// hook admin_setting_smtp_post_end.php
 		

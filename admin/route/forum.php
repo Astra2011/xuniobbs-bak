@@ -37,6 +37,10 @@ if(empty($action) || $action == 'list') {
 		
 		$arrlist = array();
 		foreach($fidarr as $k=>$v) {
+			// fid 必须是正整数，防止通过数组键注入路径/非法 fid
+			$k = intval($k);
+			if($k <= 0) continue;
+			
 			$arr = array(
 				'fid'=>$k,
 				'name'=>array_value($namearr, $k),
@@ -217,11 +221,6 @@ if(empty($action) || $action == 'list') {
 	$threadlist = thread_find_by_fid($_fid, 1, 20);
 	if(!empty($threadlist)) {
 		message(-1, lang('forum_delete_thread_before_delete_forum'));
-	}
-	
-	$sublist = forum_find_son_list($forumlist, $_fid);
-	if(!empty($sublist)) {
-		message(-1, lang('forum_please_delete_sub_forum'));
 	}
 	
 	forum_delete($_fid);

@@ -38,13 +38,6 @@ function mythread_delete_by_uid($uid) {
 	return $r;
 }
 
-function mythread_delete_by_fid($fid) {
-	// hook model_mythread_delete_by_fid_start.php
-	$r = db_delete('mythread', array('fid'=>$fid));
-	// hook model_mythread_delete_by_fid_end.php
-	return $r;
-}
-
 function mythread_delete_by_tid($tid) {
 	// hook model_mythread_delete_by_tid_start.php
 	$r = db_delete('mythread', array('tid'=>$tid));

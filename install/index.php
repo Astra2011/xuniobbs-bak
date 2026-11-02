@@ -126,6 +126,8 @@ if(empty($action)) {
 		!install_check_name($name) AND message('name', lang('dbname_is_invalid'));
 		!install_check_user($user) AND message('user', lang('dbuser_is_invalid'));
 		!in_array($type, array('mysql', 'pdo_mysql')) AND message('type', lang('dbtype_is_invalid'));
+		// PHP 7+ 已移除 mysql 扩展，禁止选择会导致崩溃的 mysql 类型
+		!function_exists('mysql_connect') AND $type = 'pdo_mysql';
 		!in_array($engine, array('myisam', 'innodb')) AND $engine = 'innodb';
 		
 		

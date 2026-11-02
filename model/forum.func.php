@@ -67,7 +67,6 @@ function forum_read($fid) {
 		forum_format($forum);
 		return $forum;
 	}
-	// hook model_forum_read_end.php
 }
 
 // 关联数据删除

@@ -24,7 +24,18 @@ function xo_unzip($zipfile, $extdir) {
 	if(class_exists('ZipArchive')) {
 		$z = new ZipArchive;
 		if($z->open($zipfile) === TRUE) {
-			$z->extractTo($extdir);
+			// 防 zip-slip：逐条目校验，拒绝含 ../ 穿越或绝对路径的条目
+			$safe = TRUE;
+			for($i = 0; $i < $z->numFiles; $i++) {
+				$name = str_replace('\\', '/', $z->getNameIndex($i));
+				if(strpos($name, '../') !== FALSE || substr($name, 0, 1) === '/' || preg_match('#^[a-zA-Z]:/#', $name)) {
+					$safe = FALSE;
+					break;
+				}
+			}
+			if($safe) {
+				$z->extractTo($extdir);
+			}
 			$z->close();
 		}
 	} else {

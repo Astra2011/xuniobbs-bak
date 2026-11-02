@@ -41,7 +41,6 @@ switch ($route) {
 	case 'index':		include _include(ADMIN_PATH.'route/index.php'); 	break;
 	case 'setting': 	include _include(ADMIN_PATH.'route/setting.php'); 	break;
 	case 'forum': 		include _include(ADMIN_PATH.'route/forum.php'); 	break;
-	case 'friendlink': 	include _include(ADMIN_PATH.'route/friendlink.php'); 	break;
 	case 'group': 		include _include(ADMIN_PATH.'route/group.php'); 	break;
 	case 'other':		include _include(ADMIN_PATH.'route/other.php'); 	break;
 	case 'user':		include _include(ADMIN_PATH.'route/user.php'); 		break;
